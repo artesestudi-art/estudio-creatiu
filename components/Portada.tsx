@@ -5,7 +5,7 @@ import { cargarContenido, hayAlgo } from '@/lib/contenido'
 import { euros } from '@/lib/texto'
 import { CODIGO, PRINCIPAL, prefijo, textos, type Idioma } from '@/lib/idioma'
 import { cursoEn, convocatoriaEn, slugEn } from '@/lib/traduccion'
-import { ESTUDIO, real } from '@/data/estudio'
+import { ESTUDIO, horarioEn, real } from '@/data/estudio'
 import Cabecera from '@/components/Cabecera'
 import Pie from '@/components/Pie'
 import Revelar from '@/components/Revelar'
@@ -706,10 +706,10 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                     </dd>
                   </div>
                 )}
-                {real(ESTUDIO.horario) && (
+                {real(horarioEn(idioma)) && (
                   <div>
                     <dt className="t-etiqueta mb-1.5">{t.horario}</dt>
-                    <dd className="text-[1.15rem]">{ESTUDIO.horario}</dd>
+                    <dd className="text-[1.15rem]">{horarioEn(idioma)}</dd>
                   </div>
                 )}
               </dl>

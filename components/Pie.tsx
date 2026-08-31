@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ESTUDIO, real } from '@/data/estudio'
+import { ESTUDIO, horarioEn, real } from '@/data/estudio'
 import { prefijo, textos, type Idioma } from '@/lib/idioma'
 import SelectorIdioma from './SelectorIdioma'
 import Logo from '@/components/Logo'
@@ -72,7 +72,7 @@ export default function Pie({
                 {[cp, localidad].filter(Boolean).join(' ')}
               </address>
             )}
-            {real(ESTUDIO.horario) && <p className="opacity-55">{ESTUDIO.horario}</p>}
+            {real(horarioEn(idioma)) && <p className="opacity-55">{horarioEn(idioma)}</p>}
           </div>
 
           <div className="flex flex-col items-start gap-1 text-[0.9375rem]">

@@ -48,7 +48,7 @@ type Estudio = {
     latitud: string
     longitud: string
   }
-  horario: string
+  horario: { es: string; ca: string; schema: string }
   redes: { instagram: string; facebook: string; youtube: string; tiktok: string }
   legal: { razonSocial: string; nif: string; encargados: string }
 }
@@ -59,23 +59,24 @@ export const ESTUDIO: Estudio = {
   /** Cómo se lee en una frase: «en NOMBRE enseñamos…». */
   nombreCorto: 'Artés Espai Creatiu',
   /** Dominio sin protocolo, p. ej. `estudio.com`. */
-  dominio: 'artestudicreatiu.es',
+  dominio: 'artesespaicreatiu.es',
   /** Con https y sin barra final. Se usa en canonical, sitemap y schema. */
-  url: 'https://artestudicreatiu.es',
+  url: 'https://artesespaicreatiu.es',
 
   /** Frase de una línea. Debe decir el OFICIO, no la marca: un titular que
    *  solo repite el nombre deja la web muda para Google y para el visitante. */
-  titular: PENDIENTE,
-  descripcion: PENDIENTE,
+  titular: 'Vidrieras emplomadas, dibujo, costura y manualidades en Artés',
+  descripcion:
+    'Taller de vidrieras emplomadas, dibujo, costura y manualidades en Artés. Grupos para niños y para adultos, con clase de prueba gratuita.',
 
   contacto: {
-    telefono: PENDIENTE,
+    telefono: '620 297 425',
     /** Mismo número en formato internacional, sin espacios: +34600000000 */
-    telefonoE164: PENDIENTE,
-    whatsapp: PENDIENTE,
-    email: PENDIENTE,
+    telefonoE164: '+34620297425',
+    whatsapp: '+34 620 297 425',
+    email: 'info@artesespaicreatiu.com',
     /** Buzón que recibe los avisos de inscripción. Puede ser otro. */
-    emailAvisos: PENDIENTE,
+    emailAvisos: 'info@artesespaicreatiu.com',
   },
 
   direccion: {
@@ -91,16 +92,30 @@ export const ESTUDIO: Estudio = {
      * la plaza del pueblo y manda a la gente a la puerta equivocada. Se sacan
      * del propio portal en Google Maps (botón derecho → copiar coordenadas).
      */
-    latitud: PENDIENTE,
-    longitud: PENDIENTE,
+    latitud: '41.795746',
+    longitud: '1.949413',
   },
 
-  /** Horario de atención del taller, formato schema.org: 'Mo-Fr 10:00-20:00'. */
-  horario: PENDIENTE,
+  /**
+   * El horario, escrito dos veces a propósito: una para las personas y otra
+   * para Google.
+   *
+   * ⚠️ Las tres tienen que decir EXACTAMENTE lo mismo. Si un día cambia el
+   * horario y sólo se toca una, la web dirá una cosa, la ficha de Google otra
+   * y nadie verá un error en ninguna parte: sencillamente habrá gente delante
+   * de una puerta cerrada.
+   */
+  horario: {
+    /** Lo que se pinta en el pie y en el bloque de contacto. */
+    es: 'De lunes a viernes, de 9:00 a 13:00 y de 15:00 a 20:30',
+    ca: 'De dilluns a divendres, de 9:00 a 13:00 i de 15:00 a 20:30',
+    /** Formato schema.org, el que lee Google. */
+    schema: 'Mo-Fr 09:00-13:00,Mo-Fr 15:00-20:30',
+  },
 
   redes: {
-    instagram: PENDIENTE,
-    facebook: PENDIENTE,
+    instagram: 'https://instagram.com/art_esespaicreatiu',
+    facebook: '',
     youtube: '',
     tiktok: '',
   },
@@ -112,6 +127,11 @@ export const ESTUDIO: Estudio = {
     /** Dónde se guardan los datos de los formularios, para la política. */
     encargados: 'Neon (Postgres, UE) y Resend (correo)',
   },
+}
+
+/** El horario tal como se le enseña a una persona, en su idioma. */
+export function horarioEn(idioma: string): string {
+  return idioma === 'ca' ? ESTUDIO.horario.ca : ESTUDIO.horario.es
 }
 
 /** Devuelve la lista de campos sin rellenar, en notación de ruta. */
