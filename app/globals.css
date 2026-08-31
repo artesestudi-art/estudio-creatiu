@@ -1,26 +1,642 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/**
+ * Sistema visual del estudio.
+ *
+ * Todo el color, la tipografía y el ritmo salen de aquí. Cuando llegue la
+ * identidad del cliente se cambian estas variables y la web entera se vuelve a
+ * vestir: ni un color suelto repartido por los componentes.
+ */
+
+@theme {
+  /**
+   * ─────────────── Kit de marca ───────────────
+   *
+   * Sacados del original del cliente, `LOGO ART_ES ESPAI CREATIU.ai`: los de
+   * las estrellas y la insignia leyendo el CMYK del vector, los de las manchas
+   * y las letras muestreando la lámina de color. No hay ni uno aproximado a
+   * ojo. Estos doce NO se tocan: si el cliente cambia el logo, se vuelven a
+   * leer del .ai y se cambian aquí.
+   */
+  --color-marca-crema: #f9f5d7; /* fondo de la lámina de color */
+  --color-marca-arena: #d0c8b1; /* círculo de la versión insignia */
+  --color-marca-marino: #14488b; /* «art-és» de la insignia */
+  --color-marca-mostaza: #e5b132; /* mancha superior izquierda */
+  --color-marca-malva: #d18490; /* mancha superior derecha */
+  --color-marca-azul: #4d98c6; /* mancha inferior izquierda */
+  --color-marca-salmon: #eba07b; /* mancha inferior derecha */
+  --color-marca-terracota: #b87c58; /* la «a» y «ESPAI CREATIU» en color */
+  --color-marca-dorado: #e3ba60; /* la «r» y la «é» */
+  --color-marca-rosa: #e29db4; /* la «t» y las estrellas */
+  --color-marca-azul-medio: #5582ad; /* el guion y la «s» */
+  --color-marca-azul-claro: #76b6cd; /* estrella del borde izquierdo */
+
+  /**
+   * ─────────────── Papel y tinta ───────────────
+   *
+   * La paleta del cliente es pastel: **ninguno** de los cuatro colores de las
+   * manchas aguanta texto encima. Mostaza sobre crema da 1,79:1 y salmón 1,94:1,
+   * cuando el mínimo legible es 4,5:1. Así que las manchas son decoración —
+   * fondos, ilustración, estrellas — y el texto va SIEMPRE en marino, que sobre
+   * el crema da 8,19:1.
+   */
+  --color-tinta: var(--color-marca-marino); /* 8,19:1 sobre el crema */
+  --color-tinta-80: #2f5d94; /* 6,12:1 — cuerpo de texto */
+  --color-tinta-60: #426b9a; /* 5,02:1 — etiquetas y pies */
+  --color-tinta-40: #5478a0; /* 4,17:1 — solo apagado: «Completa», placeholder */
+  --color-papel: var(--color-marca-crema);
+  --color-papel-2: #f3eed1; /* crema y arena al 15 %: el escalón intermedio que el kit no trae */
+  --color-papel-3: var(--color-marca-arena);
+
+  /**
+   * El acento pinta errores de formulario, el anillo de foco, la selección y
+   * el hover del botón principal: los cuatro necesitan 4,5:1 sobre el crema y
+   * aguantar texto crema encima. La terracota de marca se queda en 3,15:1, así
+   * que aquí va esa misma terracota un 30 % más oscura — 5,67:1 — para no
+   * salirse de la familia del logo.
+   *
+   * OJO: los errores salen en terracota quemada, no en rojo. El kit del cliente
+   * no tiene rojo y no se inventa uno.
+   */
+  --color-acento: #81573e;
+
+  --color-linea: rgba(20, 72, 139, 0.16);
+  --color-linea-fuerte: rgba(20, 72, 139, 0.3);
+
+  /* El respaldo es de palo seco, no una serif: mientras Jost carga, una Times
+     de reserva cambia el ancho de los titulares y la portada pega un salto. */
+  --font-display: var(--tipo-display), 'Futura', 'Century Gothic', system-ui, sans-serif;
+  --font-sans: var(--tipo-texto), system-ui, -apple-system, sans-serif;
+
+  /* Escala de z-index con nombre. Un 9999 suelto es deuda garantizada. */
+  --z-grano: 1;
+  --z-cabecera: 40;
+  --z-menu: 50;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /**
+     * Alto de la cabecera fija.
+     *
+     * Es una variable y no un número repetido porque hay tres sitios que
+     * tienen que coincidir al milímetro: la propia cabecera, el `scroll-padding`
+     * de los anclajes y la cortina del menú de móvil. Cuando estaban a mano,
+     * cambiar uno dejaba los otros dos desalineados.
+     */
+    --alto-cabecera: 5rem;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --alto-cabecera: 6rem;
+    }
+  }
+
+  /* Móvil tumbado: 80 px de cabecera sobre 320 px de pantalla son la cuarta
+     parte del alto útil. */
+  @media (max-height: 440px) and (orientation: landscape) {
+    :root {
+      --alto-cabecera: 3.5rem;
+    }
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* La cabecera es fija: sin esto un ancla deja el título tapado debajo. */
+    scroll-padding-top: calc(var(--alto-cabecera) + 1rem);
+  }
+
+  body {
+    background: var(--color-papel);
+    color: var(--color-tinta);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    -webkit-font-smoothing: antialiased;
+    text-wrap: pretty;
+    overflow-x: hidden;
+    /* El recuadro azul que pinta el móvil al tocar cualquier cosa delata la
+       web genérica. Se quita y cada elemento da su propia respuesta. */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Al girar el móvil, iOS agranda el texto por su cuenta y descuadra la
+     tipografía grande. */
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  /* Los números en tabular: sin esto, un precio de 180 € y otro de 95 € bailan
+     de ancho y las columnas dejan de alinearse. */
+  time,
+  .cifra {
+    font-variant-numeric: tabular-nums;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-acento);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-acento);
+    color: var(--color-papel);
+  }
+
+  /* En tinta el acento es mostaza: el texto seleccionado pasa a marino, que
+     sobre ella da 4,58:1 en vez de los 1,79:1 del crema. */
+  .en-tinta ::selection {
+    color: var(--color-tinta);
+  }
+
+  /* Quien pide menos movimiento no quiere ni el scroll deslizado. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* ─────────────────────── Estructura ─────────────────────── */
+
+  .contenedor {
+    width: 100%;
+    max-width: 84rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .contenedor {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  .seccion {
+    /* Abajo un poco más que arriba: ópticamente queda centrado, con la misma
+       medida se ve caído hacia arriba. */
+    padding-block: 6rem 7rem;
+  }
+
+  @media (min-width: 768px) {
+    .seccion {
+      padding-block: 9rem 10.5rem;
+    }
+  }
+
+  /* ─────────────────────── Tipografía ─────────────────────── */
+
+  /* El titular de portada. `clamp` con vw para que llene el ancho de verdad:
+     una tipografía gigante que se queda en 40 px en el portátil no es gigante. */
+  .t-gigante {
+    font-family: var(--font-display);
+    font-size: clamp(3.2rem, 11.5vw, 12rem);
+    line-height: 0.9;
+    /* Menos negativo que con la serif: en una geométrica los redondeles ya
+       vienen juntos y a -0.045em la «o» y la «n» se tocan. */
+    letter-spacing: -0.03em;
+  }
+
+  /**
+   * Móvil tumbado.
+   *
+   * Un iPhone apaisado tiene 390 px de alto: con el titular a 12 rem y la
+   * cabecera encima, la última línea se cortaba y el botón de «Pedir plaza»
+   * quedaba fuera de pantalla. Se mide por ALTO, no por ancho, porque el
+   * problema es el alto: en horizontal el móvil mide 844 px de ancho y por
+   * ancho pasaría por tableta.
+   */
+  @media (max-height: 540px) and (orientation: landscape) {
+    .t-gigante {
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      line-height: 0.94;
+    }
+
+    .t-grande {
+      font-size: clamp(1.7rem, 4vw, 2.4rem);
+    }
+
+    .seccion {
+      padding-block: 3.5rem 4rem;
+    }
+
+    /*
+     * `!important` a conciencia: estas reglas viven en la capa de componentes
+     * y las utilidades de Tailwind (`min-h-[100dvh]`, `pt-32`) van en una capa
+     * posterior, así que sin esto ganan ellas y la regla no hace nada.
+     */
+    .portada {
+      padding-top: calc(var(--alto-cabecera) + 1.25rem) !important;
+      padding-bottom: 1.75rem !important;
+      /* Sin alto mínimo: forzar la pantalla completa en 390 px de alto solo
+         consigue empujar el botón fuera de la pantalla. */
+      min-height: 0 !important;
+    }
+
+    .portada h1 {
+      margin-bottom: 0;
+    }
+
+    /* El bloque de entradilla y botones, más pegado al titular y en una sola
+       fila: apilados, en una pantalla de 320 px de alto el botón cae fuera. */
+    .portada .mt-12 {
+      margin-top: 1.25rem !important;
+      flex-direction: row !important;
+      /* Arriba y no abajo: la entradilla se parte en muchas líneas en una
+         columna estrecha, y alineando por abajo arrastraba los botones fuera
+         de la pantalla. */
+      align-items: flex-start !important;
+      justify-content: space-between !important;
+      gap: 1.5rem !important;
+    }
+
+    /* La entradilla, a tres líneas: en 320 px de alto es texto de apoyo, no
+       puede empujar al botón fuera. */
+    .portada .t-cuerpo {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+  }
+
+  .t-grande {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 7vw, 5.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+  }
+
+  .t-media {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.6rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+
+  /**
+   * Texto vaciado: solo el contorno. Se usa en los números de sección.
+   *
+   * El color sale por variable para que cada número pueda coger uno del kit
+   * sin que el color viaje suelto por el JSX. Y el trazo se engorda cuando lo
+   * hace: un contorno de 1 px en mostaza sobre el crema no se ve (1,79:1),
+   * pero a 2,5 px lee como lo que es, un número decorativo.
+   */
+  .t-hueca {
+    color: transparent;
+    -webkit-text-stroke: var(--grosor-hueco, 1px) var(--color-hueco, var(--color-linea-fuerte));
+  }
+
+  .t-hueca-marca {
+    --grosor-hueco: 2.5px;
+  }
+
+  /* Etiquetas pequeñas. Versalitas con tracking positivo: en tamaños chicos,
+     las mayúsculas apretadas se leen como un bloque. */
+  .t-etiqueta {
+    /* 13 px en móvil: a 12 px, en versalitas y con tracking, la línea de
+       «Pintura · Presencial y online» se lee con esfuerzo al sol. */
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-tinta-60);
+  }
+
+  /**
+   * La letra pequeña baja a 12 px solo donde hay ratón.
+   *
+   * Por ancho no vale: un móvil tumbado mide 844 px y un iPad 1024, y los dos
+   * se leen con el brazo estirado. `pointer: fine` distingue el ratón del
+   * dedo, que es lo que de verdad separa los dos casos.
+   */
+  @media (min-width: 1024px) and (pointer: fine) {
+    .t-etiqueta {
+      font-size: 0.75rem;
+    }
+  }
+
+  .t-cuerpo {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-tinta-80);
+    /* Unos 65 caracteres: más ancho y el ojo pierde el renglón al volver. */
+    max-width: 34em;
+  }
+
+  @media (min-width: 768px) {
+    .t-cuerpo {
+      font-size: 1.15rem;
+    }
+  }
+
+  /* ─────────────────────── Superficies ─────────────────────── */
+
+  /* Grano fijo sobre todo. Es lo que separa una web de un vector plano:
+     rompe la uniformidad digital sin que se note qué la rompe. */
+  .grano::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-grano);
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23r)' opacity='0.32'/%3E%3C/svg%3E");
+  }
+
+  .en-tinta {
+    background: var(--color-tinta);
+    color: var(--color-papel);
+
+    /**
+     * El acento es terracota quemada, y sobre el marino se queda en 1,45:1:
+     * los errores del formulario de inscripción —que vive en una sección en
+     * tinta— se volvían invisibles. Aquí el acento pasa a la mostaza del kit,
+     * 4,58:1 sobre marino. Es una variable y no una regla suelta para que el
+     * cambio lo hereden de golpe los errores, el foco, el subrayado del campo,
+     * la barra de progreso y el punto de «plazas abiertas».
+     */
+    --color-acento: var(--color-marca-mostaza);
+
+    /**
+     * Las líneas son marino translúcido, o sea marino sobre marino: en las
+     * secciones en tinta el subrayado de los campos y el borde de la casilla
+     * desaparecían y el formulario de inscripción se quedaba sin una sola
+     * línea a la vista. Aquí pasan a crema translúcido: 3,4:1 sobre el marino,
+     * por encima del 3:1 que pide un borde de control.
+     */
+    --color-linea: rgba(249, 245, 215, 0.22);
+    --color-linea-fuerte: rgba(249, 245, 215, 0.45);
+  }
+
+  /* Al 0,55 el crema sobre marino da 3,61:1 y estas versalitas miden 13 px.
+     A 0,7 llegan a 4,9:1. (Sobre la tinta negra de antes, 0,55 ya bastaba.) */
+  .en-tinta .t-etiqueta {
+    color: rgba(249, 245, 215, 0.7);
+  }
+
+  .en-tinta .t-cuerpo {
+    color: rgba(249, 245, 215, 0.72);
+  }
+
+  .en-tinta .t-hueca {
+    -webkit-text-stroke-color: rgba(249, 245, 215, 0.3);
+  }
+
+  /* ─────────────────────── Botones ─────────────────────── */
+
+  .boton {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1rem 1.9rem;
+    /* 52 px de alto real: por debajo de 44 el dedo falla en móvil. */
+    min-height: 3.25rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    border-radius: 999px;
+    overflow: hidden;
+    transition:
+      transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+      background-color 0.25s ease,
+      color 0.25s ease,
+      border-color 0.25s ease;
+  }
+
+  .boton:active {
+    /* Hundirlo al pulsar: sin esto el clic no se siente físico. */
+    transform: translateY(1px) scale(0.985);
+  }
+
+  .boton-principal {
+    background: var(--color-tinta);
+    color: var(--color-papel);
+  }
+
+  .boton-principal:hover {
+    background: var(--color-acento);
+  }
+
+  .en-tinta .boton-principal {
+    background: var(--color-papel);
+    color: var(--color-tinta);
+  }
+
+  .en-tinta .boton-principal:hover {
+    background: var(--color-acento);
+    /* Marino y no crema: crema sobre la mostaza son 1,79:1, el texto del botón
+       se borra justo cuando el ratón está encima. */
+    color: var(--color-tinta);
+  }
+
+  .boton-linea {
+    border: 1px solid var(--color-linea-fuerte);
+    color: inherit;
+  }
+
+  .boton-linea:hover {
+    border-color: currentColor;
+  }
+
+  /* Enlace con subrayado que se dibuja de izquierda a derecha. */
+  .enlace-linea {
+    position: relative;
+    display: inline-block;
+  }
+
+  .enlace-linea::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .enlace-linea:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* ─────────────────────── Formularios ─────────────────────── */
+
+  /* Campos sin caja: una línea debajo. La caja con borde y sombra es el
+     aspecto de formulario de plantilla. */
+  .campo {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--color-linea-fuerte);
+    border-radius: 0;
+    padding: 0.85rem 0.15rem;
+    /* 16 px mínimo: con menos, Safari en iPhone hace zoom al enfocar. */
+    font-size: 1rem;
+    color: inherit;
+    transition: border-color 0.25s ease;
+  }
+
+  .campo::placeholder {
+    color: var(--color-tinta-40);
+  }
+
+  .campo:focus {
+    outline: none;
+    border-bottom-color: var(--color-acento);
+  }
+
+  .campo:focus-visible {
+    outline: none;
+  }
+
+  /* Sobre marino, la flecha en tinta-60 es marino sobre marino. */
+  .en-tinta select.campo {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23f9f5d7' stroke-width='1.5'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  }
+
+  /* Los select nativos pierden la flecha al quitarles el fondo. */
+  select.campo {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23426b9a' stroke-width='1.5'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.15rem center;
+    padding-right: 1.6rem;
+  }
+
+  /**
+   * Casilla de consentimiento.
+   *
+   * La nativa mide 13-16 px y es lo que bloquea el envío del formulario: en un
+   * móvil se falla al primer intento y quien tiene prisa abandona. Aquí mide
+   * 24 px a la vista y la etiqueta entera es zona pulsable, así que el dedo
+   * tiene 44 px de alto donde acertar.
+   */
+  .casilla {
+    appearance: none;
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 0.05rem;
+    border: 1px solid var(--color-linea-fuerte);
+    border-radius: 0.3rem;
+    background: transparent;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .en-tinta .casilla {
+    border-color: rgba(249, 245, 215, 0.4);
+  }
+
+  .casilla:checked {
+    background-color: var(--color-acento);
+    border-color: var(--color-acento);
+    /* La marca va como fondo: un pseudoelemento dentro de un input no se pinta. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23f9f5d7' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5 6.5 11.5 12.5 4.5'/%3E%3C/svg%3E");
+    background-size: 1rem;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* Marcada, la casilla se pinta del acento: mostaza en las secciones en tinta.
+     La marca en crema encima no se vería, así que ahí va en marino. */
+  .en-tinta .casilla:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2314488b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 8.5 6.5 11.5 12.5 4.5'/%3E%3C/svg%3E");
+  }
+
+  /* Toda la etiqueta es zona pulsable, con 44 px de alto mínimo. */
+  .consentimiento {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    min-height: 2.75rem;
+    padding-block: 0.35rem;
+    cursor: pointer;
+  }
+
+  /* El enlace a la política vive dentro de la etiqueta: sin esta zona extra,
+     tocarlo con el dedo marca la casilla en vez de abrir la política. */
+  .consentimiento a {
+    display: inline-block;
+    padding-block: 0.35rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .etiqueta {
+    display: block;
+    margin-bottom: 0.1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-tinta-60);
+  }
+
+  /* ─────────────────────── Movimiento ─────────────────────── */
+
+  /* Entrada escalonada al aparecer en pantalla. El retraso lo pone cada
+     elemento con --retraso, para que caigan en cascada y no todos de golpe. */
+  .revela {
+    opacity: 0;
+    transform: translateY(1.6rem);
+    transition:
+      opacity 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: var(--retraso, 0ms);
+  }
+
+  .revela.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Sin JavaScript o con movimiento reducido, todo se ve. Un contenido que
+     depende de una animación para existir desaparece cuando la animación falla. */
+  @media (prefers-reduced-motion: reduce) {
+    .revela {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+}
+
+@layer utilities {
+  .sin-barra::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sin-barra {
+    scrollbar-width: none;
+  }
 }
