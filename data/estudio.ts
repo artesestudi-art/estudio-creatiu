@@ -59,9 +59,9 @@ export const ESTUDIO: Estudio = {
   /** Cómo se lee en una frase: «en NOMBRE enseñamos…». */
   nombreCorto: 'Artés Espai Creatiu',
   /** Dominio sin protocolo, p. ej. `estudio.com`. */
-  dominio: 'artesespaicreatiu.com',
+  dominio: 'artestudicreatiu.es',
   /** Con https y sin barra final. Se usa en canonical, sitemap y schema. */
-  url: 'https://artesespaicreatiu.com',
+  url: 'https://artestudicreatiu.es',
 
   /** Frase de una línea. Debe decir el OFICIO, no la marca: un titular que
    *  solo repite el nombre deja la web muda para Google y para el visitante. */
