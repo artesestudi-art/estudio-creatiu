@@ -51,6 +51,12 @@ export default function FormularioInscripcion({
   const [estado, accion] = useActionState<EstadoFormulario | null, FormData>(enviarInscripcion, null)
   const [cursoId, setCursoId] = useState(String(cursoFijo ?? cursos[0]?.id ?? ''))
 
+  // Hay cursos de primaria y de secundaria: quien rellena entonces es el padre,
+  // la madre o el tutor, y el alumno es otra persona. Sin esto el estudio
+  // recibía un nombre suelto sin saber de quién era la plaza — y el
+  // consentimiento de los datos de un menor no lo puede dar el propio menor.
+  const [esMenor, setEsMenor] = useState(false)
+
   // React 19 vacía el formulario en cuanto termina la acción, incluso si
   // devolvió un error. Repintar los campos con lo que la acción nos devuelve
   // es lo que evita que alguien pierda el mensaje que acababa de escribir.
@@ -129,10 +135,48 @@ export default function FormularioInscripcion({
         </div>
       )}
 
+      <label className="consentimiento text-[0.9rem] leading-relaxed opacity-80">
+        <input
+          type="checkbox"
+          name="es_menor"
+          checked={esMenor}
+          onChange={(e) => setEsMenor(e.target.checked)}
+          className="casilla"
+        />
+        <span>
+          {t.esMenor}
+          <span className="mt-0.5 block text-[0.8125rem] opacity-65">{t.esMenorAyuda}</span>
+        </span>
+      </label>
+
+      {esMenor && (
+        <div className="grid gap-7 sm:grid-cols-2">
+          <Campo
+            id="alumno_nombre"
+            etiqueta={t.nombreAlumno}
+            idioma={idioma}
+            requerido
+            mayusculas="words"
+            siguiente="next"
+            valor={previo.alumno_nombre}
+            error={estado?.campo === 'alumno_nombre' ? estado.mensaje : undefined}
+          />
+          <Campo
+            id="alumno_edad"
+            etiqueta={t.edadAlumno}
+            idioma={idioma}
+            siguiente="next"
+            ayuda={t.edadAlumnoAyuda}
+            valor={previo.alumno_edad}
+            error={estado?.campo === 'alumno_edad' ? estado.mensaje : undefined}
+          />
+        </div>
+      )}
+
       <div className="grid gap-7 sm:grid-cols-2">
         <Campo
           id="nombre"
-          etiqueta={t.nombre}
+          etiqueta={esMenor ? t.nombreTutor : t.nombre}
           idioma={idioma}
           requerido
           autoComplete="name"

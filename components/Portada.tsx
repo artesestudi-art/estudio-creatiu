@@ -90,7 +90,29 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
     galeria: contenido.galeria.imagenes.length > 0,
     testimonios: contenido.testimonios.opiniones.length > 0,
     faq: contenido.faq.preguntas.length > 0,
+    talleres: contenido.talleres.lista.length > 0,
   }
+
+  /**
+   * La numeración de las secciones se calcula, no se escribe a mano.
+   *
+   * Estaba puesta como `01 —`, `02 —`… y todas las secciones son opcionales:
+   * en cuanto el estudio dejaba una vacía, la web enseñaba «02, 05, 07» con
+   * los huecos a la vista. Nadie ve un error, sencillamente parece que falta
+   * media web.
+   */
+  const visibles = [
+    hay.sobre && 'sobre',
+    hay.cursos && 'cursos',
+    hay.talleres && 'talleres',
+    hay.metodo && 'metodo',
+    hay.profesorado && 'profesorado',
+    hay.galeria && 'galeria',
+    'inscripcion',
+    hay.faq && 'faq',
+    'contacto',
+  ].filter(Boolean) as string[]
+  const num = (clave: string) => String(visibles.indexOf(clave) + 1).padStart(2, '0')
 
   const p = prefijo(idioma)
   const enlaces = [
@@ -206,7 +228,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
             <div className="contenedor relative z-10">
               <div className="grid gap-y-14 lg:grid-cols-12 lg:gap-x-10">
                 <div className="lg:col-span-5 lg:sticky lg:top-32 lg:self-start">
-                  <p className="t-etiqueta revela mb-6">01 — {t.elEstudio}</p>
+                  <p className="t-etiqueta revela mb-6">{num('sobre')} — {t.elEstudio}</p>
                   {contenido.sobre.titulo && (
                     <h2
                       className="t-grande revela"
@@ -272,7 +294,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
         {hay.cursos && (
           <section id="cursos" className="en-tinta pt-24 md:pt-36">
             <div className="contenedor mb-16 md:mb-24">
-              <p className="t-etiqueta revela mb-6">02 — {t.cursos}</p>
+              <p className="t-etiqueta revela mb-6">{num('cursos')} — {t.cursos}</p>
               <div className="grid gap-8 lg:grid-cols-12">
                 <h2 className="t-grande revela lg:col-span-7">
                   {contenido.cursos.titulo || t.cursos}
@@ -413,6 +435,60 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
           </section>
         )}
 
+        {/* ════════════ Talleres a medida ════════════ */}
+        {/* Va justo detrás de los cursos porque es lo mismo visto de otra
+            manera: quien no puede comprometerse a un trimestre entra por
+            aquí. Sin nada escrito, la sección no existe. */}
+        {hay.talleres && (
+          <section id="talleres" className="seccion relative bg-[var(--color-papel-2)]">
+            <Estrellas
+              estrellas={[
+                { y: '18%', x: '88%', tam: 32, color: 'var(--color-marca-dorado)', deriva: 65 },
+                { y: '74%', x: '5%', tam: 26, color: 'var(--color-marca-azul-claro)', variante: 2, deriva: -60 },
+              ]}
+            />
+            <div className="contenedor relative z-10">
+              <p className="t-etiqueta revela mb-6">{num('talleres')} — {t.talleres}</p>
+              <div className="mb-16 grid gap-8 lg:grid-cols-12">
+                <h2 className="t-grande revela lg:col-span-6">
+                  {contenido.talleres.titulo || t.talleres}
+                </h2>
+                {contenido.talleres.entradilla && (
+                  <p className="t-cuerpo revela lg:col-span-5 lg:col-start-8 lg:self-end">
+                    {contenido.talleres.entradilla}
+                  </p>
+                )}
+              </div>
+
+              <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+                {contenido.talleres.lista.map((taller, i) => (
+                  <article
+                    key={i}
+                    className="revela border-t border-[var(--color-linea-fuerte)] pt-6"
+                    style={{ '--retraso': `${(i % 3) * 90}ms` } as React.CSSProperties}
+                  >
+                    <h3 className="mb-3 text-[1.25rem] font-medium">{taller.titulo}</h3>
+                    {taller.texto && (
+                      <p className="text-[1rem] leading-relaxed text-[var(--color-tinta-60)]">
+                        {taller.texto}
+                      </p>
+                    )}
+                    {taller.precio && (
+                      <p className="t-etiqueta mt-4 text-[var(--color-acento)]">{taller.precio}</p>
+                    )}
+                  </article>
+                ))}
+              </div>
+
+              <p className="revela mt-14">
+                <a href={`${p}/#contacto`} className="boton boton-principal">
+                  {t.pedirPresupuesto}
+                </a>
+              </p>
+            </div>
+          </section>
+        )}
+
         {/* ════════════ Cómo funciona ════════════ */}
         {hay.metodo && (
           <section id="como-funciona" className="seccion relative">
@@ -423,7 +499,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               ]}
             />
             <div className="contenedor relative z-10">
-              <p className="t-etiqueta revela mb-6">03 — {t.comoFunciona}</p>
+              <p className="t-etiqueta revela mb-6">{num('metodo')} — {t.comoFunciona}</p>
               <div className="mb-16 grid gap-8 lg:grid-cols-12 md:mb-24">
                 <h2 className="t-grande revela lg:col-span-6">
                   {contenido.metodo.titulo || t.comoFunciona}
@@ -474,7 +550,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               ]}
             />
             <div className="contenedor relative z-10">
-              <p className="t-etiqueta revela mb-6">04 — {t.profesorado}</p>
+              <p className="t-etiqueta revela mb-6">{num('profesorado')} — {t.profesorado}</p>
               <div className="mb-16 grid gap-8 lg:grid-cols-12">
                 <h2 className="t-grande revela lg:col-span-7">
                   {contenido.profesorado.titulo || t.quienDaLasClases}
@@ -529,7 +605,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
         {hay.galeria && (
           <section id="galeria" className="seccion">
             <div className="contenedor">
-              <p className="t-etiqueta revela mb-6">05 — {t.elTaller}</p>
+              <p className="t-etiqueta revela mb-6">{num('galeria')} — {t.elTaller}</p>
               <h2 className="t-grande revela mb-16 max-w-3xl">
                 {contenido.galeria.titulo || t.elTallerPorDentro}
               </h2>
@@ -588,7 +664,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
         <section id="inscripcion" className="en-tinta seccion">
           <div className="contenedor grid gap-y-16 lg:grid-cols-12 lg:gap-x-16">
             <div className="lg:col-span-5">
-              <p className="t-etiqueta revela mb-6">06 — {t.pedirPlaza}</p>
+              <p className="t-etiqueta revela mb-6">{num('inscripcion')} — {t.pedirPlaza}</p>
               <h2 className="t-grande revela">{t.pideTuPlaza}</h2>
               <p className="t-cuerpo revela mt-8">
                 {t.rellenaYConfirmamos}
@@ -623,7 +699,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               ]}
             />
             <div className="contenedor relative z-10">
-              <p className="t-etiqueta revela mb-6">07 — {t.preguntasFrecuentes}</p>
+              <p className="t-etiqueta revela mb-6">{num('faq')} — {t.preguntasFrecuentes}</p>
               <h2 className="t-grande revela mb-16 max-w-3xl">
                 {contenido.faq.titulo || t.preguntasFrecuentes}
               </h2>
@@ -664,7 +740,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
           />
           <div className="contenedor relative z-10 grid gap-y-16 lg:grid-cols-12 lg:gap-x-16">
             <div className="lg:col-span-5">
-              <p className="t-etiqueta revela mb-6">08 — {t.contacto}</p>
+              <p className="t-etiqueta revela mb-6">{num('contacto')} — {t.contacto}</p>
               <h2 className="t-grande revela">{contenido.contacto.titulo || t.hablamos}</h2>
               {contenido.contacto.entradilla && (
                 <p className="t-cuerpo revela mt-8">{contenido.contacto.entradilla}</p>

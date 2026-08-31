@@ -68,6 +68,9 @@ export async function enviarInscripcion(
   const email = limitar(texto(datos, 'email'), 160).toLowerCase()
   const telefono = limitar(texto(datos, 'telefono'), 40)
   const experiencia = limitar(texto(datos, 'experiencia'), 120)
+  const esMenor = Boolean(datos.get('es_menor'))
+  const alumnoNombre = limitar(texto(datos, 'alumno_nombre'), 120)
+  const alumnoEdad = limitar(texto(datos, 'alumno_edad'), 60)
   const mensaje = limitar(texto(datos, 'mensaje'), 4000)
   const origen = limitar(texto(datos, 'origen') || '/', 200)
   const cursoId = Number(texto(datos, 'curso_id')) || null
@@ -78,6 +81,9 @@ export async function enviarInscripcion(
     nombre,
     email,
     telefono,
+    es_menor: esMenor ? 'si' : '',
+    alumno_nombre: alumnoNombre,
+    alumno_edad: alumnoEdad,
     experiencia,
     mensaje,
     curso_id: cursoId ? String(cursoId) : '',
@@ -86,7 +92,22 @@ export async function enviarInscripcion(
   }
 
   if (nombre.length < 2) {
-    return { ok: false, mensaje: 'Escribe tu nombre.', campo: 'nombre', valores }
+    return {
+      ok: false,
+      mensaje: esMenor ? 'Escribe tu nombre como tutor.' : 'Escribe tu nombre.',
+      campo: 'nombre',
+      valores,
+    }
+  }
+  // Si es una plaza para un menor, saber quién es el alumno no es un extra:
+  // es lo que el estudio necesita para montar el grupo por edades.
+  if (esMenor && alumnoNombre.length < 2) {
+    return {
+      ok: false,
+      mensaje: 'Dinos el nombre del alumno o la alumna.',
+      campo: 'alumno_nombre',
+      valores,
+    }
   }
   if (!EMAIL.test(email)) {
     return {
@@ -131,6 +152,9 @@ export async function enviarInscripcion(
       nombre,
       email,
       telefono: telefono || null,
+      es_menor: esMenor,
+      alumno_nombre: esMenor ? alumnoNombre : null,
+      alumno_edad: esMenor ? alumnoEdad || null : null,
       curso_id: curso?.id ?? null,
       convocatoria_id: convocatoriaValida ? convocatoria.id : null,
       curso_titulo: curso?.titulo ?? 'Consulta general',
@@ -156,6 +180,8 @@ export async function enviarInscripcion(
     nombre,
     email,
     telefono: telefono || null,
+    alumno: esMenor ? alumnoNombre : null,
+    alumnoEdad: esMenor ? alumnoEdad || null : null,
     curso: curso?.titulo ?? 'Consulta general',
     convocatoria: convocatoriaTexto,
     modalidad: (convocatoriaValida && convocatoria.modalidad) || curso?.modalidad || null,

@@ -164,6 +164,7 @@ export default function BotonWhatsApp({
         right: 'max(1.25rem, env(safe-area-inset-right))',
         bottom: 'calc(1.25rem + env(safe-area-inset-bottom))',
       }}
+      data-flotante="whatsapp"
       className={`fixed z-[45] flex flex-col items-end gap-3 transition-all duration-300 ${
         enseñar
           ? 'pointer-events-auto translate-y-0 opacity-100'

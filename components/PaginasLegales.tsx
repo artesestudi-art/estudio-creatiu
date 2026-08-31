@@ -160,6 +160,12 @@ export function Privacidad({ idioma }: { idioma: Idioma }) {
                 : 'nombre, correo, teléfono si lo das, el curso que te interesa y lo que nos cuentes. Se usa para gestionar tu solicitud y contestarte. Base legal: tu consentimiento y los pasos previos a un contrato.'}
             </li>
             <li>
+              <strong>{ca ? 'Plaça per a un menor:' : 'Plaza para un menor:'}</strong>{' '}
+              {ca
+                ? "si la plaça és per a un menor d'edat, el formulari el rebem del pare, la mare o el tutor, i les dades de contacte són les seves. Del menor només demanem el nom i l'edat o el curs, per formar els grups. Base legal: el consentiment de qui té la pàtria potestat o la tutela."
+                : 'si la plaza es para un menor de edad, el formulario lo recibimos del padre, la madre o el tutor, y los datos de contacto son los suyos. Del menor solo pedimos el nombre y la edad o el curso, para formar los grupos. Base legal: el consentimiento de quien tiene la patria potestad o la tutela.'}
+            </li>
+            <li>
               <strong>{ca ? 'Formulari de contacte:' : 'Formulario de contacto:'}</strong>{' '}
               {ca
                 ? 'nom, correu, telèfon si el dones i el teu missatge, per respondre’t. Base legal: el teu consentiment.'
@@ -192,16 +198,38 @@ export function Privacidad({ idioma }: { idioma: Idioma }) {
             <strong>Vercel</strong>
             {ca ? " (allotjament del web) i " : ' (alojamiento de la web) y '}
             <strong>Resend</strong>
-            {ca ? ' (enviament dels correus d’avís). No venem ni cedim dades a tercers.' : ' (envío de los correos de aviso). No vendemos ni cedemos datos a terceros.'}
+            {ca ? ' (enviament dels correus d’avís)' : ' (envío de los correos de aviso)'}
+            {real(ESTUDIO.analitica.ga4) && (
+              <>
+                {ca ? ' i ' : ' y '}
+                <strong>Google</strong>
+                {ca
+                  ? " (analítica del web, només si l'acceptes; pot tractar dades fora de la Unió Europea)"
+                  : ' (analítica de la web, solo si la aceptas; puede tratar datos fuera de la Unión Europea)'}
+              </>
+            )}
+            {ca ? '. No venem ni cedim dades a tercers.' : '. No vendemos ni cedemos datos a terceros.'}
           </p>
         </Bloque>
 
         <Bloque titulo={ca ? 'Galetes' : 'Cookies'}>
-          <p className="t-cuerpo !max-w-none">
-            {ca
-              ? "Aquest web no fa servir galetes d'analítica, de publicitat ni de xarxes socials. L'única galeta que existeix és tècnica i serveix per mantenir oberta la sessió del tauler de gestió: només la rep qui administra el web, no les visites."
-              : 'Esta web no usa cookies de analítica, publicidad ni redes sociales. La única cookie que existe es técnica y sirve para mantener abierta la sesión del panel de gestión: solo la recibe quien administra la web, no los visitantes.'}
-          </p>
+          {/* Este apartado cambia solo según haya analítica o no. Un texto fijo
+              que jurase «no usamos cookies» el día que se enciende Google
+              Analytics convertiría la política en mentira sin que nadie lo
+              notara. */}
+          {real(ESTUDIO.analitica.ga4) ? (
+            <p className="t-cuerpo !max-w-none">
+              {ca
+                ? "Aquest web fa servir Google Analytics per saber quanta gent el visita i quins cursos es miren més. No es carrega fins que tu ho acceptes al cartell que apareix en entrar: si dius que no, no s'instal·la cap galeta d'anàlisi. La teva resposta es guarda al teu propi navegador, i pots canviar-la esborrant les dades del lloc. No hi ha galetes de publicitat ni de xarxes socials. L'única galeta tècnica manté oberta la sessió del tauler de gestió: només la rep qui administra el web."
+                : 'Esta web usa Google Analytics para saber cuánta gente la visita y qué cursos se miran más. No se carga hasta que tú lo aceptas en el aviso que aparece al entrar: si dices que no, no se instala ninguna cookie de análisis. Tu respuesta se guarda en tu propio navegador, y puedes cambiarla borrando los datos del sitio. No hay cookies de publicidad ni de redes sociales. La única cookie técnica mantiene abierta la sesión del panel de gestión: solo la recibe quien administra la web.'}
+            </p>
+          ) : (
+            <p className="t-cuerpo !max-w-none">
+              {ca
+                ? "Aquest web no fa servir galetes d'analítica, de publicitat ni de xarxes socials. L'única galeta que existeix és tècnica i serveix per mantenir oberta la sessió del tauler de gestió: només la rep qui administra el web, no les visites."
+                : 'Esta web no usa cookies de analítica, publicidad ni redes sociales. La única cookie que existe es técnica y sirve para mantener abierta la sesión del panel de gestión: solo la recibe quien administra la web, no los visitantes.'}
+            </p>
+          )}
         </Bloque>
 
         <Bloque titulo={ca ? 'Els teus drets' : 'Tus derechos'}>

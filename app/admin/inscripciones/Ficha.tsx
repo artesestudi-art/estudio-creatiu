@@ -21,7 +21,12 @@ export default function Ficha({ i }: { i: Inscripcion }) {
         className="flex w-full flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-3.5 text-left"
       >
         <Insignia estado={i.estado} texto={NOMBRES[i.estado] ?? i.estado} />
-        <span className="text-[15px] font-semibold">{i.nombre}</span>
+        <span className="text-[15px] font-semibold">{i.alumno_nombre || i.nombre}</span>
+        {i.es_menor && (
+          <span className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[12px] text-amber-800">
+            menor
+          </span>
+        )}
         <span className="text-[14px] text-neutral-500">{i.curso_titulo}</span>
         {!i.aviso_enviado && (
           <span className="rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-[12px] text-red-700">
@@ -34,6 +39,13 @@ export default function Ficha({ i }: { i: Inscripcion }) {
       {abierta && (
         <div className="border-t border-neutral-100 px-4 py-4">
           <dl className="mb-4 grid gap-x-6 gap-y-2 text-[14.5px] sm:grid-cols-2">
+            {i.es_menor && (
+              <Linea etiqueta="Alumno">
+                {i.alumno_nombre}
+                {i.alumno_edad ? ` · ${i.alumno_edad}` : ''}
+              </Linea>
+            )}
+            <Linea etiqueta={i.es_menor ? 'Tutor' : 'Nombre'}>{i.nombre}</Linea>
             <Linea etiqueta="Correo">
               <a href={`mailto:${i.email}`} className="underline underline-offset-2">
                 {i.email}

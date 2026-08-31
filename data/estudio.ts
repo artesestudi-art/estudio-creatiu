@@ -51,6 +51,7 @@ type Estudio = {
   horario: { es: string; ca: string; schema: string }
   redes: { instagram: string; facebook: string; youtube: string; tiktok: string }
   legal: { razonSocial: string; nif: string; encargados: string }
+  analitica: { ga4: string }
 }
 
 export const ESTUDIO: Estudio = {
@@ -119,6 +120,19 @@ export const ESTUDIO: Estudio = {
     youtube: '',
     tiktok: '',
   },
+
+  /**
+   * Medición de visitas.
+   *
+   * Vacío = NO se carga nada, no hay cartel de cookies y la política puede
+   * seguir diciendo, con verdad, que esta web no lleva analítica.
+   *
+   * En cuanto aquí haya un identificador de Google Analytics («G-XXXXXXX»),
+   * la web enseña el cartel de consentimiento y sólo carga Google si el
+   * visitante dice que sí. Ese orden no es un adorno: cargar analítica antes
+   * de preguntar es lo que multa la Agencia de Protección de Datos.
+   */
+  analitica: { ga4: '' },
 
   legal: {
     /** Titular real que firma el aviso legal. */

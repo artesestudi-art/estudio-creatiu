@@ -86,6 +86,9 @@ export async function avisarInscripcion(datos: {
   nombre: string
   email: string
   telefono: string | null
+  /** Cuando la plaza es para un menor, quien escribe es el tutor. */
+  alumno: string | null
+  alumnoEdad: string | null
   curso: string
   convocatoria: string | null
   modalidad: string | null
@@ -99,7 +102,9 @@ export async function avisarInscripcion(datos: {
       <h2 style="margin:0 0 18px;font-size:20px">${escapar(datos.curso)}</h2>
       <table style="border-collapse:collapse;font-size:15px">
         ${tabla([
-          ['Nombre', datos.nombre],
+          ['Alumno', datos.alumno],
+          ['Edad o curso', datos.alumnoEdad],
+          [datos.alumno ? 'Tutor' : 'Nombre', datos.nombre],
           ['Correo', datos.email],
           ['Teléfono', datos.telefono],
           ['Convocatoria', datos.convocatoria],

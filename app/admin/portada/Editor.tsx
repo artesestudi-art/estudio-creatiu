@@ -166,6 +166,41 @@ export default function Editor({
         </Campo>
       </Bloque>
 
+      {/* ───────── Talleres a medida ───────── */}
+      <Bloque titulo="Talleres a medida">
+        <p className="text-[13.5px] text-neutral-500">
+          Lo que no es un curso con matrícula: cumpleaños, talleres de empresa, despedidas,
+          talleres de un día. Si no añades ninguno, la sección no aparece en la web.
+        </p>
+        <Campo etiqueta="Título">
+          <input
+            value={c.talleres.titulo}
+            onChange={(e) => cambiar('talleres', { titulo: e.target.value })}
+            className={claseInput}
+          />
+        </Campo>
+        <Campo etiqueta="Entradilla">
+          <textarea
+            rows={2}
+            value={c.talleres.entradilla}
+            onChange={(e) => cambiar('talleres', { entradilla: e.target.value })}
+            className={claseInput}
+          />
+        </Campo>
+        <Lista
+          titulo="Talleres"
+          ayuda="Uno por cada cosa que ofreces fuera de los cursos. El precio puede quedarse en blanco si va a presupuesto."
+          elementos={c.talleres.lista}
+          nuevo={() => ({ titulo: '', texto: '', precio: '' })}
+          onCambio={(lista) => cambiar('talleres', { lista })}
+          campos={[
+            { clave: 'titulo', etiqueta: 'Qué es' },
+            { clave: 'texto', etiqueta: 'De qué va', largo: true },
+            { clave: 'precio', etiqueta: 'Precio (o «a consultar»)' },
+          ]}
+        />
+      </Bloque>
+
       {/* ───────── Método ───────── */}
       <Bloque titulo="Cómo funciona">
         <Campo etiqueta="Título">

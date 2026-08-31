@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Jost, Geist } from 'next/font/google'
+import Analitica from '@/components/Analitica'
 import { ESTUDIO } from '@/data/estudio'
 import './globals.css'
 
@@ -69,6 +70,7 @@ export default function LayoutRaiz({ children }: { children: React.ReactNode }) 
           Saltar al contenido
         </a>
         {children}
+        <Analitica />
       </body>
     </html>
   )

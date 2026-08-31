@@ -20,6 +20,8 @@ export type Paso = { titulo: string; texto: string }
 export type Profesor = { nombre: string; rol: string; bio: string; foto: string }
 export type Testimonio = { texto: string; autor: string; curso: string }
 export type Pregunta = { pregunta: string; respuesta: string }
+/** Lo que no es un curso con matrícula: cumpleaños, empresas, un día suelto. */
+export type Taller = { titulo: string; texto: string; precio: string }
 export type Imagen = { url: string; alt: string }
 
 export type Contenido = {
@@ -39,6 +41,7 @@ export type Contenido = {
     puntos: Punto[]
   }
   cursos: { titulo: string; entradilla: string }
+  talleres: { titulo: string; entradilla: string; lista: Taller[] }
   metodo: { titulo: string; entradilla: string; pasos: Paso[] }
   profesorado: { titulo: string; entradilla: string; personas: Profesor[] }
   galeria: { titulo: string; entradilla: string; imagenes: Imagen[] }
@@ -52,6 +55,7 @@ export const CONTENIDO_VACIO: Contenido = {
   hero: { antetitulo: '', titular: '', entradilla: '', cta: '', imagen: '', imagenAlt: '' },
   sobre: { titulo: '', texto: '', imagen: '', imagenAlt: '', puntos: [] },
   cursos: { titulo: '', entradilla: '' },
+  talleres: { titulo: '', entradilla: '', lista: [] },
   metodo: { titulo: '', entradilla: '', pasos: [] },
   profesorado: { titulo: '', entradilla: '', personas: [] },
   galeria: { titulo: '', entradilla: '', imagenes: [] },
@@ -115,6 +119,7 @@ export async function cargarContenido(idioma: Idioma = PRINCIPAL): Promise<Conte
     hero: { ...CONTENIDO_VACIO.hero, ...guardado.hero },
     sobre: { ...CONTENIDO_VACIO.sobre, ...guardado.sobre },
     cursos: { ...CONTENIDO_VACIO.cursos, ...guardado.cursos },
+    talleres: { ...CONTENIDO_VACIO.talleres, ...guardado.talleres },
     metodo: { ...CONTENIDO_VACIO.metodo, ...guardado.metodo },
     profesorado: { ...CONTENIDO_VACIO.profesorado, ...guardado.profesorado },
     galeria: { ...CONTENIDO_VACIO.galeria, ...guardado.galeria },

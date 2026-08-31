@@ -101,6 +101,14 @@ export type Inscripcion = {
   telefono: string | null
   curso_id: number | null
   convocatoria_id: number | null
+  /**
+   * Cuando la plaza es para un menor, `nombre`/`email`/`telefono` son los del
+   * padre, la madre o el tutor —quien puede dar el consentimiento— y el
+   * alumno es este otro.
+   */
+  es_menor: boolean
+  alumno_nombre: string | null
+  alumno_edad: string | null
   /** Copia del título en el momento de inscribirse. Si el cliente borra el
    *  curso, la petición no se queda huérfana ni miente sobre a qué se apuntó. */
   curso_titulo: string
@@ -331,6 +339,9 @@ export type NuevaInscripcion = {
   nombre: string
   email: string
   telefono: string | null
+  es_menor: boolean
+  alumno_nombre: string | null
+  alumno_edad: string | null
   curso_id: number | null
   convocatoria_id: number | null
   curso_titulo: string
@@ -345,10 +356,12 @@ export async function guardarInscripcion(d: NuevaInscripcion): Promise<number> {
   const sql = conexion()
   const filas = (await sql`
     INSERT INTO inscripciones (
-      nombre, email, telefono, curso_id, convocatoria_id, curso_titulo,
+      nombre, email, telefono, es_menor, alumno_nombre, alumno_edad,
+      curso_id, convocatoria_id, curso_titulo,
       convocatoria_texto, modalidad, experiencia, mensaje, origen
     ) VALUES (
-      ${d.nombre}, ${d.email}, ${d.telefono}, ${d.curso_id}, ${d.convocatoria_id},
+      ${d.nombre}, ${d.email}, ${d.telefono}, ${d.es_menor}, ${d.alumno_nombre},
+      ${d.alumno_edad}, ${d.curso_id}, ${d.convocatoria_id},
       ${d.curso_titulo}, ${d.convocatoria_texto}, ${d.modalidad}, ${d.experiencia},
       ${d.mensaje}, ${d.origen}
     ) RETURNING id

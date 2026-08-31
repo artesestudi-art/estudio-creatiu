@@ -89,7 +89,19 @@ type Textos = {
   correo: string
   opcional: string
   telefonoAyuda: string
+  talleres: string
+  pedirPresupuesto: string
+  cookiesTitulo: string
+  cookiesTexto: string
+  cookiesAceptar: string
+  cookiesRechazar: string
   experiencia: string
+  esMenor: string
+  esMenorAyuda: string
+  nombreTutor: string
+  nombreAlumno: string
+  edadAlumno: string
+  edadAlumnoAyuda: string
   prefieroNoDecirlo: string
   nunca: string
   algoSuelto: string
@@ -206,7 +218,20 @@ const es: Textos = {
   correo: 'Correo',
   opcional: '(opcional)',
   telefonoAyuda: 'Opcional, pero acelera la respuesta.',
+  talleres: 'Talleres a medida',
+  pedirPresupuesto: 'Pedir presupuesto',
+  cookiesTitulo: 'Medir las visitas',
+  cookiesTexto:
+    'Nos ayuda saber qué cursos se miran más, y para eso usaríamos Google Analytics. Si prefieres que no, la web funciona exactamente igual.',
+  cookiesAceptar: 'De acuerdo',
+  cookiesRechazar: 'No, gracias',
   experiencia: '¿Has hecho algo parecido antes?',
+  esMenor: 'La plaza es para un menor de edad',
+  esMenorAyuda: 'Entonces los datos de contacto son los tuyos, y nos dices quién es el alumno.',
+  nombreTutor: 'Nombre del padre, la madre o el tutor',
+  nombreAlumno: 'Nombre del alumno o la alumna',
+  edadAlumno: 'Edad o curso',
+  edadAlumnoAyuda: 'Por ejemplo: 9 años, o 4.º de primaria.',
   prefieroNoDecirlo: 'Prefiero no decirlo',
   nunca: 'Nunca, empiezo de cero',
   algoSuelto: 'Algo suelto, por mi cuenta',
@@ -331,7 +356,20 @@ const ca: Textos = {
   correo: 'Correu',
   opcional: '(opcional)',
   telefonoAyuda: 'Opcional, però accelera la resposta.',
+  talleres: 'Tallers a mida',
+  pedirPresupuesto: 'Demanar pressupost',
+  cookiesTitulo: 'Mesurar les visites',
+  cookiesTexto:
+    'Ens ajuda saber quins cursos es miren més, i per a això faríem servir Google Analytics. Si prefereixes que no, el web funciona exactament igual.',
+  cookiesAceptar: 'D\u2019acord',
+  cookiesRechazar: 'No, gràcies',
   experiencia: 'Has fet res semblant abans?',
+  esMenor: 'La plaça és per a un menor d\u2019edat',
+  esMenorAyuda: 'Llavors les dades de contacte són les teves, i ens dius qui és l\u2019alumne.',
+  nombreTutor: 'Nom del pare, la mare o el tutor',
+  nombreAlumno: 'Nom de l\u2019alumne o l\u2019alumna',
+  edadAlumno: 'Edat o curs',
+  edadAlumnoAyuda: 'Per exemple: 9 anys, o 4t de primària.',
   prefieroNoDecirlo: 'Prefereixo no dir-ho',
   nunca: 'Mai, començo de zero',
   algoSuelto: 'Alguna cosa solta, pel meu compte',

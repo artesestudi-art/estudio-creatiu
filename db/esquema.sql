@@ -108,3 +108,13 @@ ALTER TABLE convocatorias ADD COLUMN IF NOT EXISTS ca JSONB NOT NULL DEFAULT '{}
 
 -- Índice sobre el slug catalán: es por donde entra Google a /ca/cursos/…
 CREATE INDEX IF NOT EXISTS cursos_slug_ca ON cursos ((ca->>'slug'));
+
+-- ─────────────────── Menores de edad ───────────────────
+-- Hay cursos de primaria y secundaria: quien rellena el formulario es el
+-- padre, la madre o el tutor, y el alumno es otra persona. Sin estas columnas
+-- el estudio recibía un nombre y no sabía de quién era la plaza.
+-- `ADD COLUMN IF NOT EXISTS` es idempotente: se puede relanzar.
+
+ALTER TABLE inscripciones ADD COLUMN IF NOT EXISTS es_menor BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE inscripciones ADD COLUMN IF NOT EXISTS alumno_nombre TEXT;
+ALTER TABLE inscripciones ADD COLUMN IF NOT EXISTS alumno_edad TEXT;

@@ -640,3 +640,12 @@
     scrollbar-width: none;
   }
 }
+
+/* Con el cartel de consentimiento abierto, el flotante de WhatsApp se quita de
+   en medio: en un móvil el cartel ocupa todo el ancho de abajo y el botón se
+   queda debajo, visible a medias y sin poder pulsarse. */
+body[data-consentimiento='pendiente'] [data-flotante='whatsapp'] {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(1rem);
+}
