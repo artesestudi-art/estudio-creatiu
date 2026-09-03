@@ -97,26 +97,10 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
     talleres: contenido.talleres.lista.length > 0,
   }
 
-  /**
-   * La numeración de las secciones se calcula, no se escribe a mano.
-   *
-   * Estaba puesta como `01 —`, `02 —`… y todas las secciones son opcionales:
-   * en cuanto el estudio dejaba una vacía, la web enseñaba «02, 05, 07» con
-   * los huecos a la vista. Nadie ve un error, sencillamente parece que falta
-   * media web.
-   */
-  const visibles = [
-    hay.sobre && 'sobre',
-    hay.cursos && 'cursos',
-    hay.talleres && 'talleres',
-    hay.metodo && 'metodo',
-    hay.profesorado && 'profesorado',
-    hay.galeria && 'galeria',
-    'inscripcion',
-    hay.faq && 'faq',
-    'contacto',
-  ].filter(Boolean) as string[]
-  const num = (clave: string) => String(visibles.indexOf(clave) + 1).padStart(2, '0')
+  /* Las secciones ya no van numeradas: la etiqueta «01 — El estudio» repetía
+     palabra por palabra el titular que venía justo debajo, y el número no
+     contaba nada que el visitante necesitara. Con ella se fue también el
+     cálculo que la mantenía honesta cuando una sección se quedaba vacía. */
 
   const p = prefijo(idioma)
   const enlaces = [
@@ -271,7 +255,6 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
             <div className="contenedor relative z-10">
               <div className="grid gap-y-14 lg:grid-cols-12 lg:gap-x-10">
                 <div className="lg:col-span-5 lg:sticky lg:top-32 lg:self-start">
-                  <p className="t-etiqueta revela mb-6">{num('sobre')} — {t.elEstudio}</p>
                   {contenido.sobre.titulo && (
                     <h2
                       className="t-grande revela"
@@ -337,7 +320,6 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
         {hay.cursos && (
           <section id="cursos" className="en-tinta pt-24 md:pt-36">
             <div className="contenedor mb-16 md:mb-24">
-              <p className="t-etiqueta revela mb-6">{num('cursos')} — {t.cursos}</p>
               <div className="grid gap-8 lg:grid-cols-12">
                 <h2 className="t-grande revela lg:col-span-7">
                   {contenido.cursos.titulo || t.cursos}
@@ -386,18 +368,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                               className="object-cover"
                             />
                           </div>
-                        ) : (
-                          <div
-                            data-parallax
-                            className="absolute inset-0 flex items-end will-change-transform"
-                          >
-                            {/* Sin foto, el hueco lo llena el número del curso
-                                a tamaño de póster. Mejor eso que un icono roto. */}
-                            <span className="t-hueca font-[family-name:var(--font-display)] text-[26vh] leading-[0.75] tracking-[-0.04em] pl-[3vw] pb-[2vh]">
-                              {String(i + 1).padStart(2, '0')}
-                            </span>
-                          </div>
-                        )}
+                        ) : null}
 
                         {/* Velo inferior para que el título se lea sobre
                             cualquier foto, clara u oscura. */}
@@ -491,7 +462,6 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               ]}
             />
             <div className="contenedor relative z-10">
-              <p className="t-etiqueta revela mb-6">{num('talleres')} — {t.talleres}</p>
               <div className="mb-16 grid gap-8 lg:grid-cols-12">
                 <h2 className="t-grande revela lg:col-span-6">
                   {contenido.talleres.titulo || t.talleres}
@@ -542,7 +512,6 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               ]}
             />
             <div className="contenedor relative z-10">
-              <p className="t-etiqueta revela mb-6">{num('metodo')} — {t.comoFunciona}</p>
               <div className="mb-16 grid gap-8 lg:grid-cols-12 md:mb-24">
                 <h2 className="t-grande revela lg:col-span-6">
                   {contenido.metodo.titulo || t.comoFunciona}
@@ -593,7 +562,6 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               ]}
             />
             <div className="contenedor relative z-10">
-              <p className="t-etiqueta revela mb-6">{num('profesorado')} — {t.profesorado}</p>
               <div className="mb-16 grid gap-8 lg:grid-cols-12">
                 <h2 className="t-grande revela lg:col-span-7">
                   {contenido.profesorado.titulo || t.quienDaLasClases}
@@ -648,7 +616,6 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
         {hay.galeria && (
           <section id="galeria" className="seccion">
             <div className="contenedor">
-              <p className="t-etiqueta revela mb-6">{num('galeria')} — {t.elTaller}</p>
               <h2 className="t-grande revela mb-16 max-w-3xl">
                 {contenido.galeria.titulo || t.elTallerPorDentro}
               </h2>
@@ -707,7 +674,6 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
         <section id="inscripcion" className="en-tinta seccion">
           <div className="contenedor grid gap-y-16 lg:grid-cols-12 lg:gap-x-16">
             <div className="lg:col-span-5">
-              <p className="t-etiqueta revela mb-6">{num('inscripcion')} — {t.pedirPlaza}</p>
               <h2 className="t-grande revela">{t.pideTuPlaza}</h2>
               <p className="t-cuerpo revela mt-8">
                 {t.rellenaYConfirmamos}
@@ -742,7 +708,6 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               ]}
             />
             <div className="contenedor relative z-10">
-              <p className="t-etiqueta revela mb-6">{num('faq')} — {t.preguntasFrecuentes}</p>
               <h2 className="t-grande revela mb-16 max-w-3xl">
                 {contenido.faq.titulo || t.preguntasFrecuentes}
               </h2>
@@ -783,7 +748,6 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
           />
           <div className="contenedor relative z-10 grid gap-y-16 lg:grid-cols-12 lg:gap-x-16">
             <div className="lg:col-span-5">
-              <p className="t-etiqueta revela mb-6">{num('contacto')} — {t.contacto}</p>
               <h2 className="t-grande revela">{contenido.contacto.titulo || t.hablamos}</h2>
               {contenido.contacto.entradilla && (
                 <p className="t-cuerpo revela mt-8">{contenido.contacto.entradilla}</p>
