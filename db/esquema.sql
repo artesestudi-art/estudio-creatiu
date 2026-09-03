@@ -118,3 +118,24 @@ CREATE INDEX IF NOT EXISTS cursos_slug_ca ON cursos ((ca->>'slug'));
 ALTER TABLE inscripciones ADD COLUMN IF NOT EXISTS es_menor BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE inscripciones ADD COLUMN IF NOT EXISTS alumno_nombre TEXT;
 ALTER TABLE inscripciones ADD COLUMN IF NOT EXISTS alumno_edad TEXT;
+
+-- ─────────────────── Usuarios del panel ───────────────────
+-- Antes al panel se entraba con UNA contraseña suelta y sin nombre: ningún
+-- cambio tenía autor, y dar acceso a una profesora era darle la contraseña del
+-- dueño. Con esta tabla cada persona entra con su correo, se le puede retirar
+-- el acceso sin tocarle la contraseña a nadie más, y su sesión muere en cuanto
+-- se desactiva.
+--
+-- `fallos` y `bloqueado_hasta` no son adorno: un formulario de contraseña en
+-- internet recibe intentos automáticos desde el primer día.
+CREATE TABLE IF NOT EXISTS usuarios (
+  id              SERIAL PRIMARY KEY,
+  email           TEXT UNIQUE NOT NULL,
+  nombre          TEXT,
+  clave_hash      TEXT NOT NULL,
+  activo          BOOLEAN NOT NULL DEFAULT true,
+  creado          TIMESTAMPTZ NOT NULL DEFAULT now(),
+  ultimo_acceso   TIMESTAMPTZ,
+  fallos          INTEGER NOT NULL DEFAULT 0,
+  bloqueado_hasta TIMESTAMPTZ
+);

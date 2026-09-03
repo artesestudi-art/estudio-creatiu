@@ -40,19 +40,47 @@ npm run migrar                 # crea las tablas
 npm run dev
 ```
 
-Panel en `/admin`, con la contraseña de `ADMIN_CLAVE`.
+### Entrar al panel
+
+Al panel (`/admin`) se entra con **correo y contraseña**, y cada persona tiene
+la suya. La primera vez no hay nadie dado de alta, así que se entra con la
+contraseña de `ADMIN_CLAVE` y lo único que hay que hacer dentro es crear el
+primer usuario en **Equipo**. En cuanto existe uno, `ADMIN_CLAVE` deja de
+servir: no queda una contraseña maestra olvidada en las variables de entorno.
+
+Desde la terminal —útil para la base del cliente, donde no se quiere dejar
+`ADMIN_CLAVE` viva ni un día:
+
+```bash
+npm run usuario -- silvia@ejemplo.com "Silvia Cano"   # imprime una contraseña
+CLAVE='la que sea' npm run usuario -- otra@ejemplo.com "Nombre"
+```
+
+Ese mismo comando le pone contraseña nueva a quien ya exista. Y desde el panel,
+en **Equipo**, se da de alta a alguien, se le retira el acceso (su sesión muere
+en cuanto recargue) y cada cual se cambia la suya. **No se comparte una
+contraseña**: quien entra ahí ve los datos de los alumnos, y en los cursos de
+niños eso incluye el nombre y la edad de un menor.
 
 ### Variables
 
 | Variable | Para qué | Sin ella |
 |---|---|---|
 | `DATABASE_URL` | Neon Postgres | La web no arranca |
-| `ADMIN_CLAVE` | Entrar al panel | Nadie entra |
+| `ADMIN_CLAVE` | Solo el primer acceso, hasta crear el primer usuario | No se puede crear el primer usuario desde el navegador (queda `npm run usuario`) |
 | `ADMIN_SECRETO` | Firma la cookie de sesión (≥24 caracteres) | Nadie entra |
 | `RESEND_API_KEY` | Avisos por correo | Las peticiones **se guardan igual**, marcadas «aviso no enviado» |
 | `CORREO_REMITENTE` | Remitente del dominio verificado | Los correos caen en spam |
 | `CORREO_AVISOS` | Buzón que recibe las inscripciones | Se usa el de `data/estudio.ts` |
 | `BLOB_READ_WRITE_TOKEN` | Subir imágenes desde el panel | El panel ofrece pegar una URL en su lugar |
+
+⛔ **El store de Blob tiene que ser PÚBLICO.** Vercel recomienda «Private» al
+crearlo, y sería el error: el código sube con `access: 'public'`, y un `put`
+público contra un store privado **no sube nada y el `catch` se lo traga**. Se
+comprueba en un segundo: la URL de una imagen subida tiene que llevar
+`.public.blob.vercel-storage.com` —que es además el patrón que
+`next.config.ts` deja pasar a `next/image`—. El del estudio es `artes-fotos`,
+región **fra1**, en la cuenta de Vercel de la clienta (`estudi`).
 
 `ADMIN_SECRETO` se genera con `openssl rand -hex 32`.
 
@@ -75,18 +103,20 @@ Ni Neon ni Resend cuelgan de las cuentas de la agencia.
 
 ### ⛔ La base de pruebas NO se copia a producción
 
-El sandbox de desarrollo contiene un curso inventado («Cerámica: torno básico»,
-impartido por una «Profesora de prueba») que existe solo para poder enseñar el
-panel. Si la producción se monta volcando esta base, ese curso falso acaba
-publicado con nombre de profesora incluido.
+El sandbox llevó cursos inventados para poder enseñar el panel. Si la
+producción se monta volcando esta base, esos cursos falsos acaban publicados.
 
-La producción se crea **vacía**:
+La producción se crea **vacía** y luego se le carga lo real:
 
 ```bash
-DATABASE_URL=<la del cliente> node scripts/migrar.mjs
+DATABASE_URL=<la del cliente> node scripts/migrar.mjs         # las tablas
+DATABASE_URL=<la del cliente> node scripts/cargar-cursos.mjs  # los 5 cursos de Silvia
+DATABASE_URL=<la del cliente> node scripts/usuario.mjs silvia@… "Silvia Cano"
 ```
 
-y el cliente mete sus cursos desde el panel. Nunca un `pg_dump` del sandbox.
+Nunca un `pg_dump` del sandbox. `cargar-cursos.mjs` es idempotente y trae el
+catálogo real (el del Excel del 03/09/2026), así que no hace falta copiar nada:
+en cuanto Silvia empiece a editar desde el panel, ese script deja de usarse.
 
 ### Ramas de Neon
 

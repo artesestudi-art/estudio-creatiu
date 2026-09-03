@@ -43,3 +43,6 @@ next-env.d.ts
 # entorno
 .env.local
 .env*.local
+
+# Capturas de las verificaciones: 35 MB de PNG que no son código.
+_capturas/

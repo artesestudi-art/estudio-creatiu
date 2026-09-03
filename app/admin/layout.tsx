@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { haySesion } from '@/lib/sesion'
+import { ID_ARRANQUE, sinUsuarios, usuarioActual } from '@/lib/sesion'
 import { ESTUDIO } from '@/data/estudio'
 import Login from './Login'
 import { salir } from './acciones'
@@ -18,6 +18,7 @@ const SECCIONES = [
   { href: '/admin/cursos', texto: 'Cursos' },
   { href: '/admin/portada', texto: 'Contenidos' },
   { href: '/admin/suscriptores', texto: 'Newsletter' },
+  { href: '/admin/equipo', texto: 'Equipo' },
 ]
 
 export default async function LayoutPanel({ children }: { children: React.ReactNode }) {
@@ -26,10 +27,11 @@ export default async function LayoutPanel({ children }: { children: React.ReactN
   const nombre = ESTUDIO.nombre === 'PENDIENTE' ? null : ESTUDIO.nombre
   const titulo = nombre ? `Panel de ${nombre}` : 'Panel del estudio'
 
-  if (!(await haySesion())) {
+  const usuario = await usuarioActual()
+  if (!usuario) {
     return (
       <div className="min-h-screen bg-neutral-50 text-neutral-900">
-        <Login titulo={titulo} />
+        <Login titulo={titulo} arranque={await sinUsuarios()} />
       </div>
     )
   }
@@ -52,13 +54,29 @@ export default async function LayoutPanel({ children }: { children: React.ReactN
               </Link>
             ))}
           </nav>
-          <form action={salir} className="ml-auto">
+          <span className="ml-auto text-[13px] text-neutral-500">
+            {usuario.nombre || usuario.email}
+          </span>
+          <form action={salir}>
             <button type="submit" className="text-[14px] text-neutral-500 hover:text-neutral-900">
               Salir
             </button>
           </form>
         </div>
       </header>
+      {/* Mientras se entre con la contraseña de instalación, el aviso no se
+          quita: es la única puerta del panel que no tiene dueño ni nombre. */}
+      {usuario.id === ID_ARRANQUE && (
+        <div className="border-b border-amber-200 bg-amber-50">
+          <p className="mx-auto max-w-6xl px-5 py-2.5 text-[13.5px] text-amber-900">
+            Has entrado con la contraseña de instalación.{' '}
+            <Link href="/admin/equipo" className="font-semibold underline">
+              Crea tu usuario
+            </Link>{' '}
+            con tu correo: al hacerlo, esta puerta se cierra sola.
+          </p>
+        </div>
+      )}
       <main className="mx-auto max-w-6xl px-5 py-8">{children}</main>
     </div>
   )

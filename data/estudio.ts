@@ -66,9 +66,13 @@ export const ESTUDIO: Estudio = {
 
   /** Frase de una línea. Debe decir el OFICIO, no la marca: un titular que
    *  solo repite el nombre deja la web muda para Google y para el visitante. */
-  titular: 'Vidrieras emplomadas, dibujo, costura y manualidades en Artés',
+  /* Antes ponía «Vidrieras emplomadas, dibujo, costura y manualidades»: la
+     vidriera es UNA técnica dentro de Art-ístico, no un curso, y el título de
+     la portada se dejaba fuera la cerámica, que sí es un curso entero. Esto
+     dice lo que el estudio imparte de verdad, mirando el catálogo. */
+  titular: 'Cursos de cerámica, pintura, dibujo y costura en Artés',
   descripcion:
-    'Taller de vidrieras emplomadas, dibujo, costura y manualidades en Artés. Grupos para niños y para adultos, con clase de prueba gratuita.',
+    'Taller de artes en Artés: cerámica, pintura, dibujo y costura, de octubre a junio y un día a la semana. Grupos para niños y para adultos, con clase de prueba gratuita.',
 
   contacto: {
     telefono: '620 297 425',

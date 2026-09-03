@@ -98,6 +98,19 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
 
   if (!palabras.length) return null
 
+  /* El tamaño lo manda la palabra MÁS LARGA, y las tres van a la misma medida:
+     es un cartel, no tres carteles. Sin esto, `19vw` era ciego a lo que
+     escribiera el estudio en el panel y «Multidisciplinar» medía 403 px en una
+     pantalla de 390 —se salía por los dos lados—, mientras que «Costura» se
+     quedaba corta. El 0.38 es el ancho de un carácter de la geométrica medido
+     en cuerpos (0.34 real, más margen): si mañana se cambia la fuente de
+     titulares, este número se vuelve a medir. Y el ancho disponible es 84vw,
+     no 100: las palabras no están centradas, cada una se posa desplazada un
+     tercio de cuerpo, y la primera se salía por la izquierda con el hueco
+     justo. */
+  const largo = Math.max(...palabras.map((d) => d.length))
+  const cuerpo = `min(clamp(3.6rem, 19vw, 15rem), calc(84vw / ${largo} / 0.38))`
+
   return (
     <section
       ref={raiz}
@@ -141,8 +154,9 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
                    trozo de letra, mida lo que mida la pantalla. */
                 left: `calc(50% + ${desvio * 0.34}em)`,
                 top: `calc(50% + ${desvio * 0.46}em)`,
+                fontSize: cuerpo,
               }}
-              className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-[family-name:var(--font-display)] text-[clamp(3.6rem,19vw,15rem)] font-medium leading-none tracking-[-0.03em]"
+              className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-[family-name:var(--font-display)] font-medium leading-none tracking-[-0.03em]"
             >
               {d}
             </span>
