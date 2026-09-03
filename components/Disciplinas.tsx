@@ -19,23 +19,25 @@ const COLORES = [
 ]
 
 /**
- * Las disciplinas del estudio, mezclándose como pigmentos.
+ * Las disciplinas del estudio, a tamaño de cartel.
  *
  * Antes esto era una cinta corriendo en bucle: una franja estrecha con las
- * palabras pequeñas, el recurso que tiene media internet. Aquí las palabras
- * entran a tamaño de cartel, cada una de un color del logotipo, y acaban
- * apiladas con `mix-blend-mode: multiply`: **donde dos se cruzan, los dos
- * colores se multiplican y sale un tercero**. Es literalmente lo que pasa en
- * un taller cuando se superponen dos capas de pigmento, y es lo que hace que
- * la sección no se pueda copiar de una plantilla: el color de los cruces no
- * está escrito en ningún sitio, sale de la mezcla.
+ * palabras pequeñas, el recurso que tiene media internet.
  *
- * No quedan del todo encajadas: cada una se posa un poco desplazada de la
- * anterior, como una serigrafía mal registrada. Así se siguen leyendo las tres
- * palabras y aun así se ven los cruces.
+ * Después, las palabras acababan **superpuestas** con `mix-blend-mode:
+ * multiply`, para que donde se cruzaran saliera un color que no estaba en el
+ * kit —la mezcla de pigmentos de un taller—. La idea era buena y el resultado
+ * no: con una palabra larga encima de otra no se leía ninguna de las dos, y lo
+ * que se veía era un enredo. **Un recurso que estropea la lectura no es un
+ * recurso, es un fallo con coartada.**
+ *
+ * Ahora cada disciplina va en su renglón, cada una de un color del logotipo, y
+ * cada renglón entra un poco más adentro que el anterior: la escalera es lo
+ * que hace que tres palabras apiladas se lean como una composición y no como
+ * una lista. **Ninguna pisa a ninguna.**
  *
  * El movimiento va atado al scroll (`scrub`), no a un temporizador: quien sube
- * las deshace y quien baja las junta. Nadie se queda esperando a que termine
+ * las deshace y quien baja las coloca. Nadie se queda esperando a que termine
  * una animación.
  */
 export default function Disciplinas({ palabras }: { palabras: string[] }) {
@@ -53,8 +55,6 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
       const items = gsap.utils.toArray<HTMLElement>('[data-palabra]')
       if (!items.length) return
 
-      const centro = (items.length - 1) / 2
-
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: el,
@@ -69,21 +69,21 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
         tl.fromTo(
           item,
           {
-            /* El desplazamiento de reposo va en `left`/`top`, no aquí: así el
-               `transform` queda libre para GSAP y, sin JavaScript o con
-               movimiento reducido, las palabras ya están donde deben. */
-            xPercent: -50,
-            yPercent: -50,
-            x: `${desde * 78}vw`,
-            y: `${desde * 12}vh`,
-            rotate: desde * 9,
+            /* Entra por un lado u otro, alternando. El sitio de reposo lo pone
+               el flujo del documento, así que el `transform` queda libre para
+               GSAP: sin JavaScript o con movimiento reducido, las palabras ya
+               están donde deben. */
+            x: `${desde * 70}vw`,
+            rotate: desde * 5,
             opacity: 0,
-            scale: 0.86,
+            scale: 0.92,
           },
           {
+            /* Rectas: cualquier giro en reposo acerca los extremos de un
+               renglón al de al lado, y volveríamos a tener letras encima de
+               letras. */
             x: 0,
-            y: 0,
-            rotate: (i - centro) * -1.6,
+            rotate: 0,
             opacity: 1,
             scale: 1,
             ease: 'none',
@@ -104,12 +104,9 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
      pantalla de 390 —se salía por los dos lados—, mientras que «Costura» se
      quedaba corta. El 0.38 es el ancho de un carácter de la geométrica medido
      en cuerpos (0.34 real, más margen): si mañana se cambia la fuente de
-     titulares, este número se vuelve a medir. Y el ancho disponible es 84vw,
-     no 100: las palabras no están centradas, cada una se posa desplazada un
-     tercio de cuerpo, y la primera se salía por la izquierda con el hueco
-     justo. */
+     titulares, este número se vuelve a medir. */
   const largo = Math.max(...palabras.map((d) => d.length))
-  const cuerpo = `min(clamp(3.6rem, 19vw, 15rem), calc(84vw / ${largo} / 0.38))`
+  const cuerpo = `min(clamp(3.2rem, 16vw, 12rem), calc(88vw / ${largo} / 0.38))`
 
   return (
     <section
@@ -130,38 +127,27 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
 
       <div
         aria-hidden
-        className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden"
+        className="sticky top-0 flex h-[100svh] items-center overflow-hidden"
       >
-        {palabras.map((d, i) => {
-          const desvio = i - (palabras.length - 1) / 2
-          return (
+        <div className="contenedor">
+          {palabras.map((d, i) => (
             <span
               key={d}
               data-palabra
               style={{
                 color: COLORES[i % COLORES.length],
-                /* `multiply` sobre el crema: el papel no se ensucia y el color
-                   de los cruces sale de las dos palabras, no de un tercero
-                   elegido a mano. */
-                mixBlendMode: 'multiply',
-                /* El reposo NO es el centro exacto: cada palabra se posa un
-                   poco desplazada, como una serigrafía mal registrada, para
-                   que se lean las tres y aun así se vean los cruces.
-                   El desplazamiento va en `em`, no en `vw`/`vh`: medido contra
-                   la pantalla, en un móvil las palabras se separaban más que
-                   su propia altura y quedaban en tres renglones sueltos, sin
-                   cruce y sin mezcla. En `em` el desajuste es siempre el mismo
-                   trozo de letra, mida lo que mida la pantalla. */
-                left: `calc(50% + ${desvio * 0.34}em)`,
-                top: `calc(50% + ${desvio * 0.46}em)`,
                 fontSize: cuerpo,
+                /* Cada renglón entra un poco más adentro que el anterior: la
+                   escalera es lo que hace que tres palabras apiladas se lean
+                   como una composición y no como una lista. */
+                marginLeft: `${i * 6}%`,
               }}
-              className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-[family-name:var(--font-display)] font-medium leading-none tracking-[-0.03em]"
+              className="block whitespace-nowrap font-[family-name:var(--font-display)] font-medium leading-[0.92] tracking-[-0.03em]"
             >
               {d}
             </span>
-          )
-        })}
+          ))}
+        </div>
       </div>
     </section>
   )
