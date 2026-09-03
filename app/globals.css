@@ -203,12 +203,20 @@
 
   /* ─────────────────────── Tipografía ─────────────────────── */
 
-  /* El titular de portada. `clamp` con vw para que llene el ancho de verdad:
-     una tipografía gigante que se queda en 40 px en el portátil no es gigante. */
+  /**
+   * El titular de portada.
+   *
+   * Estaba en `clamp(3.2rem, 11.5vw, 12rem)`, medida pensada para un titular
+   * de tres palabras. Con una frase que dijera el oficio salían **cuatro
+   * renglones de 165 px**: la pantalla entera ocupada por el titular, la
+   * entradilla asomando y los botones por debajo del pliegue. Ahora el techo
+   * son 8 rem y el titular se escribe corto: sigue siendo un cartel y cabe con
+   * la llamada a la acción dentro de la misma pantalla.
+   */
   .t-gigante {
     font-family: var(--font-display);
-    font-size: clamp(3.2rem, 11.5vw, 12rem);
-    line-height: 0.9;
+    font-size: clamp(2.9rem, 8.5vw, 8rem);
+    line-height: 0.92;
     /* Menos negativo que con la serif: en una geométrica los redondeles ya
        vienen juntos y a -0.045em la «o» y la «n» se tocan. */
     letter-spacing: -0.03em;
@@ -256,7 +264,7 @@
 
     /* El bloque de entradilla y botones, más pegado al titular y en una sola
        fila: apilados, en una pantalla de 320 px de alto el botón cae fuera. */
-    .portada .mt-12 {
+    .portada .portada-acciones {
       margin-top: 1.25rem !important;
       flex-direction: row !important;
       /* Arriba y no abajo: la entradilla se parte en muchas líneas en una
@@ -284,6 +292,165 @@
     font-size: clamp(2.4rem, 7vw, 5.5rem);
     line-height: 0.98;
     letter-spacing: -0.025em;
+  }
+
+  /**
+   * Las disciplinas, debajo del titular.
+   *
+   * Es lo que de verdad dice a qué se dedica el taller, así que no es un pie
+   * de foto: va a cuerpo de subtítulo y en la tipografía de titulares. Los
+   * separadores llevan color del kit —son lo único de la línea que no es
+   * texto— y por eso están apagados, para que no compitan con las palabras.
+   */
+
+  /**
+   * ─────────────── Las manchas de la portada ───────────────
+   *
+   * La posición vive aquí y no en el componente porque cambia con la medida de
+   * la pantalla, y un estilo en línea no entiende de `@media`. En el móvil las
+   * manchas tienen que ser MÁS grandes en proporción: con las medidas del
+   * escritorio se quedaban enteras fuera del lienzo y la portada salía sin una
+   * gota de color.
+   *
+   * La regla que no se toca: el texto de cuerpo nunca las pisa (sobre una
+   * mancha se queda en 3,8–4,3:1, por debajo del 4,5 que necesita), y los
+   * cruces de dos manchas —3,3:1— van donde no hay ni una letra.
+   */
+  .mancha {
+    position: absolute;
+  }
+
+  .mancha-mostaza {
+    top: -8%;
+    right: -22%;
+    width: 78vw;
+    opacity: 0.55;
+  }
+
+  /* El salmón y la malva son las dos que se cruzan con otra: en el móvil no
+     hay ancho para que el cruce se lea y solo ensucian. */
+  .mancha-salmon {
+    display: none;
+    top: 20%;
+    right: 6%;
+    width: 26vw;
+    opacity: 0.5;
+  }
+
+  .mancha-azul {
+    bottom: -12%;
+    left: -30%;
+    width: 76vw;
+    opacity: 0.45;
+  }
+
+  .mancha-malva {
+    display: none;
+    bottom: -26%;
+    left: 14%;
+    width: 28vw;
+    opacity: 0.45;
+  }
+
+  @media (min-width: 768px) {
+    .mancha-mostaza {
+      top: -22%;
+      right: -10%;
+      width: min(44vw, 620px);
+    }
+
+    .mancha-azul {
+      bottom: -40%;
+      left: -12%;
+      width: min(42vw, 560px);
+    }
+
+    .mancha-salmon {
+      display: block;
+      width: min(26vw, 340px);
+    }
+
+    .mancha-malva {
+      display: block;
+      width: min(28vw, 380px);
+    }
+  }
+
+  /**
+   * Móvil tumbado: las manchas de abajo se van.
+   *
+   * Son cuadradas y medidas en `vw`, así que en una pantalla de 390 px de alto
+   * salen MÁS ALTAS que la sección entera: subían hasta la entradilla y el
+   * texto de cuerpo acababa sobre el cruce de dos manchas, 3,3:1. Arriba a la
+   * derecha no hay ni una letra, así que la mostaza y el salmón se quedan,
+   * medidas en `vh` para que dependan de lo que aquí escasea: el alto.
+   *
+   * Va DESPUÉS del bloque de escritorio a propósito: con el mismo peso de
+   * selector, manda la última regla.
+   */
+  @media (max-height: 540px) and (orientation: landscape) {
+    .mancha-azul,
+    .mancha-malva {
+      display: none;
+    }
+
+    .mancha-mostaza {
+      top: -18%;
+      right: -6%;
+      width: 54vh;
+    }
+
+    .mancha-salmon {
+      top: 10%;
+      right: 4%;
+      width: 30vh;
+    }
+
+    /* Y las estrellas de la portada también: en 390 px de alto todo el lienzo
+       es texto, y una estrella rozando la última línea se lee como suciedad. */
+    .portada [data-estrella] {
+      display: none;
+    }
+  }
+
+  .t-disciplinas {
+    font-family: var(--font-display);
+    font-size: clamp(1.15rem, 2.1vw, 1.75rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--color-tinta-80);
+    /* Sin tope de medida: en escritorio va de una tirada. */
+  }
+
+  /**
+   * Una fila que envuelve, no un párrafo.
+   *
+   * Cada disciplina viaja pegada a su separador para que ningún renglón empiece
+   * por un «·» suelto —se lee como una errata—, y al no quedar espacios entre
+   * los trozos hace falta que sea `flex` para que haya por dónde partir: como
+   * texto corrido se salía por el borde derecho en el móvil.
+   */
+  .t-disciplinas {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.45em;
+    row-gap: 0.15em;
+  }
+
+  .t-disciplinas > span {
+    white-space: nowrap;
+  }
+
+  .t-disciplinas .separador {
+    color: var(--color-marca-terracota);
+  }
+
+  .en-tinta .t-disciplinas {
+    color: rgba(249, 245, 215, 0.82);
+  }
+
+  .en-tinta .t-disciplinas .separador {
+    color: var(--color-marca-mostaza);
   }
 
   .t-media {

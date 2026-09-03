@@ -40,10 +40,13 @@ const VACIO = {
 
 const ES = {
   hero: {
-    antetitulo: 'Taller de artes · Artés',
-    titular: 'Cerámica, pintura y costura en un taller de Artés',
+    /* El campo se pinta DEBAJO del titular, como línea de disciplinas: es lo
+       que dice el oficio, y ahí es donde se lee. Las cinco salen de los textos
+       de los propios cursos, ninguna está inventada. */
+    antetitulo: 'Cerámica · Pintura · Dibujo · Costura · Manualidades',
+    titular: 'Aprende con las manos',
     entradilla:
-      'Cursos de octubre a junio, un día a la semana, en grupos de seis a diez personas. Para niños desde primaria y para adultos que empiezan de cero. La primera clase es de prueba y no se paga.',
+      'De octubre a junio, un día a la semana, en grupos de seis a diez personas. La primera clase es de prueba y no se paga.',
     cta: 'Ver los cursos',
     imagen: '',
     imagenAlt: '',
@@ -153,10 +156,10 @@ const ES = {
 
 const CA = {
   hero: {
-    antetitulo: "Taller d'arts · Artés",
-    titular: 'Ceràmica, pintura i costura en un taller a Artés',
+    antetitulo: 'Ceràmica · Pintura · Dibuix · Costura · Manualitats',
+    titular: 'Aprèn amb les mans',
     entradilla:
-      "Cursos d'octubre a juny, un dia a la setmana, en grups de sis a deu persones. Per a infants des de primària i per a adults que comencen de zero. La primera classe és de prova i no es paga.",
+      "D'octubre a juny, un dia a la setmana, en grups de sis a deu persones. La primera classe és de prova i no es paga.",
     cta: 'Veure els cursos',
     imagen: '',
     imagenAlt: '',

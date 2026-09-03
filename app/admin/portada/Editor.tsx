@@ -64,7 +64,14 @@ export default function Editor({
 
       {/* ───────── Portada ───────── */}
       <Bloque titulo="Lo primero que se ve">
-        <Campo etiqueta="Antetítulo" ayuda="Una línea corta encima del titular. Opcional.">
+        {/* El campo se llama `antetitulo` por herencia y ahora se pinta DEBAJO
+            del titular, como la línea de disciplinas. El nombre interno no se
+            cambia para no romper el contenido ya guardado; lo que ve el cliente
+            sí dice lo que es. */}
+        <Campo
+          etiqueta="Disciplinas"
+          ayuda="Se pintan debajo del titular, separadas por «·». Ej.: Cerámica · Pintura · Costura."
+        >
           <input
             value={c.hero.antetitulo}
             onChange={(e) => cambiar('hero', { antetitulo: e.target.value })}

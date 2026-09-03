@@ -16,6 +16,7 @@ import Newsletter from '@/components/Newsletter'
 import BotonWhatsApp from '@/components/BotonWhatsApp'
 import Disciplinas from '@/components/Disciplinas'
 import Estrellas from '@/components/Estrellas'
+import Manchas from '@/components/Manchas'
 
 /**
  * Las cuatro manchas del kit de marca, en rotación por ficha de curso.
@@ -81,6 +82,9 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
   )
 
   const nombre = real(ESTUDIO.nombre) ?? 'Estudio'
+  /* La portada cambia de piel entera según haya foto o no: fondo, cabecera,
+     color del texto y decoración. Se decide una vez y no en cinco sitios. */
+  const conFoto = Boolean(contenido.hero.imagen)
 
   const hay = {
     sobre: hayAlgo(contenido.sobre),
@@ -155,13 +159,34 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
         enlaces={enlaces}
         telefono={real(ESTUDIO.contacto.telefono)}
         idioma={idioma}
-        invertida={!contenido.hero.imagen}
+        invertida={conFoto}
       />
 
       <main id="contenido">
         {/* ════════════ Portada ════════════ */}
-        <section className="portada en-tinta relative flex min-h-[100dvh] flex-col justify-end overflow-hidden pb-12 pt-32 md:pb-16">
-          {contenido.hero.imagen && (
+        {/**
+         * Un cartel de taller, no un muro de letras.
+         *
+         * Antes esto era el titular a 11,5vw sobre marino a sangre: con una
+         * frase larga salían cuatro renglones de 165 px que se comían la
+         * pantalla entera y dejaban los botones por debajo del pliegue. Ahora
+         * el titular es corto, el oficio lo dicen las disciplinas debajo —que
+         * es donde se leen— y todo cabe en una pantalla.
+         *
+         * El fondo es el crema del kit con las manchas de la lámina del
+         * cliente: el estudio no tiene fotos, así que la imagen sale de su
+         * propia marca en vez de una foto de banco que no es su taller.
+         *
+         * Si algún día sube una foto de portada desde el panel, manda ella y
+         * la sección vuelve a vestirse de tinta: es la única forma de que una
+         * foto de taller se lea encima.
+         */}
+        <section
+          className={`portada relative flex min-h-[100dvh] flex-col justify-center overflow-hidden pb-14 pt-32 md:pb-20 ${
+            conFoto ? 'en-tinta' : 'bg-[var(--color-papel)]'
+          }`}
+        >
+          {conFoto ? (
             <>
               <Image
                 src={contenido.hero.imagen}
@@ -173,22 +198,48 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-tinta)] via-[var(--color-tinta)]/45 to-transparent" />
             </>
+          ) : (
+            <>
+              <Manchas />
+              <Estrellas
+                estrellas={[
+                  /* Todas a la derecha del titular o por debajo de los botones:
+                     ninguna cae sobre una línea de texto. */
+                  { y: '16%', x: '72%', tam: 30, color: 'var(--color-marca-rosa)', deriva: 60 },
+                  { y: '88%', x: '52%', tam: 40, color: 'var(--color-marca-dorado)', variante: 2, deriva: -70 },
+                  { y: '46%', x: '90%', tam: 22, color: 'var(--color-marca-terracota)', deriva: -40 },
+                ]}
+              />
+            </>
           )}
 
-          <div className="contenedor relative">
-            {contenido.hero.antetitulo && (
-              <p className="t-etiqueta revela mb-8">{contenido.hero.antetitulo}</p>
-            )}
-
-            <h1 className="t-gigante revela" style={{ '--retraso': '80ms' } as React.CSSProperties}>
+          <div className="contenedor relative z-10">
+            <h1
+              className="t-gigante revela max-w-[13ch]"
+              style={{ '--retraso': '40ms' } as React.CSSProperties}
+            >
               {contenido.hero.titular || nombre}
             </h1>
 
-            <div className="mt-12 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
+            {contenido.hero.antetitulo && (
+              <p
+                className="t-disciplinas revela mt-8"
+                style={{ '--retraso': '140ms' } as React.CSSProperties}
+              >
+                {contenido.hero.antetitulo.split('·').map((palabra, i, todas) => (
+                  <span key={palabra}>
+                    {palabra.trim()}
+                    {i < todas.length - 1 && <span className="separador"> ·</span>}
+                  </span>
+                ))}
+              </p>
+            )}
+
+            <div className="portada-acciones mt-14 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
               {contenido.hero.entradilla && (
                 <p
-                  className="t-cuerpo revela"
-                  style={{ '--retraso': '180ms' } as React.CSSProperties}
+                  className="t-cuerpo revela max-w-[46ch]"
+                  style={{ '--retraso': '220ms' } as React.CSSProperties}
                 >
                   {contenido.hero.entradilla}
                 </p>
@@ -196,7 +247,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
 
               <div
                 className="revela flex shrink-0 flex-wrap gap-3"
-                style={{ '--retraso': '260ms' } as React.CSSProperties}
+                style={{ '--retraso': '300ms' } as React.CSSProperties}
               >
                 <Link
                   href={hay.cursos ? `${p}/#cursos` : `${p}/#inscripcion`}
@@ -204,7 +255,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                 >
                   {contenido.hero.cta || t.verLosCursos}
                 </Link>
-                <Link href={`${p}/#inscripcion`} className="boton boton-linea border-white/25">
+                <Link href={`${p}/#inscripcion`} className="boton boton-linea">
                   {t.pedirPlaza}
                 </Link>
               </div>
