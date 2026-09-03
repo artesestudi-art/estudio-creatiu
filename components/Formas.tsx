@@ -27,6 +27,10 @@
  * la posición están en `globals.css` porque cambian con la pantalla; la
  * composición va en un `viewBox` de 100×80 y viaja entera.
  *
+ * El giro es una animación de CSS sobre los cuatro sectores, no sobre el SVG
+ * entero: la estrella y el aro se quedan quietos, y es el contraste entre lo
+ * que gira y lo que no lo que hace que el movimiento se lea.
+ *
  * Sin JavaScript.
  */
 
@@ -69,15 +73,21 @@ export default function Formas() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {SECTORES.map((s) => (
-        <path
-          key={s.color}
-          d={sector(s.desde, s.hasta, 28)}
-          stroke={s.color}
-          strokeWidth="11"
-          strokeLinecap="butt"
-        />
-      ))}
+      {/* La rueda gira. Despacio: una vuelta cada 48 segundos, lo justo para
+          que quien se queda leyendo note que la página está viva y que a nadie
+          le baile el ojo mientras lee el titular. Quien pide menos movimiento
+          la ve quieta —la composición no depende del giro para funcionar—. */}
+      <g className="rueda-gira">
+        {SECTORES.map((s) => (
+          <path
+            key={s.color}
+            d={sector(s.desde, s.hasta, 28)}
+            stroke={s.color}
+            strokeWidth="11"
+            strokeLinecap="butt"
+          />
+        ))}
+      </g>
 
       {/* El aro interior, de línea fina: es lo que convierte cuatro trozos de
           color en una rueda, y de paso mete el dibujo —la única disciplina que

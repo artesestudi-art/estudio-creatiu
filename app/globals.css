@@ -319,6 +319,35 @@
    * el texto de cuerpo se queda en 3,8–4,3:1 —por debajo del 4,5 que necesita—
    * y sobre el cruce de dos, en 3,3:1.
    */
+  /**
+   * La rueda de color, girando.
+   *
+   * `transform-box: view-box` es obligatorio: sin él, el origen del giro es la
+   * esquina del SVG y la rueda no gira sobre sí misma, sale despedida en
+   * círculos. El centro va en las mismas unidades del `viewBox`.
+   *
+   * 48 segundos por vuelta: a esa velocidad no distrae de la lectura del
+   * titular y aun así se nota que la página respira. Y `linear`, porque una
+   * rueda que acelera y frena parece que se ha atascado.
+   */
+  .rueda-gira {
+    transform-box: view-box;
+    transform-origin: 62px 39px;
+    animation: rueda-gira 48s linear infinite;
+  }
+
+  @keyframes rueda-gira {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rueda-gira {
+      animation: none;
+    }
+  }
+
   .formas-grupo {
     position: absolute;
     pointer-events: none;
