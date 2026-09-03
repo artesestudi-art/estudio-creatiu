@@ -16,7 +16,7 @@ import Newsletter from '@/components/Newsletter'
 import BotonWhatsApp from '@/components/BotonWhatsApp'
 import Disciplinas from '@/components/Disciplinas'
 import Estrellas from '@/components/Estrellas'
-import Manchas from '@/components/Manchas'
+import Formas from '@/components/Formas'
 
 /**
  * Las cuatro manchas del kit de marca, en rotación por ficha de curso.
@@ -199,18 +199,10 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-tinta)] via-[var(--color-tinta)]/45 to-transparent" />
             </>
           ) : (
-            <>
-              <Manchas />
-              <Estrellas
-                estrellas={[
-                  /* Todas a la derecha del titular o por debajo de los botones:
-                     ninguna cae sobre una línea de texto. */
-                  { y: '16%', x: '72%', tam: 30, color: 'var(--color-marca-rosa)', deriva: 60 },
-                  { y: '88%', x: '52%', tam: 40, color: 'var(--color-marca-dorado)', variante: 2, deriva: -70 },
-                  { y: '46%', x: '90%', tam: 22, color: 'var(--color-marca-terracota)', deriva: -40 },
-                ]}
-              />
-            </>
+            /* Solo la composición: las estrellas sueltas de `Estrellas` se
+               montaban encima de los sectores de la rueda, y la estrella de la
+               marca ya está dentro de la composición, a tamaño de verdad. */
+            <Formas />
           )}
 
           <div className="contenedor relative z-10">

@@ -304,7 +304,7 @@
    */
 
   /**
-   * ─────────────── Las manchas de la portada ───────────────
+   * ─────────────── La composición de la portada ───────────────
    *
    * Van en GRUPO, y el grupo se coloca aquí: dentro, cada mancha va en
    * porcentaje del grupo, así que mover el grupo mueve la composición entera
@@ -319,28 +319,23 @@
    * el texto de cuerpo se queda en 3,8–4,3:1 —por debajo del 4,5 que necesita—
    * y sobre el cruce de dos, en 3,3:1.
    */
-  .manchas-grupo {
+  .formas-grupo {
     position: absolute;
     pointer-events: none;
     /* Encima del titular queda el hueco libre en el móvil: el texto empieza
        más abajo y la cabecera acaba más arriba. */
     top: 7%;
-    right: 4%;
-    width: 62vw;
-    aspect-ratio: 5 / 4;
-  }
-
-  .mancha {
-    position: absolute;
+    right: 5%;
+    width: 58vw;
   }
 
   @media (min-width: 768px) {
     /* En escritorio el hueco está a la derecha del titular, que ocupa poco más
        de media pantalla. El grupo acaba por encima de los botones. */
-    .manchas-grupo {
-      top: 11%;
-      right: 3%;
-      width: min(44vw, 600px);
+    .formas-grupo {
+      top: 12%;
+      right: 4%;
+      width: min(42vw, 560px);
     }
   }
 
@@ -353,10 +348,10 @@
    * mismo peso de selector, manda la última regla.
    */
   @media (max-height: 540px) and (orientation: landscape) {
-    .manchas-grupo {
-      top: 13%;
-      right: 2%;
-      width: 36vh;
+    .formas-grupo {
+      top: 12%;
+      right: 3%;
+      width: 40vh;
     }
 
     /* Y las estrellas de la portada se van: en 390 px de alto todo el lienzo
