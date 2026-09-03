@@ -306,107 +306,60 @@
   /**
    * ─────────────── Las manchas de la portada ───────────────
    *
-   * La posición vive aquí y no en el componente porque cambia con la medida de
-   * la pantalla, y un estilo en línea no entiende de `@media`. En el móvil las
-   * manchas tienen que ser MÁS grandes en proporción: con las medidas del
-   * escritorio se quedaban enteras fuera del lienzo y la portada salía sin una
-   * gota de color.
+   * Van en GRUPO, y el grupo se coloca aquí: dentro, cada mancha va en
+   * porcentaje del grupo, así que mover el grupo mueve la composición entera
+   * sin recolocar cuatro cosas a mano.
    *
-   * La regla que no se toca: el texto de cuerpo nunca las pisa (sobre una
-   * mancha se queda en 3,8–4,3:1, por debajo del 4,5 que necesita), y los
-   * cruces de dos manchas —3,3:1— van donde no hay ni una letra.
+   * El grupo cabe siempre dentro de la sección —nada de posiciones negativas—
+   * porque las manchas tienen que verse **enteras**: asomando por un borde, el
+   * `overflow` las corta en recto y quedan medias cúpulas con la base plana,
+   * que parecen un fallo y no una mancha de pintura.
+   *
+   * Y va donde no hay texto. Lo manda el contraste, medido: sobre una mancha
+   * el texto de cuerpo se queda en 3,8–4,3:1 —por debajo del 4,5 que necesita—
+   * y sobre el cruce de dos, en 3,3:1.
    */
+  .manchas-grupo {
+    position: absolute;
+    pointer-events: none;
+    /* Encima del titular queda el hueco libre en el móvil: el texto empieza
+       más abajo y la cabecera acaba más arriba. */
+    top: 7%;
+    right: 4%;
+    width: 62vw;
+    aspect-ratio: 5 / 4;
+  }
+
   .mancha {
     position: absolute;
   }
 
-  .mancha-mostaza {
-    top: -8%;
-    right: -22%;
-    width: 78vw;
-    opacity: 0.55;
-  }
-
-  /* El salmón y la malva son las dos que se cruzan con otra: en el móvil no
-     hay ancho para que el cruce se lea y solo ensucian. */
-  .mancha-salmon {
-    display: none;
-    top: 20%;
-    right: 6%;
-    width: 26vw;
-    opacity: 0.5;
-  }
-
-  .mancha-azul {
-    bottom: -12%;
-    left: -30%;
-    width: 76vw;
-    opacity: 0.45;
-  }
-
-  .mancha-malva {
-    display: none;
-    bottom: -26%;
-    left: 14%;
-    width: 28vw;
-    opacity: 0.45;
-  }
-
   @media (min-width: 768px) {
-    .mancha-mostaza {
-      top: -22%;
-      right: -10%;
-      width: min(44vw, 620px);
-    }
-
-    .mancha-azul {
-      bottom: -40%;
-      left: -12%;
-      width: min(42vw, 560px);
-    }
-
-    .mancha-salmon {
-      display: block;
-      width: min(26vw, 340px);
-    }
-
-    .mancha-malva {
-      display: block;
-      width: min(28vw, 380px);
+    /* En escritorio el hueco está a la derecha del titular, que ocupa poco más
+       de media pantalla. El grupo acaba por encima de los botones. */
+    .manchas-grupo {
+      top: 11%;
+      right: 3%;
+      width: min(44vw, 600px);
     }
   }
 
   /**
-   * Móvil tumbado: las manchas de abajo se van.
+   * Móvil tumbado: el grupo se encoge y se mide por ALTO.
    *
-   * Son cuadradas y medidas en `vw`, así que en una pantalla de 390 px de alto
-   * salen MÁS ALTAS que la sección entera: subían hasta la entradilla y el
-   * texto de cuerpo acababa sobre el cruce de dos manchas, 3,3:1. Arriba a la
-   * derecha no hay ni una letra, así que la mostaza y el salmón se quedan,
-   * medidas en `vh` para que dependan de lo que aquí escasea: el alto.
-   *
-   * Va DESPUÉS del bloque de escritorio a propósito: con el mismo peso de
-   * selector, manda la última regla.
+   * En una pantalla de 390 px de alto lo que escasea es el alto, y un grupo
+   * medido en `vw` sale más alto que la sección entera: se plantaba encima de
+   * la entradilla. Va DESPUÉS del bloque de escritorio a propósito: con el
+   * mismo peso de selector, manda la última regla.
    */
   @media (max-height: 540px) and (orientation: landscape) {
-    .mancha-azul,
-    .mancha-malva {
-      display: none;
+    .manchas-grupo {
+      top: 13%;
+      right: 2%;
+      width: 36vh;
     }
 
-    .mancha-mostaza {
-      top: -18%;
-      right: -6%;
-      width: 54vh;
-    }
-
-    .mancha-salmon {
-      top: 10%;
-      right: 4%;
-      width: 30vh;
-    }
-
-    /* Y las estrellas de la portada también: en 390 px de alto todo el lienzo
+    /* Y las estrellas de la portada se van: en 390 px de alto todo el lienzo
        es texto, y una estrella rozando la última línea se lee como suciedad. */
     .portada [data-estrella] {
       display: none;
