@@ -40,8 +40,11 @@ export default function Pie({
           <span className="sr-only">{nombre}</span>
         </p>
 
-        <div className="grid gap-y-12 border-t border-white/12 pt-12 md:grid-cols-3 md:gap-x-10">
-          <nav className="flex flex-col items-start gap-1 text-[0.9375rem]">
+        {/* Centrado, como el logotipo que va encima. Alineadas a la izquierda,
+            las tres columnas colgaban de un logotipo centrado y el pie se leía
+            partido en dos mitades que no se hablaban. */}
+        <div className="grid gap-y-12 border-t border-white/12 pt-12 text-center md:grid-cols-3 md:gap-x-10">
+          <nav className="flex flex-col items-center gap-1 text-[0.9375rem]">
             <p className="t-etiqueta mb-2">{t.laWeb}</p>
             {enlaces.map((e) => (
               <Link key={e.href} href={e.href} className="enlace-linea flex min-h-11 items-center opacity-75 hover:opacity-100">
@@ -50,7 +53,7 @@ export default function Pie({
             ))}
           </nav>
 
-          <div className="flex flex-col items-start gap-1 text-[0.9375rem]">
+          <div className="flex flex-col items-center gap-1 text-[0.9375rem]">
             <p className="t-etiqueta mb-2">{t.contacto}</p>
             {real(contacto.telefono) && (
               <a
@@ -75,7 +78,7 @@ export default function Pie({
             {real(horarioEn(idioma)) && <p className="opacity-55">{horarioEn(idioma)}</p>}
           </div>
 
-          <div className="flex flex-col items-start gap-1 text-[0.9375rem]">
+          <div className="flex flex-col items-center gap-1 text-[0.9375rem]">
             <p className="t-etiqueta mb-2">{t.legal}</p>
             <Link
               href={`${p}/aviso-legal`}
@@ -90,7 +93,7 @@ export default function Pie({
               {t.privacidad}
             </Link>
             {sociales.length > 0 && (
-              <div className="mt-5 flex flex-wrap gap-5">
+              <div className="mt-5 flex flex-wrap justify-center gap-5">
                 {sociales.map((s) => (
                   <a
                     key={s.texto}
@@ -107,10 +110,10 @@ export default function Pie({
           </div>
         </div>
 
-        <div
-          style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom))' }}
-          className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-white/12 pt-4"
-        >
+        {/* En el móvil, el hueco de abajo lo pide el flotante de WhatsApp: sin
+            él, el botón se planta encima del selector de idioma y no se puede
+            cambiar de lengua desde el pie ([[feedback_boton_flotante_tapa_campos]]). */}
+        <div className="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-white/12 pt-6 pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-[calc(2rem+env(safe-area-inset-bottom))]">
           <p className="text-[0.8125rem] opacity-45">
             © {anio} {real(ESTUDIO.legal.razonSocial) ?? nombre}
           </p>
