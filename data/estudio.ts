@@ -71,8 +71,11 @@ export const ESTUDIO: Estudio = {
      la portada se dejaba fuera la cerámica, que sí es un curso entero. Esto
      dice lo que el estudio imparte de verdad, mirando el catálogo. */
   titular: 'Cursos de cerámica, pintura, dibujo y costura en Artés',
+  /* Ya no dice «de octubre a junio»: desde el catálogo del 08/09/2026 hay un
+     taller trimestral de crochet, y una descripción que promete el curso
+     entero a quien viene a por el trimestre es una promesa falsa. */
   descripcion:
-    'Taller de artes en Artés: cerámica, pintura, dibujo y costura, de octubre a junio y un día a la semana. Grupos para niños y para adultos, con clase de prueba gratuita.',
+    'Taller de artes en Artés: cerámica, pintura, dibujo, costura y crochet, un día a la semana. Grupos para niños y para adultos, con clase de prueba gratuita.',
 
   contacto: {
     telefono: '620 297 425',

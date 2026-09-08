@@ -42,6 +42,73 @@ const COLORES = [
  */
 export default function Disciplinas({ palabras }: { palabras: string[] }) {
   const raiz = useRef<HTMLDivElement>(null)
+  const pila = useRef<HTMLDivElement>(null)
+  const anterior = useRef<string | null>(null)
+
+  /**
+   * El cuerpo, medido con las letras ya dibujadas.
+   *
+   * Contar caracteres no vale: en la misma fuente y al mismo cuerpo,
+   * «Manualidades» ocupa un 20 % más por letra que «Multidisciplinar». Y cada
+   * renglón arranca más adentro que el anterior, así que el que manda no es el
+   * más largo, sino el peor parado de los dos: largo Y metido hacia dentro.
+   *
+   * Se mide a 100 px y se escala. Se rehace cuando cambia el ancho y cuando
+   * termina de cargar Jost, porque con la fuente de respaldo las medidas son
+   * otras y el cartel se quedaría con el cuerpo equivocado.
+   */
+  useEffect(() => {
+    const caja = pila.current
+    if (!caja) return
+
+    const MIN = 51.2 // 3.2rem
+    const MAX = 192 // 12rem
+    const BASE = 100
+
+    const ajustar = () => {
+      const items = [...caja.querySelectorAll<HTMLElement>('[data-palabra]')]
+      /* El ancho ÚTIL, sin los cuarenta píxeles de margen interior del
+         contenedor: `clientWidth` los incluye, y contándolos «Manualidades»
+         cabía sobre el papel y se salía en la pantalla. */
+      const caras = getComputedStyle(caja)
+      const ancho =
+        caja.clientWidth - (parseFloat(caras.paddingLeft) || 0) - (parseFloat(caras.paddingRight) || 0)
+      if (!items.length || ancho <= 0) return
+
+      /* Se miden a un cuerpo conocido y se escala: así da igual en qué tamaño
+         estuvieran. */
+      for (const item of items) item.style.fontSize = `${BASE}px`
+
+      let cuerpo = MAX
+      for (const item of items) {
+        /* El margen es un porcentaje del contenedor: no se mueve con el
+           cuerpo, así que se descuenta tal cual. El 0.985 es para que la
+           última letra no vaya a besar el borde: a ras, la «s» de
+           «Manualidades» se comía su propio remate. */
+        const margen = parseFloat(getComputedStyle(item).marginLeft) || 0
+        const suyo = item.scrollWidth
+        if (suyo > 0) cuerpo = Math.min(cuerpo, (BASE * (ancho * 0.985 - margen)) / suyo)
+      }
+      cuerpo = Math.max(MIN, cuerpo)
+
+      const ahora = `${cuerpo}px`
+      for (const item of items) item.style.fontSize = ahora
+      /* Si no ha cambiado nada, no se toca el scroll: esto lo llama un
+         ResizeObserver y refrescar en cada latido es caro. */
+      if (ahora === anterior.current) return
+      anterior.current = ahora
+      /* La sección cambia de alto al cambiar el cuerpo: si no se refresca, el
+         scroll dispara las entradas donde ya no están. */
+      ScrollTrigger.refresh()
+    }
+
+    ajustar()
+    const observador = new ResizeObserver(ajustar)
+    observador.observe(caja)
+    document.fonts?.ready.then(ajustar)
+
+    return () => observador.disconnect()
+  }, [palabras])
 
   useEffect(() => {
     const el = raiz.current
@@ -98,15 +165,15 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
 
   if (!palabras.length) return null
 
-  /* El tamaño lo manda la palabra MÁS LARGA, y las tres van a la misma medida:
-     es un cartel, no tres carteles. Sin esto, `19vw` era ciego a lo que
-     escribiera el estudio en el panel y «Multidisciplinar» medía 403 px en una
-     pantalla de 390 —se salía por los dos lados—, mientras que «Costura» se
-     quedaba corta. El 0.38 es el ancho de un carácter de la geométrica medido
-     en cuerpos (0.34 real, más margen): si mañana se cambia la fuente de
-     titulares, este número se vuelve a medir. */
-  const largo = Math.max(...palabras.map((d) => d.length))
-  const cuerpo = `min(clamp(3.2rem, 16vw, 12rem), calc(88vw / ${largo} / 0.38))`
+  /* Esto es solo el ARRANQUE, para quien no tenga JavaScript: una estimación
+     ancha —medio cuerpo por carácter— que además descuenta lo que la escalera
+     se come por la izquierda. El cuerpo de verdad lo mide `ajustar()` con las
+     letras ya dibujadas, porque contar caracteres MIENTE: «Manualidades» ocupa
+     0,48 cuerpos por letra y «Multidisciplinar», 0,40. Con la estimación vieja
+     de 0,38 y tres disciplinas cabía de milagro; el día que el catálogo pasó a
+     cinco, «Manualidades» empezó a salirse por la derecha. */
+  const holgura = Math.max(...palabras.map((d, i) => (d.length * 0.5) / (1 - i * 0.06)))
+  const cuerpo = `min(clamp(3.2rem, 16vw, 12rem), calc(88vw / ${holgura.toFixed(2)}))`
 
   return (
     <section
@@ -129,7 +196,7 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
         aria-hidden
         className="sticky top-0 flex h-[100svh] items-center overflow-hidden"
       >
-        <div className="contenedor">
+        <div ref={pila} className="contenedor">
           {palabras.map((d, i) => (
             <span
               key={d}
@@ -142,7 +209,7 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
                    como una composición y no como una lista. */
                 marginLeft: `${i * 6}%`,
               }}
-              className="block whitespace-nowrap font-[family-name:var(--font-display)] font-medium leading-[0.92] tracking-[-0.03em]"
+              className="block w-fit whitespace-nowrap font-[family-name:var(--font-display)] font-medium leading-[0.92] tracking-[-0.03em]"
             >
               {d}
             </span>

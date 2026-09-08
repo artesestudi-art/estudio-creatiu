@@ -14,10 +14,13 @@
  * que hay en la base o contra lo que dijo Silvia en la reunión del 31/08/2026.
  *
  * ⚠️ Lo que sigue VACÍO, y vacío no se pinta:
- *   - `profesorado`: hay cuatro nombres (Silvia Cano, Alicia, Maria y Jordina)
- *     y de tres no se sabe ni el apellido, ni la trayectoria, ni si quieren
- *     salir. Una ficha de profesora inventada es lo peor que puede llevar esta
- *     web.
+ *   - `profesorado`: hay cinco nombres (Silvia Cano, Alicia, Maria, Jordina y
+ *     Alba Selva) y de tres no se sabe ni el apellido, ni la trayectoria, ni
+ *     si quieren salir. Una ficha de profesora inventada es lo peor que puede
+ *     llevar esta web. El Excel del 08/09/2026 sí trae el Instagram de las
+ *     cinco, y eso ya está en la ficha de cada curso; Alba Selva tiene DOS
+ *     cuentas, una por idioma: @albaselva en castellano y @byalbaselva en
+ *     catalán.
  *   - `galeria`: no hay una sola foto del taller.
  *   - `testimonios`: no hay ninguna opinión real. Ni una.
  *   - `talleres` a medida (cumpleaños, empresas, despedidas): Silvia dijo que
@@ -43,10 +46,10 @@ const ES = {
     /* El campo se pinta DEBAJO del titular, como línea de disciplinas: es lo
        que dice el oficio, y ahí es donde se lee. Las cinco salen de los textos
        de los propios cursos, ninguna está inventada. */
-    antetitulo: 'Cerámica · Pintura · Dibujo · Costura · Manualidades',
+    antetitulo: 'Cerámica · Pintura · Dibujo · Costura · Crochet · Manualidades',
     titular: 'Aprende con las manos',
     entradilla:
-      'De octubre a junio, un día a la semana, en grupos de seis a diez personas. La primera clase es de prueba y no se paga.',
+      'Cursos de octubre a junio y talleres por trimestres, un día a la semana, en grupos de seis a diez personas. La primera clase es de prueba y no se paga.',
     cta: 'Ver los cursos',
     imagen: '',
     imagenAlt: '',
@@ -54,7 +57,7 @@ const ES = {
   sobre: {
     titulo: 'El estudio',
     texto:
-      'art-és es un taller de artes en Artés donde se aprende con las manos: pintura, dibujo, cómic, cerámica, costura y técnicas artesanales como el terrazo o la vidriera emplomada.\n\nLos grupos son pequeños y cada alumno avanza en su propio proyecto, a su ritmo, en lugar de hacer todos el mismo ejercicio. Los cursos van de octubre a junio, un día a la semana, y hay grupos de primaria, de secundaria y de adultos.',
+      'art-és es un taller de artes en Artés donde se aprende con las manos: pintura, dibujo, cómic, cerámica, costura, crochet y técnicas artesanales como el terrazo o la vidriera emplomada.\n\nLos grupos son pequeños y cada alumno avanza en su propio proyecto, a su ritmo, en lugar de hacer todos el mismo ejercicio. Los cursos van de octubre a junio, un día a la semana —y hay algún taller por trimestres—, con grupos de primaria, de secundaria y de adultos.',
     imagen: '',
     imagenAlt: '',
     puntos: [
@@ -66,7 +69,7 @@ const ES = {
       {
         titulo: 'Material incluido',
         texto:
-          'Se viene con las manos vacías. En cerámica entran también las hornadas; en costura, los tejidos van aparte y hay una sección donde comprarlos.',
+          'Se viene con las manos vacías. En cerámica entran también las hornadas; los tejidos van aparte y hay una sección del taller donde comprarlos.',
       },
       {
         titulo: 'Se empieza de cero',
@@ -76,14 +79,14 @@ const ES = {
       {
         titulo: 'Mañanas y tardes',
         texto:
-          'Los grupos de primaria y secundaria empiezan a las 17:15. Los de adultos, entre semana por la mañana y también un día por la tarde.',
+          'Los grupos de niños y adolescentes van por la tarde, a partir de las 17:15. Los de adultos, dos días por la mañana y cuatro por la tarde.',
       },
     ],
   },
   cursos: {
     titulo: 'Cursos',
     entradilla:
-      'De octubre a junio, un día a la semana. Cada curso tiene su página con el horario, el precio y las plazas de cada grupo. La convocatoria está abierta desde septiembre.',
+      'Un día a la semana, de octubre a junio; el taller de crochet es trimestral. Cada curso tiene su página con el horario, el precio y las plazas de cada grupo. La convocatoria está abierta desde septiembre.',
   },
   metodo: {
     titulo: 'Cómo funciona',
@@ -119,12 +122,12 @@ const ES = {
       {
         pregunta: '¿El material está incluido?',
         respuesta:
-          'Sí, y en cerámica entran también las hornadas. La única excepción son los tejidos de los talleres de costura: se compran en la sección de tejidos del taller o se traen de casa.',
+          'Sí, y en cerámica entran también las hornadas. La única excepción son los tejidos: en los talleres de costura y en Pequeños creadores se compran en la sección de tejidos del taller o se traen de casa.',
       },
       {
         pregunta: '¿Cuántos días a la semana hay que venir?',
         respuesta:
-          'Uno. Cada curso es de un día a la semana, de octubre a junio, y ese es el precio que aparece en su página.',
+          'Uno. Cada curso es de un día a la semana, y ese es el precio que aparece en su página. Van de octubre a junio, salvo el taller de crochet, que es trimestral: de octubre a diciembre.',
       },
       {
         pregunta: '¿Puedo probar antes de apuntarme?',
@@ -138,7 +141,7 @@ const ES = {
       {
         pregunta: '¿Los cursos son para niños o para adultos?',
         respuesta:
-          'Para los dos. Art-Junior, Cerámica Junior y Costura Junior son de primaria y secundaria; Art-ístico y Costura Básica, de adultos.',
+          'Para los dos. Art-Junior, Cerámica Junior, Costura Junior y Pequeños creadores son para niños y adolescentes; Art-ístico, Costura Básica, Costura creativa y el taller de crochet, para adultos.',
       },
     ],
   },
@@ -156,10 +159,10 @@ const ES = {
 
 const CA = {
   hero: {
-    antetitulo: 'Ceràmica · Pintura · Dibuix · Costura · Manualitats',
+    antetitulo: 'Ceràmica · Pintura · Dibuix · Costura · Crochet · Manualitats',
     titular: 'Aprèn amb les mans',
     entradilla:
-      "D'octubre a juny, un dia a la setmana, en grups de sis a deu persones. La primera classe és de prova i no es paga.",
+      "Cursos d'octubre a juny i tallers per trimestres, un dia a la setmana, en grups de sis a deu persones. La primera classe és de prova i no es paga.",
     cta: 'Veure els cursos',
     imagen: '',
     imagenAlt: '',
@@ -167,7 +170,7 @@ const CA = {
   sobre: {
     titulo: "L'estudi",
     texto:
-      "art-és és un taller d'arts a Artés on s'aprèn amb les mans: pintura, dibuix, còmic, ceràmica, costura i tècniques artesanals com el terratzo o el vitrall emplomat.\n\nEls grups són petits i cada alumne avança en el seu propi projecte, al seu ritme, en comptes de fer tothom el mateix exercici. Els cursos van d'octubre a juny, un dia a la setmana, i hi ha grups de primària, de secundària i d'adults.",
+      "art-és és un taller d'arts a Artés on s'aprèn amb les mans: pintura, dibuix, còmic, ceràmica, costura, crochet i tècniques artesanals com el terratzo o el vitrall emplomat.\n\nEls grups són petits i cada alumne avança en el seu propi projecte, al seu ritme, en comptes de fer tothom el mateix exercici. Els cursos van d'octubre a juny, un dia a la setmana —i hi ha algun taller per trimestres—, amb grups de primària, de secundària i d'adults.",
     imagen: '',
     imagenAlt: '',
     puntos: [
@@ -179,7 +182,7 @@ const CA = {
       {
         titulo: 'Material inclòs',
         texto:
-          "S'hi ve amb les mans buides. A ceràmica hi entren també les fornades; a costura, els teixits van a part i hi ha una secció on comprar-los.",
+          "S'hi ve amb les mans buides. A ceràmica hi entren també les fornades; els teixits van a part i hi ha una secció del taller on comprar-los.",
       },
       {
         titulo: 'Es comença de zero',
@@ -189,14 +192,14 @@ const CA = {
       {
         titulo: 'Matins i tardes',
         texto:
-          "Els grups de primària i secundària comencen a les 17:15. Els d'adults, entre setmana al matí i també un dia a la tarda.",
+          "Els grups d'infants i adolescents són a la tarda, a partir de les 17:15. Els d'adults, dos dies al matí i quatre a la tarda.",
       },
     ],
   },
   cursos: {
     titulo: 'Cursos',
     entradilla:
-      "D'octubre a juny, un dia a la setmana. Cada curs té la seva pàgina amb l'horari, el preu i les places de cada grup. La convocatòria és oberta des del setembre.",
+      "Un dia a la setmana, d'octubre a juny; el taller de crochet és trimestral. Cada curs té la seva pàgina amb l'horari, el preu i les places de cada grup. La convocatòria és oberta des del setembre.",
   },
   metodo: {
     titulo: 'Com funciona',
@@ -232,12 +235,12 @@ const CA = {
       {
         pregunta: 'El material està inclòs?',
         respuesta:
-          "Sí, i a ceràmica hi entren també les fornades. L'única excepció són els teixits dels tallers de costura: es compren a la secció de teixits del taller o es porten de casa.",
+          "Sí, i a ceràmica hi entren també les fornades. L'única excepció són els teixits: als tallers de costura i a Petits creadors es compren a la secció de teixits del taller o es porten de casa.",
       },
       {
         pregunta: 'Quants dies a la setmana cal venir?',
         respuesta:
-          "Un. Cada curs és d'un dia a la setmana, d'octubre a juny, i aquest és el preu que surt a la seva pàgina.",
+          "Un. Cada curs és d'un dia a la setmana, i aquest és el preu que surt a la seva pàgina. Van d'octubre a juny, llevat del taller de crochet, que és trimestral: d'octubre a desembre.",
       },
       {
         pregunta: 'Puc provar abans d’apuntar-m’hi?',
@@ -251,7 +254,7 @@ const CA = {
       {
         pregunta: "Els cursos són per a infants o per a adults?",
         respuesta:
-          'Per als dos. Art-Junior, Ceràmica Junior i Costura Junior són de primària i secundària; Art-ístic i Costura Bàsica, d’adults.',
+          'Per als dos. Art-Junior, Ceràmica Junior, Costura Junior i Petits creadors són per a infants i adolescents; Art-ístic, Costura Bàsica, Costura creativa i el taller de crochet, per a adults.',
       },
     ],
   },
