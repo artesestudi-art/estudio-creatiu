@@ -25,6 +25,30 @@ import { textos, type Idioma } from '@/lib/idioma'
 
 const CLAVE = 'artes-analitica'
 
+/**
+ * Evento con el que `PreferenciasCookies` vuelve a abrir el cartel.
+ *
+ * Retirar el consentimiento tiene que ser tan fácil como darlo (lo dice la
+ * guía de cookies de la AEPD). «Borra los datos del sitio en tu navegador» no
+ * lo es: hace falta un botón a la vista.
+ */
+export const REABRIR_CARTEL = 'artes:preferencias-cookies'
+
+/** Las cookies que deja Google Analytics, en este dominio y en el padre. */
+function borrarCookiesDeGoogle() {
+  const nombres = document.cookie
+    .split(';')
+    .map((c) => c.split('=')[0].trim())
+    .filter((n) => n === '_ga' || n.startsWith('_ga_') || n === '_gid')
+  const partes = location.hostname.split('.')
+  const dominios = ['', location.hostname, `.${partes.slice(-2).join('.')}`]
+  for (const nombre of nombres) {
+    for (const d of dominios) {
+      document.cookie = `${nombre}=; Max-Age=0; path=/${d ? `; domain=${d}` : ''}`
+    }
+  }
+}
+
 type Eleccion = 'si' | 'no' | null
 
 function leer(): Eleccion {
@@ -59,7 +83,15 @@ export default function Analitica() {
   const [eleccion, setEleccion] = useState<Eleccion | 'sin-leer'>('sin-leer')
 
   useEffect(() => {
-    setEleccion(leer())
+    const guardada = leer()
+    setEleccion(guardada)
+    // Se borran también al CARGAR, no solo al decir que no: Google reescribe
+    // `_ga_<id>` al salir de la página, así que la que se borra justo antes de
+    // recargar vuelve a aparecer. Comprobado: sin esto sobrevivía una.
+    if (guardada === 'no') borrarCookiesDeGoogle()
+    const reabrir = () => setEleccion(null)
+    window.addEventListener(REABRIR_CARTEL, reabrir)
+    return () => window.removeEventListener(REABRIR_CARTEL, reabrir)
   }, [])
 
   /**
@@ -82,7 +114,16 @@ export default function Analitica() {
   if (!medida) return null
 
   function decidir(valor: Exclude<Eleccion, null>) {
+    const antes = leer()
     guardar(valor)
+    // Quien había dicho que sí y ahora dice que no ya tiene Google cargado en
+    // esta página: se borran sus cookies y se recarga, o seguiría midiendo
+    // hasta que cambiase de página.
+    if (antes === 'si' && valor === 'no') {
+      borrarCookiesDeGoogle()
+      location.reload()
+      return
+    }
     setEleccion(valor)
   }
 

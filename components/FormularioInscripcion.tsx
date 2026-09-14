@@ -4,6 +4,8 @@ import { useActionState, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { enviarInscripcion, type EstadoFormulario } from '@/app/acciones'
 import { prefijo, textos, type Idioma } from '@/lib/idioma'
+import { conRecaptcha } from '@/lib/recaptcha-cliente'
+import AvisoRecaptcha from '@/components/AvisoRecaptcha'
 
 /**
  * Formulario de solicitud de plaza.
@@ -77,7 +79,7 @@ export default function FormularioInscripcion({
   }
 
   return (
-    <form action={accion} className="space-y-7">
+    <form action={conRecaptcha(accion, 'inscripcion')} className="space-y-7">
       <input type="hidden" name="origen" value={origen} />
 
       {/* Trampa para robots: invisible para las personas, irresistible para los
@@ -283,6 +285,7 @@ export default function FormularioInscripcion({
       <p className="text-[0.8125rem] opacity-55">
         {t.noEsMatricula}
       </p>
+      <AvisoRecaptcha idioma={idioma} className="!mt-3" />
     </form>
   )
 }

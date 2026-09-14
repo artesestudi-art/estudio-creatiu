@@ -33,6 +33,14 @@ export default function Ficha({ i }: { i: Inscripcion }) {
             aviso no enviado
           </span>
         )}
+        {i.antispam && (
+          <span
+            title={i.antispam}
+            className="rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[12px] text-amber-800"
+          >
+            {i.antispam.startsWith('Posible robot') ? 'posible robot' : 'sin verificar'}
+          </span>
+        )}
         <span className="ml-auto text-[13px] text-neutral-400">{fecha(i.creado)}</span>
       </button>
 
@@ -73,6 +81,12 @@ export default function Ficha({ i }: { i: Inscripcion }) {
             </p>
           )}
 
+          {i.antispam && (
+            <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-[13.5px] text-amber-800">
+              {i.antispam}. Se ha guardado igual por si es una persona: reCAPTCHA se equivoca con
+              bloqueadores de anuncios y VPN.
+            </p>
+          )}
           {i.aviso_error && (
             <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3.5 py-2.5 text-[13.5px] text-red-700">
               El aviso por correo falló: {i.aviso_error}

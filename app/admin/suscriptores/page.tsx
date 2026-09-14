@@ -59,6 +59,13 @@ export default async function Suscriptores() {
                     ) : (
                       <span className="text-emerald-700">Activo</span>
                     )}
+                    {/* Un robot apunta correos AJENOS: antes de mandarles la
+                        newsletter conviene mirar estos. */}
+                    {s.antispam && (
+                      <span title={s.antispam} className="ml-2 text-[12px] text-amber-700">
+                        · {s.antispam.startsWith('Posible robot') ? 'posible robot' : 'sin verificar'}
+                      </span>
+                    )}
                   </td>
                   <td className="px-4 py-2.5 text-right">
                     <form action={accionBorrar}>

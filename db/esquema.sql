@@ -139,3 +139,12 @@ CREATE TABLE IF NOT EXISTS usuarios (
   fallos          INTEGER NOT NULL DEFAULT 0,
   bloqueado_hasta TIMESTAMPTZ
 );
+
+-- ─────────────────── Antispam (reCAPTCHA v3) ───────────────────
+-- Lo que opinó reCAPTCHA de cada envío: «Posible robot: …» o «Sin verificar:
+-- …». NULL cuando se verificó bien o cuando reCAPTCHA está apagado.
+-- ⛔ Es una marca, no un filtro: la petición se guarda SIEMPRE. Un token que
+-- falta por un bloqueador de anuncios no puede costarle la plaza a nadie.
+ALTER TABLE inscripciones ADD COLUMN IF NOT EXISTS antispam TEXT;
+ALTER TABLE contactos ADD COLUMN IF NOT EXISTS antispam TEXT;
+ALTER TABLE suscriptores ADD COLUMN IF NOT EXISTS antispam TEXT;

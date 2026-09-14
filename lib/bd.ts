@@ -121,6 +121,8 @@ export type Inscripcion = {
   notas: string | null
   aviso_enviado: boolean
   aviso_error: string | null
+  /** Lo que opinó reCAPTCHA si hubo algo raro. Ver `lib/recaptcha.ts`. */
+  antispam: string | null
 }
 
 export type EstadoContacto = 'nuevo' | 'contestado' | 'cerrado' | 'descartado'
@@ -145,6 +147,8 @@ export type Contacto = {
   notas: string | null
   aviso_enviado: boolean
   aviso_error: string | null
+  /** Lo que opinó reCAPTCHA si hubo algo raro. Ver `lib/recaptcha.ts`. */
+  antispam: string | null
 }
 
 export type Suscriptor = {
@@ -156,6 +160,7 @@ export type Suscriptor = {
   baja: boolean
   baja_fecha: string | null
   token: string
+  antispam: string | null
 }
 
 /* ─────────────────────────── Cursos ─────────────────────────── */
@@ -350,6 +355,7 @@ export type NuevaInscripcion = {
   experiencia: string | null
   mensaje: string | null
   origen: string
+  antispam: string | null
 }
 
 export async function guardarInscripcion(d: NuevaInscripcion): Promise<number> {
@@ -358,12 +364,12 @@ export async function guardarInscripcion(d: NuevaInscripcion): Promise<number> {
     INSERT INTO inscripciones (
       nombre, email, telefono, es_menor, alumno_nombre, alumno_edad,
       curso_id, convocatoria_id, curso_titulo,
-      convocatoria_texto, modalidad, experiencia, mensaje, origen
+      convocatoria_texto, modalidad, experiencia, mensaje, origen, antispam
     ) VALUES (
       ${d.nombre}, ${d.email}, ${d.telefono}, ${d.es_menor}, ${d.alumno_nombre},
       ${d.alumno_edad}, ${d.curso_id}, ${d.convocatoria_id},
       ${d.curso_titulo}, ${d.convocatoria_texto}, ${d.modalidad}, ${d.experiencia},
-      ${d.mensaje}, ${d.origen}
+      ${d.mensaje}, ${d.origen}, ${d.antispam}
     ) RETURNING id
   `) as { id: number }[]
   return filas[0].id
@@ -406,13 +412,14 @@ export type NuevoContacto = {
   asunto: string | null
   mensaje: string
   origen: string
+  antispam: string | null
 }
 
 export async function guardarContacto(d: NuevoContacto): Promise<number> {
   const sql = conexion()
   const filas = (await sql`
-    INSERT INTO contactos (nombre, email, telefono, asunto, mensaje, origen)
-    VALUES (${d.nombre}, ${d.email}, ${d.telefono}, ${d.asunto}, ${d.mensaje}, ${d.origen})
+    INSERT INTO contactos (nombre, email, telefono, asunto, mensaje, origen, antispam)
+    VALUES (${d.nombre}, ${d.email}, ${d.telefono}, ${d.asunto}, ${d.mensaje}, ${d.origen}, ${d.antispam})
     RETURNING id
   `) as { id: number }[]
   return filas[0].id
@@ -463,6 +470,7 @@ export async function guardarSuscriptor(
   nombre: string | null,
   origen: string,
   token: string,
+  antispam: string | null = null,
 ): Promise<'alta' | 'ya_estaba' | 'rehabilitado'> {
   const sql = conexion()
   const previos = (await sql`
@@ -476,8 +484,8 @@ export async function guardarSuscriptor(
   }
 
   await sql`
-    INSERT INTO suscriptores (email, nombre, origen, token)
-    VALUES (${email}, ${nombre}, ${origen}, ${token})
+    INSERT INTO suscriptores (email, nombre, origen, token, antispam)
+    VALUES (${email}, ${nombre}, ${origen}, ${token}, ${antispam})
   `
   return 'alta'
 }

@@ -73,6 +73,7 @@ niños eso incluye el nombre y la edad de un menor.
 | `CORREO_REMITENTE` | Remitente del dominio verificado | Los correos caen en spam |
 | `CORREO_AVISOS` | Buzón que recibe las inscripciones | Se usa el de `data/estudio.ts` |
 | `BLOB_READ_WRITE_TOKEN` | Subir imágenes desde el panel | El panel ofrece pegar una URL en su lugar |
+| `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` + `RECAPTCHA_SECRET_KEY` | reCAPTCHA v3 en los tres formularios | Apagado: queda solo el campo trampa. ⚠️ La pública se incrusta al compilar: redesplegar tras ponerla |
 
 ⛔ **El store de Blob tiene que ser PÚBLICO.** Vercel recomienda «Private» al
 crearlo, y sería el error: el código sube con `access: 'public'`, y un `put`
@@ -123,6 +124,39 @@ en cuanto Silvia empiece a editar desde el panel, ese script deja de usarse.
 `.env.local` apunta a la rama **`desarrollo`**, nunca a producción. La cadena de
 producción vive solo en las variables de Vercel. Un `dev` apuntando a la base del
 cliente escribe de verdad.
+
+---
+
+## Apuntar el dominio
+
+⛔ **El dominio se cambia en UN sitio: las constantes `DOMINIO` y
+`OTROS_DOMINIOS` de `data/estudio.ts`.** De ahí salen la canónica, el sitemap,
+el robots, el schema, el remitente de los correos y las redirecciones 301 de
+`next.config.ts` (el otro dominio y los `www` van al principal). A 14/09/2026
+no está decidido si la web va en el `.es` o en el `.com`.
+
+1. **Decidir el dominio** y, si es el `.com`, intercambiar las dos constantes.
+2. **Vercel** (cuenta `estudi`) → proyecto → *Domains*: añadir los cuatro
+   (`.es`, `www.es`, `.com`, `www.com`). El 301 lo hace el código, así que en
+   Vercel basta con que los cuatro apunten al proyecto, sin redirección suya.
+3. **DNS**, en cada registrador:
+   - apex: `A 76.76.21.21` · `www`: `CNAME cname.vercel-dns.com`
+   - ⛔ **En el `.com` NO se tocan los MX**: ahí vive `info@` (Google).
+     Squarespace deja cambiar el A y el CNAME sin tocar el correo, pero hay que
+     quitar su registro de la página «Próximamente».
+   - El `.es` está en el Hostinger de Silvia (hoy aparcado en `dns-parking.com`).
+4. **Resend**: verificar el dominio del remitente (`web@<dominio>`). Si es el
+   `.com`, sus registros SPF/DKIM conviven con los de Google: se AÑADEN, no se
+   sustituye el SPF (un solo `v=spf1` con los dos `include:`).
+5. **reCAPTCHA**: comprobar que el dominio está en la lista de la clave (ver
+   `.env.example`). Si no, Google rechaza los tokens y todo sale «posible
+   robot» —marcado, no perdido—.
+6. **GA4** (si Silvia lo quiere): propiedad con la URL del dominio bueno y el
+   `G-…` en `ESTUDIO.analitica.ga4`. Eso enciende solo el cartel de cookies,
+   el botón «Preferencias de cookies» del pie y los párrafos de la política.
+7. **Search Console**: propiedad de dominio y enviar `/sitemap.xml`.
+8. Comprobar: `curl -sI https://www.<dominio>` → 308/301 al apex; la copia de
+   `.vercel.app` sigue con `X-Robots-Tag: noindex`.
 
 ---
 

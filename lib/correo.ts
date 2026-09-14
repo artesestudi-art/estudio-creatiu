@@ -95,6 +95,9 @@ export async function avisarInscripcion(datos: {
   experiencia: string | null
   mensaje: string | null
   origen: string
+  /** Lo que opinó reCAPTCHA, si hubo algo raro. */
+  antispam: string | null
+  prefijoAsunto: string
 }): Promise<ResultadoEnvio> {
   const html = `
     <div style="font-family:system-ui,-apple-system,'Segoe UI',sans-serif;max-width:560px;color:#111">
@@ -112,6 +115,7 @@ export async function avisarInscripcion(datos: {
           ['Experiencia', datos.experiencia],
           ['Mensaje', datos.mensaje],
           ['Página', datos.origen],
+          ['Antispam', datos.antispam],
         ])}
       </table>
       <p style="margin:22px 0 0;font-size:13px;color:#666">
@@ -121,7 +125,7 @@ export async function avisarInscripcion(datos: {
 
   return enviar({
     para: destinoAvisos(),
-    asunto: `Nueva inscripción · ${datos.curso} · ${datos.nombre}`,
+    asunto: `${datos.prefijoAsunto}Nueva inscripción · ${datos.curso} · ${datos.nombre}`,
     html,
     // Responder al correo lleva directo al alumno, sin copiar y pegar.
     responderA: datos.email,
@@ -176,6 +180,8 @@ export async function avisarContacto(datos: {
   asunto: string | null
   mensaje: string
   origen: string
+  antispam: string | null
+  prefijoAsunto: string
 }): Promise<ResultadoEnvio> {
   const html = `
     <div style="font-family:system-ui,-apple-system,'Segoe UI',sans-serif;max-width:560px;color:#111">
@@ -188,13 +194,14 @@ export async function avisarContacto(datos: {
           ['Teléfono', datos.telefono],
           ['Mensaje', datos.mensaje],
           ['Página', datos.origen],
+          ['Antispam', datos.antispam],
         ])}
       </table>
     </div>`
 
   return enviar({
     para: destinoAvisos(),
-    asunto: `Contacto web · ${datos.nombre}`,
+    asunto: `${datos.prefijoAsunto}Contacto web · ${datos.nombre}`,
     html,
     responderA: datos.email,
   })

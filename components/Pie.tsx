@@ -3,6 +3,7 @@ import { ESTUDIO, horarioEn, real } from '@/data/estudio'
 import { prefijo, textos, type Idioma } from '@/lib/idioma'
 import SelectorIdioma from './SelectorIdioma'
 import Logo from '@/components/Logo'
+import PreferenciasCookies from '@/components/PreferenciasCookies'
 
 export default function Pie({
   enlaces,
@@ -92,6 +93,10 @@ export default function Pie({
             >
               {t.privacidad}
             </Link>
+            <PreferenciasCookies
+              idioma={idioma}
+              className="enlace-linea flex min-h-11 items-center opacity-75 hover:opacity-100"
+            />
             {sociales.length > 0 && (
               <div className="mt-5 flex flex-wrap justify-center gap-5">
                 {sociales.map((s) => (

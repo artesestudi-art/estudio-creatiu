@@ -10,6 +10,7 @@ import {
   marcarAviso,
 } from '@/lib/bd'
 import { avisarInscripcion, acusarInscripcion, avisarContacto } from '@/lib/correo'
+import { marcaAntispam, prefijoAsunto, verificarRecaptcha } from '@/lib/recaptcha'
 
 /**
  * Formularios públicos.
@@ -140,6 +141,11 @@ export async function enviarInscripcion(
     return { ok: false, mensaje: 'Ese curso ya no está disponible.', campo: 'curso_id', valores }
   }
 
+  // reCAPTCHA opina, pero NO decide: la inscripción se guarda igual y queda
+  // marcada. Se mira después de validar para no gastar un token en un error
+  // de teléfono (cada token vale una sola vez).
+  const veredicto = await verificarRecaptcha(texto(datos, 'recaptcha') || undefined, 'inscripcion')
+
   const convocatoria = convocatoriaId ? await convocatoriaPorId(convocatoriaId) : null
   const convocatoriaValida = convocatoria && curso && convocatoria.curso_id === curso.id
   const convocatoriaTexto = convocatoriaValida
@@ -163,6 +169,7 @@ export async function enviarInscripcion(
       experiencia: experiencia || null,
       mensaje: mensaje || null,
       origen,
+      antispam: marcaAntispam(veredicto),
     })
   } catch (e) {
     console.error('[inscripcion] no se pudo guardar', e)
@@ -188,16 +195,25 @@ export async function enviarInscripcion(
     experiencia: experiencia || null,
     mensaje: mensaje || null,
     origen,
+    antispam: marcaAntispam(veredicto),
+    prefijoAsunto: prefijoAsunto(veredicto),
   })
   await marcarAviso('inscripciones', id, aviso.ok, aviso.ok ? undefined : aviso.motivo)
 
   // El acuse al alumno es secundario: si falla, no se marca nada ni se avisa.
-  await acusarInscripcion({
-    nombre,
-    email,
-    curso: curso?.titulo ?? 'tu consulta',
-    convocatoria: convocatoriaTexto,
-  })
+  // ⛔ Y no sale si reCAPTCHA cree que es un robot: un robot escribe correos
+  // AJENOS, y mandarle a un desconocido «hemos recibido tu solicitud» es spam
+  // desde el dominio del estudio, que es lo que lo acaba mandando a la carpeta
+  // de correo no deseado para los alumnos de verdad. La inscripción sigue
+  // guardada y avisada: si era una persona, el estudio le escribe igual.
+  if (veredicto.estado !== 'sospechoso') {
+    await acusarInscripcion({
+      nombre,
+      email,
+      curso: curso?.titulo ?? 'tu consulta',
+      convocatoria: convocatoriaTexto,
+    })
+  }
 
   return {
     ok: true,
@@ -246,6 +262,8 @@ export async function enviarContacto(
     }
   }
 
+  const veredicto = await verificarRecaptcha(texto(datos, 'recaptcha') || undefined, 'contacto')
+
   let id: number
   try {
     id = await guardarContacto({
@@ -255,6 +273,7 @@ export async function enviarContacto(
       asunto: asunto || null,
       mensaje,
       origen,
+      antispam: marcaAntispam(veredicto),
     })
   } catch (e) {
     console.error('[contacto] no se pudo guardar', e)
@@ -273,6 +292,8 @@ export async function enviarContacto(
     asunto: asunto || null,
     mensaje,
     origen,
+    antispam: marcaAntispam(veredicto),
+    prefijoAsunto: prefijoAsunto(veredicto),
   })
   await marcarAviso('contactos', id, aviso.ok, aviso.ok ? undefined : aviso.motivo)
 
@@ -305,10 +326,18 @@ export async function suscribirse(
     }
   }
 
+  const veredicto = await verificarRecaptcha(texto(datos, 'recaptcha') || undefined, 'newsletter')
+
   try {
     // El token va en el enlace de baja de cada envío. Sin él, cualquiera podría
     // dar de baja a otro con solo saber su dirección.
-    const resultado = await guardarSuscriptor(email, nombre || null, origen, randomBytes(16).toString('hex'))
+    const resultado = await guardarSuscriptor(
+      email,
+      nombre || null,
+      origen,
+      randomBytes(16).toString('hex'),
+      marcaAntispam(veredicto),
+    )
     // No se distingue «ya estabas» de «alta nueva» hacia fuera: decirlo revela
     // quién está apuntado a quien pruebe direcciones ajenas.
     return {

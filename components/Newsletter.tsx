@@ -4,6 +4,8 @@ import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { suscribirse, type EstadoFormulario } from '@/app/acciones'
 import { prefijo, textos, type Idioma } from '@/lib/idioma'
+import { conRecaptcha } from '@/lib/recaptcha-cliente'
+import AvisoRecaptcha from '@/components/AvisoRecaptcha'
 
 function Boton({ idioma }: { idioma: Idioma }) {
   const t = textos(idioma)
@@ -25,7 +27,7 @@ export default function Newsletter({ origen, idioma }: { origen: string; idioma:
   }
 
   return (
-    <form action={accion} className="space-y-3">
+    <form action={conRecaptcha(accion, 'newsletter')} className="space-y-3">
       <input type="hidden" name="origen" value={origen} />
       <div aria-hidden className="absolute h-0 w-0 overflow-hidden opacity-0">
         <label htmlFor="empresa-boletin">Empresa</label>
@@ -82,6 +84,7 @@ export default function Newsletter({ origen, idioma }: { origen: string; idioma:
           {estado.mensaje}
         </p>
       )}
+      <AvisoRecaptcha idioma={idioma} />
     </form>
   )
 }

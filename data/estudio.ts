@@ -29,6 +29,7 @@ type Estudio = {
   nombre: string
   nombreCorto: string
   dominio: string
+  otrosDominios: string[]
   url: string
   titular: string
   descripcion: string
@@ -54,15 +55,31 @@ type Estudio = {
   analitica: { ga4: string }
 }
 
+/**
+ * ⛔ EL DOMINIO SE CAMBIA AQUÍ Y SOLO AQUÍ.
+ *
+ * El estudio tiene dos: `artesespaicreatiu.es` (comprado para la web, en su
+ * Hostinger) y `artesespaicreatiu.com` (donde vive su correo, MX de Google).
+ * A 14/09/2026 no está decidido en cuál va la web. El día que se decida se
+ * intercambian estas dos constantes y ya: de aquí salen la canónica, el
+ * sitemap, el robots, el schema, el remitente de los correos y las
+ * redirecciones de `next.config.ts`, que mandan con un 301 el otro dominio y
+ * los `www` al bueno. Así da igual cuál de los dos se apunte primero a Vercel.
+ */
+const DOMINIO = 'artesespaicreatiu.es'
+const OTROS_DOMINIOS = ['artesespaicreatiu.com']
+
 export const ESTUDIO: Estudio = {
   /** Nombre comercial tal cual se escribe en facturas y en Google. */
   nombre: 'Artés Espai Creatiu',
   /** Cómo se lee en una frase: «en NOMBRE enseñamos…». */
   nombreCorto: 'Artés Espai Creatiu',
   /** Dominio sin protocolo, p. ej. `estudio.com`. */
-  dominio: 'artesespaicreatiu.es',
+  dominio: DOMINIO,
+  /** Los que redirigen al principal con un 301. Ver arriba. */
+  otrosDominios: OTROS_DOMINIOS,
   /** Con https y sin barra final. Se usa en canonical, sitemap y schema. */
-  url: 'https://artesespaicreatiu.es',
+  url: `https://${DOMINIO}`,
 
   /** Frase de una línea. Debe decir el OFICIO, no la marca: un titular que
    *  solo repite el nombre deja la web muda para Google y para el visitante. */

@@ -793,3 +793,13 @@ body[data-consentimiento='pendiente'] [data-flotante='whatsapp'] {
   pointer-events: none;
   transform: translateY(1rem);
 }
+
+/* El sello de reCAPTCHA se coloca solo abajo a la derecha, que es donde vive
+   el flotante de WhatsApp: se montan y el sello tapa medio botón, sin ningún
+   error en ninguna parte. Se esconde A CAMBIO de la atribución de Google bajo
+   cada formulario (`AvisoRecaptcha`), que es lo que Google permite.
+   `visibility` y NO `display: none`: con `display` la v3 se queja y en algunos
+   navegadores deja de puntuar. */
+.grecaptcha-badge {
+  visibility: hidden;
+}

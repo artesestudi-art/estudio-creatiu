@@ -2,14 +2,17 @@ import Link from 'next/link'
 import { ESTUDIO, real } from '@/data/estudio'
 import { CODIGO, PRINCIPAL, prefijo, type Idioma } from '@/lib/idioma'
 import SelectorIdioma from '@/components/SelectorIdioma'
+import PreferenciasCookies from '@/components/PreferenciasCookies'
+import { recaptchaActivo } from '@/lib/recaptcha-cliente'
 
 /**
  * Aviso legal y privacidad, en los dos idiomas.
  *
  * El texto describe lo que esta web hace DE VERDAD: guarda el formulario en
- * Neon, avisa por Resend y no pone cookies de terceros. Copiar una plantilla
- * que hable de Google Analytics cuando no lo hay es tan incorrecto como no
- * tener política. Si algún día se añade analítica, hay que actualizar esto.
+ * Neon y avisa por Resend. Google Analytics y reCAPTCHA solo aparecen en la
+ * política si están encendidos (`ESTUDIO.analitica.ga4` y la clave
+ * `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`): copiar una plantilla que hable de Google
+ * cuando no lo hay es tan incorrecto como no tener política.
  */
 
 function domicilio(): string | null {
@@ -199,13 +202,24 @@ export function Privacidad({ idioma }: { idioma: Idioma }) {
             {ca ? " (allotjament del web) i " : ' (alojamiento de la web) y '}
             <strong>Resend</strong>
             {ca ? ' (enviament dels correus d’avís)' : ' (envío de los correos de aviso)'}
-            {real(ESTUDIO.analitica.ga4) && (
+            {(real(ESTUDIO.analitica.ga4) || recaptchaActivo) && (
               <>
                 {ca ? ' i ' : ' y '}
                 <strong>Google</strong>
+                {' ('}
+                {[
+                  real(ESTUDIO.analitica.ga4) &&
+                    (ca ? "analítica del web, només si l'acceptes" : 'analítica de la web, solo si la aceptas'),
+                  recaptchaActivo &&
+                    (ca
+                      ? 'reCAPTCHA, que comprova que els formularis els envia una persona'
+                      : 'reCAPTCHA, que comprueba que los formularios los envía una persona'),
+                ]
+                  .filter(Boolean)
+                  .join('; ')}
                 {ca
-                  ? " (analítica del web, només si l'acceptes; pot tractar dades fora de la Unió Europea)"
-                  : ' (analítica de la web, solo si la aceptas; puede tratar datos fuera de la Unión Europea)'}
+                  ? '; pot tractar dades fora de la Unió Europea, amb les garanties del Marc de Privacitat de Dades UE-EUA)'
+                  : '; puede tratar datos fuera de la Unión Europea, con las garantías del Marco de Privacidad de Datos UE-EE. UU.)'}
               </>
             )}
             {ca ? '. No venem ni cedim dades a tercers.' : '. No vendemos ni cedemos datos a terceros.'}
@@ -220,16 +234,30 @@ export function Privacidad({ idioma }: { idioma: Idioma }) {
           {real(ESTUDIO.analitica.ga4) ? (
             <p className="t-cuerpo !max-w-none">
               {ca
-                ? "Aquest web fa servir Google Analytics per saber quanta gent el visita i quins cursos es miren més. No es carrega fins que tu ho acceptes al cartell que apareix en entrar: si dius que no, no s'instal·la cap galeta d'anàlisi. La teva resposta es guarda al teu propi navegador, i pots canviar-la esborrant les dades del lloc. No hi ha galetes de publicitat ni de xarxes socials. L'única galeta tècnica manté oberta la sessió del tauler de gestió: només la rep qui administra el web."
-                : 'Esta web usa Google Analytics para saber cuánta gente la visita y qué cursos se miran más. No se carga hasta que tú lo aceptas en el aviso que aparece al entrar: si dices que no, no se instala ninguna cookie de análisis. Tu respuesta se guarda en tu propio navegador, y puedes cambiarla borrando los datos del sitio. No hay cookies de publicidad ni de redes sociales. La única cookie técnica mantiene abierta la sesión del panel de gestión: solo la recibe quien administra la web.'}
+                ? "Aquest web fa servir Google Analytics per saber quanta gent el visita i quins cursos es miren més. No es carrega fins que tu ho acceptes al cartell que apareix en entrar: si dius que no, no s'instal·la cap galeta d'anàlisi. La teva resposta es guarda al teu propi navegador, i pots canviar-la esborrant les dades del lloc. No hi ha galetes de publicitat ni de xarxes socials. Hi ha, a més, una galeta tècnica que manté oberta la sessió del tauler de gestió: només la rep qui administra el web."
+                : 'Esta web usa Google Analytics para saber cuánta gente la visita y qué cursos se miran más. No se carga hasta que tú lo aceptas en el aviso que aparece al entrar: si dices que no, no se instala ninguna cookie de análisis. Tu respuesta se guarda en tu propio navegador, y puedes cambiarla borrando los datos del sitio. No hay cookies de publicidad ni de redes sociales. Hay, además, una cookie técnica que mantiene abierta la sesión del panel de gestión: solo la recibe quien administra la web.'}
             </p>
           ) : (
             <p className="t-cuerpo !max-w-none">
               {ca
-                ? "Aquest web no fa servir galetes d'analítica, de publicitat ni de xarxes socials. L'única galeta que existeix és tècnica i serveix per mantenir oberta la sessió del tauler de gestió: només la rep qui administra el web, no les visites."
-                : 'Esta web no usa cookies de analítica, publicidad ni redes sociales. La única cookie que existe es técnica y sirve para mantener abierta la sesión del panel de gestión: solo la recibe quien administra la web, no los visitantes.'}
+                ? "Aquest web no fa servir galetes d'analítica, de publicitat ni de xarxes socials. Hi ha una galeta tècnica que manté oberta la sessió del tauler de gestió: només la rep qui administra el web, no les visites."
+                : 'Esta web no usa cookies de analítica, publicidad ni redes sociales. Hay una cookie técnica que mantiene abierta la sesión del panel de gestión: solo la recibe quien administra la web, no los visitantes.'}
             </p>
           )}
+          {/* reCAPTCHA no pasa por el cartel: se ampara en el interés legítimo
+              de proteger los formularios, no en el consentimiento. Pero que no
+              pida permiso no quiere decir que se calle. */}
+          {recaptchaActivo && (
+            <p className="t-cuerpo !max-w-none mt-4">
+              {ca
+                ? "Els formularis estan protegits amb reCAPTCHA de Google, que instal·la la galeta _GRECAPTCHA (6 mesos) i rep la teva adreça IP i com interactues amb la pàgina mentre l'emplenes. No és publicitat ni analítica: serveix per distingir una persona d'un programa automàtic, i es basa en l'interès legítim de protegir el web de l'abús, no en el teu consentiment. Per això no apareix al cartell. Només es carrega quan prems enviar, mai en obrir una pàgina."
+                : 'Los formularios están protegidos con reCAPTCHA de Google, que instala la cookie _GRECAPTCHA (6 meses) y recibe tu dirección IP y cómo interactúas con la página mientras lo rellenas. No es publicidad ni analítica: sirve para distinguir a una persona de un programa automático, y se basa en el interés legítimo de proteger la web del abuso, no en tu consentimiento. Por eso no aparece en el cartel. Solo se carga cuando pulsas enviar, nunca al abrir una página.'}
+            </p>
+          )}
+          <PreferenciasCookies
+            idioma={idioma}
+            className="boton mt-6"
+          />
         </Bloque>
 
         <Bloque titulo={ca ? 'Els teus drets' : 'Tus derechos'}>

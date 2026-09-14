@@ -95,6 +95,15 @@ type Textos = {
   cookiesTexto: string
   cookiesAceptar: string
   cookiesRechazar: string
+  /** Cambiar la respuesta al cartel: retirar el consentimiento tiene que ser
+   *  tan fácil como darlo. */
+  cookiesCambiar: string
+  /** Atribución de reCAPTCHA, en trozos para poder meter los dos enlaces. */
+  recaptchaAntes: string
+  recaptchaPrivacidad: string
+  recaptchaY: string
+  recaptchaCondiciones: string
+  recaptchaDespues: string
   experiencia: string
   esMenor: string
   esMenorAyuda: string
@@ -225,6 +234,12 @@ const es: Textos = {
     'Nos ayuda saber qué cursos se miran más, y para eso usaríamos Google Analytics. Si prefieres que no, la web funciona exactamente igual.',
   cookiesAceptar: 'De acuerdo',
   cookiesRechazar: 'No, gracias',
+  cookiesCambiar: 'Preferencias de cookies',
+  recaptchaAntes: 'Este formulario está protegido por reCAPTCHA y se aplican la ',
+  recaptchaPrivacidad: 'política de privacidad',
+  recaptchaY: ' y las ',
+  recaptchaCondiciones: 'condiciones del servicio',
+  recaptchaDespues: ' de Google.',
   experiencia: '¿Has hecho algo parecido antes?',
   esMenor: 'La plaza es para un menor de edad',
   esMenorAyuda: 'Entonces los datos de contacto son los tuyos, y nos dices quién es el alumno.',
@@ -363,6 +378,12 @@ const ca: Textos = {
     'Ens ajuda saber quins cursos es miren més, i per a això faríem servir Google Analytics. Si prefereixes que no, el web funciona exactament igual.',
   cookiesAceptar: 'D\u2019acord',
   cookiesRechazar: 'No, gràcies',
+  cookiesCambiar: 'Preferències de galetes',
+  recaptchaAntes: 'Aquest formulari està protegit per reCAPTCHA i s\u2019hi apliquen la ',
+  recaptchaPrivacidad: 'política de privadesa',
+  recaptchaY: ' i les ',
+  recaptchaCondiciones: 'condicions del servei',
+  recaptchaDespues: ' de Google.',
   experiencia: 'Has fet res semblant abans?',
   esMenor: 'La plaça és per a un menor d\u2019edat',
   esMenorAyuda: 'Llavors les dades de contacte són les teves, i ens dius qui és l\u2019alumne.',
