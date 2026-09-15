@@ -17,9 +17,9 @@
  *
  * ✅ RESUELTO POR IVÁN EL 15/09/2026 (lo que antes había que preguntar)
  *
- * 1. Art-Junior es los MARTES Y JUEVES, y se viene LOS DOS días: por eso su
- *    precio no dice «un día a la semana» como los demás.
- * 2. Los precios son MENSUALES: «55 €/mes · un día a la semana».
+ * 1. Art-Junior es MARTES O JUEVES: se elige uno de los dos días. Van cuatro
+ *    grupos (Primaria y Secundaria, cada una en martes y en jueves).
+ * 2. Los precios son MENSUALES: «48 €/mes · un día a la semana».
  *    `precio_centimos` sigue en NULL: un Offer de schema.org sin unidad le
  *    diría a Google que el curso entero cuesta 48 €.
  * 3. Primaria es de 6 a 8 años y Secundaria de 8 a 12, «aprox.»: va en la
@@ -91,8 +91,8 @@ const CURSOS = [
       TODO_ES,
     ].join('\n\n'),
     duracion: 'De octubre a junio',
-    horario: 'Martes y jueves · Primaria (6–8 años) 17:15–18:45 h · Secundaria (8–12 años) 19:00–20:30 h',
-    precio_texto: '48 €/mes · martes y jueves',
+    horario: 'Martes o jueves · Primaria (6–8 años) 17:15–18:45 h · Secundaria (8–12 años) 19:00–20:30 h',
+    precio_texto: '48 €/mes · un día a la semana',
     plazas: 10,
     profesor: 'Silvia Cano · @art_esespaicreatiu',
     orden: 1,
@@ -108,22 +108,36 @@ const CURSOS = [
         TODO_CA,
       ].join('\n\n'),
       duracion: "D'octubre a juny",
-      horario: 'Dimarts i dijous · Primària (6–8 anys) 17:15–18:45 h · Secundària (8–12 anys) 19:00–20:30 h',
-      precio_texto: '48 €/mes · dimarts i dijous',
+      horario: 'Dimarts o dijous · Primària (6–8 anys) 17:15–18:45 h · Secundària (8–12 anys) 19:00–20:30 h',
+      precio_texto: '48 €/mes · un dia a la setmana',
       profesor: 'Silvia Cano · @art_esespaicreatiu',
     },
     convocatorias: [
+      /* Se elige UN día: un grupo por día para que el formulario lo pregunte
+         y cada día lleve su aforo. */
       {
         etiqueta: 'Primaria (6–8 años)',
-        horario: 'Martes y jueves, 17:15–18:45 h',
+        horario: 'Martes, 17:15–18:45 h',
         plazas: 10,
-        ca: { etiqueta: 'Primària (6–8 anys)', horario: 'Dimarts i dijous, 17:15–18:45 h' },
+        ca: { etiqueta: 'Primària (6–8 anys)', horario: 'Dimarts, 17:15–18:45 h' },
+      },
+      {
+        etiqueta: 'Primaria (6–8 años)',
+        horario: 'Jueves, 17:15–18:45 h',
+        plazas: 10,
+        ca: { etiqueta: 'Primària (6–8 anys)', horario: 'Dijous, 17:15–18:45 h' },
       },
       {
         etiqueta: 'Secundaria (8–12 años)',
-        horario: 'Martes y jueves, 19:00–20:30 h',
+        horario: 'Martes, 19:00–20:30 h',
         plazas: 10,
-        ca: { etiqueta: 'Secundària (8–12 anys)', horario: 'Dimarts i dijous, 19:00–20:30 h' },
+        ca: { etiqueta: 'Secundària (8–12 anys)', horario: 'Dimarts, 19:00–20:30 h' },
+      },
+      {
+        etiqueta: 'Secundaria (8–12 años)',
+        horario: 'Jueves, 19:00–20:30 h',
+        plazas: 10,
+        ca: { etiqueta: 'Secundària (8–12 anys)', horario: 'Dijous, 19:00–20:30 h' },
       },
     ],
   },
