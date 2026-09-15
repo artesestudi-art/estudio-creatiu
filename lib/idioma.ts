@@ -71,6 +71,7 @@ type Textos = {
   imparte: string
   modalidad: string
   precio: string
+  empieza: string
   hastaPersonas: (n: number) => string
   desdeEl: string
 
@@ -211,6 +212,7 @@ const es: Textos = {
   imparte: 'Imparte',
   modalidad: 'Modalidad',
   precio: 'Precio',
+  empieza: 'Empieza',
   hastaPersonas: (n) => `Hasta ${n} personas`,
   desdeEl: 'desde el',
 
@@ -226,7 +228,7 @@ const es: Textos = {
   telefono: 'Teléfono',
   correo: 'Correo',
   opcional: '(opcional)',
-  telefonoAyuda: 'Opcional, pero acelera la respuesta.',
+  telefonoAyuda: 'Para confirmarte la plaza por WhatsApp o llamada.',
   talleres: 'Talleres a medida',
   pedirPresupuesto: 'Pedir presupuesto',
   cookiesTitulo: 'Medir las visitas',
@@ -355,6 +357,7 @@ const ca: Textos = {
   imparte: 'Imparteix',
   modalidad: 'Modalitat',
   precio: 'Preu',
+  empieza: 'Comença',
   hastaPersonas: (n) => `Fins a ${n} persones`,
   desdeEl: 'des del',
 
@@ -370,7 +373,7 @@ const ca: Textos = {
   telefono: 'Telèfon',
   correo: 'Correu',
   opcional: '(opcional)',
-  telefonoAyuda: 'Opcional, però accelera la resposta.',
+  telefonoAyuda: 'Per confirmar-te la plaça per WhatsApp o trucada.',
   talleres: 'Tallers a mida',
   pedirPresupuesto: 'Demanar pressupost',
   cookiesTitulo: 'Mesurar les visites',

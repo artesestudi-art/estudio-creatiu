@@ -159,8 +159,8 @@ export function Privacidad({ idioma }: { idioma: Idioma }) {
             <li>
               <strong>{ca ? 'Sol·licitud de plaça:' : 'Solicitud de plaza:'}</strong>{' '}
               {ca
-                ? "nom, correu, telèfon si el dones, el curs que t'interessa i el que ens expliquis. Serveix per gestionar la teva sol·licitud i contestar-te. Base legal: el teu consentiment i els passos previs a un contracte."
-                : 'nombre, correo, teléfono si lo das, el curso que te interesa y lo que nos cuentes. Se usa para gestionar tu solicitud y contestarte. Base legal: tu consentimiento y los pasos previos a un contrato.'}
+                ? "nom, correu, telèfon, el curs que t'interessa i el que ens expliquis. Serveix per gestionar la teva sol·licitud i contestar-te. Base legal: el teu consentiment i els passos previs a un contracte."
+                : 'nombre, correo, teléfono, el curso que te interesa y lo que nos cuentes. Se usa para gestionar tu solicitud y contestarte. Base legal: tu consentimiento y los pasos previos a un contrato.'}
             </li>
             <li>
               <strong>{ca ? 'Plaça per a un menor:' : 'Plaza para un menor:'}</strong>{' '}
@@ -171,8 +171,8 @@ export function Privacidad({ idioma }: { idioma: Idioma }) {
             <li>
               <strong>{ca ? 'Formulari de contacte:' : 'Formulario de contacto:'}</strong>{' '}
               {ca
-                ? 'nom, correu, telèfon si el dones i el teu missatge, per respondre’t. Base legal: el teu consentiment.'
-                : 'nombre, correo, teléfono si lo das y tu mensaje, para responderte. Base legal: tu consentimiento.'}
+                ? 'nom, correu, telèfon i el teu missatge, per respondre’t. Base legal: el teu consentiment.'
+                : 'nombre, correo, teléfono y tu mensaje, para responderte. Base legal: tu consentimiento.'}
             </li>
             <li>
               <strong>{ca ? 'Butlletí:' : 'Newsletter:'}</strong>{' '}

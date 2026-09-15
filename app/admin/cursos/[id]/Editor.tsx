@@ -122,6 +122,27 @@ export default function Editor({ curso, hayAlmacen }: { curso: Curso | null; hay
         <h2 className="text-[15px] font-semibold">Datos prácticos</h2>
 
         <div className="grid gap-4 sm:grid-cols-2">
+          <Campo etiqueta="Fecha de inicio">
+            <input
+              type="date"
+              name="fecha_inicio"
+              defaultValue={val('fecha_inicio', curso?.fecha_inicio)}
+              className={claseInput}
+            />
+          </Campo>
+
+          <Campo
+            etiqueta="Fecha de fin"
+            ayuda="Al día siguiente, a los matriculados les llega el correo pidiendo una reseña."
+          >
+            <input
+              type="date"
+              name="fecha_fin"
+              defaultValue={val('fecha_fin', curso?.fecha_fin)}
+              className={claseInput}
+            />
+          </Campo>
+
           <Campo etiqueta="Disciplina" ayuda="Cerámica, ilustración, fotografía…">
             <input name="disciplina" defaultValue={val('disciplina', curso?.disciplina)} className={claseInput} />
           </Campo>

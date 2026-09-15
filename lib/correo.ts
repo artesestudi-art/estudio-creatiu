@@ -170,6 +170,71 @@ export async function acusarInscripcion(datos: {
   })
 }
 
+/* ─────────────── Reseña al terminar el curso ─────────────── */
+
+const TEXTOS_RESENA = {
+  es: {
+    asunto: (curso: string) => `¿Qué tal ${curso}? Nos ayudas con una reseña`,
+    hola: 'Hola',
+    terminado: (curso: string, alumno: string | null) =>
+      alumno
+        ? `Ya ha terminado <strong>${curso}</strong> y queremos daros las gracias por confiarnos a ${alumno}.`
+        : `Ya ha terminado <strong>${curso}</strong> y queremos darte las gracias por venir al taller.`,
+    pedir:
+      'Somos un estudio pequeño y lo que más nos ayuda es que otras personas lean cómo ha ido. Si tienes un minuto, ¿nos dejas una reseña?',
+    boton: 'Dejar una reseña',
+    cierre: 'Y si algo no fue como esperabas, respóndenos a este correo: lo leemos.',
+  },
+  ca: {
+    asunto: (curso: string) => `Què tal ${curso}? Ens ajudes amb una ressenya`,
+    hola: 'Hola',
+    terminado: (curso: string, alumno: string | null) =>
+      alumno
+        ? `Ja ha acabat <strong>${curso}</strong> i volem donar-vos les gràcies per confiar-nos ${alumno}.`
+        : `Ja ha acabat <strong>${curso}</strong> i volem donar-te les gràcies per venir al taller.`,
+    pedir:
+      'Som un estudi petit i el que més ens ajuda és que altres persones llegeixin com ha anat. Si tens un minut, ens deixes una ressenya?',
+    boton: 'Deixar una ressenya',
+    cierre: 'I si alguna cosa no va anar com esperaves, respon aquest correu: el llegim.',
+  },
+}
+
+export async function pedirResena(datos: {
+  nombre: string
+  email: string
+  /** Si la plaza era de un menor, `nombre` es el tutor y este es el alumno. */
+  alumno: string | null
+  curso: string
+  url: string
+  idioma: 'es' | 'ca'
+}): Promise<ResultadoEnvio> {
+  const t = TEXTOS_RESENA[datos.idioma]
+  const curso = escapar(datos.curso)
+  const html = `
+    <div style="font-family:system-ui,-apple-system,'Segoe UI',sans-serif;max-width:560px;color:#111">
+      <p style="font-size:16px;margin:0 0 14px">${t.hola} ${escapar(datos.nombre)},</p>
+      <p style="font-size:16px;line-height:1.6;margin:0 0 14px">
+        ${t.terminado(curso, datos.alumno ? escapar(datos.alumno) : null)}
+      </p>
+      <p style="font-size:16px;line-height:1.6;margin:0 0 22px">${t.pedir}</p>
+      <p style="margin:0 0 26px">
+        <a href="${escapar(datos.url)}"
+           style="display:inline-block;background:#14488b;color:#fff;text-decoration:none;font-weight:600;font-size:16px;padding:13px 22px;border-radius:999px">
+          ${t.boton}
+        </a>
+      </p>
+      <p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 20px">${t.cierre}</p>
+      <p style="font-size:15px;color:#444;margin:0">${escapar(ESTUDIO.nombre)}</p>
+    </div>`
+
+  return enviar({
+    para: datos.email,
+    asunto: t.asunto(datos.curso),
+    html,
+    responderA: destinoAvisos(),
+  })
+}
+
 /* ─────────────── Aviso al estudio: contacto ─────────────── */
 
 export async function avisarContacto(datos: {

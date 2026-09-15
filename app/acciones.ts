@@ -38,6 +38,12 @@ export type EstadoFormulario = {
    * Devolviendo los valores, el formulario los vuelve a pintar.
    */
   valores?: Record<string, string>
+  /**
+   * ¿Salió de verdad el correo de confirmación al alumno? Sin él la web decía
+   * «te hemos escrito un correo… mira en spam» aunque no hubiera salido nada,
+   * y la persona se quedaba buscando un correo que no existe.
+   */
+  acuse?: boolean
 }
 
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/
@@ -118,7 +124,11 @@ export async function enviarInscripcion(
       valores,
     }
   }
-  if (telefono && !TELEFONO_ES.test(telefono)) {
+  // Obligatorio: el estudio confirma las plazas por WhatsApp o llamada.
+  if (!telefono) {
+    return { ok: false, mensaje: 'Déjanos un teléfono para confirmarte la plaza.', campo: 'telefono', valores }
+  }
+  if (!TELEFONO_ES.test(telefono)) {
     return { ok: false, mensaje: 'Ese teléfono no parece correcto.', campo: 'telefono', valores }
   }
   if (!datos.get('consentimiento')) {
@@ -206,18 +216,20 @@ export async function enviarInscripcion(
   // desde el dominio del estudio, que es lo que lo acaba mandando a la carpeta
   // de correo no deseado para los alumnos de verdad. La inscripción sigue
   // guardada y avisada: si era una persona, el estudio le escribe igual.
+  let acuse = false
   if (veredicto.estado !== 'sospechoso') {
-    await acusarInscripcion({
+    acuse = (await acusarInscripcion({
       nombre,
       email,
       curso: curso?.titulo ?? 'tu consulta',
       convocatoria: convocatoriaTexto,
-    })
+    })).ok
   }
 
   return {
     ok: true,
     mensaje: 'Solicitud recibida. Te escribimos para confirmarte la plaza.',
+    acuse,
   }
 }
 
@@ -247,7 +259,10 @@ export async function enviarContacto(
 
   if (nombre.length < 2) return { ok: false, mensaje: 'Escribe tu nombre.', campo: 'nombre', valores }
   if (!EMAIL.test(email)) return { ok: false, mensaje: 'Revisa el correo.', campo: 'email', valores }
-  if (telefono && !TELEFONO_ES.test(telefono)) {
+  if (!telefono) {
+    return { ok: false, mensaje: 'Déjanos un teléfono para poder contestarte.', campo: 'telefono', valores }
+  }
+  if (!TELEFONO_ES.test(telefono)) {
     return { ok: false, mensaje: 'Ese teléfono no parece correcto.', campo: 'telefono', valores }
   }
   if (mensaje.length < 5) {

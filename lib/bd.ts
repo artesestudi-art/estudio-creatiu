@@ -1,4 +1,4 @@
-import { neon } from '@neondatabase/serverless'
+import { neon, types } from '@neondatabase/serverless'
 
 /**
  * Base de datos del estudio (Neon Postgres).
@@ -20,6 +20,22 @@ export function conexion() {
   if (!url) throw new Error('Falta DATABASE_URL')
   return neon(url)
 }
+
+/**
+ * Las columnas DATE salen como texto `2026-10-01`, no como `Date`.
+ *
+ * ⛔ El driver las convierte por defecto a medianoche EN LA ZONA DEL SERVIDOR:
+ * en este Mac el 1 de octubre llegaba como `2026-09-30T22:00Z`, y en Vercel
+ * (UTC) como otra cosa. Un `<input type="date">` no sabe qué hacer con eso y
+ * la comparación «¿ya terminó el curso?» dependería de dónde corre el código.
+ * Un día del calendario no tiene hora: se deja como texto.
+ *
+ * ⚠️ Tiene que ser `types.setTypeParser`, global. La opción `types` de
+ * `neon(url, { types })` el driver HTTP la IGNORA sin avisar: probado, la
+ * fecha seguía llegando como `Date` y la ficha del curso pintaba «Invalid Date».
+ */
+const FECHA = 1082
+types.setTypeParser(FECHA, (valor: string) => valor)
 
 /* ───────────────────────────── Tipos ───────────────────────────── */
 
@@ -51,6 +67,11 @@ export type Curso = {
   imagen_alt: string | null
   seo_titulo: string | null
   seo_descripcion: string | null
+  /** Días del calendario, `2026-10-01`. Valen para todos los grupos del curso
+   *  salvo que la convocatoria tenga las suyas. Con la de fin sale el correo
+   *  de reseñas a los matriculados (lib/resenas.ts). */
+  fecha_inicio: string | null
+  fecha_fin: string | null
   orden: number
   publicado: boolean
   destacado: boolean
@@ -123,6 +144,9 @@ export type Inscripcion = {
   aviso_error: string | null
   /** Lo que opinó reCAPTCHA si hubo algo raro. Ver `lib/recaptcha.ts`. */
   antispam: string | null
+  /** Cuándo SALIÓ el correo pidiendo reseña. NULL si no ha salido. */
+  resena_enviada: string | null
+  resena_error: string | null
 }
 
 export type EstadoContacto = 'nuevo' | 'contestado' | 'cerrado' | 'descartado'
@@ -217,12 +241,14 @@ export async function crearCurso(d: DatosCurso): Promise<number> {
     INSERT INTO cursos (
       slug, titulo, disciplina, modalidad, nivel, resumen, descripcion, temario,
       duracion, horario, precio_texto, precio_centimos, plazas, profesor,
-      imagen, imagen_alt, seo_titulo, seo_descripcion, orden, publicado, destacado, ca
+      imagen, imagen_alt, seo_titulo, seo_descripcion, fecha_inicio, fecha_fin,
+      orden, publicado, destacado, ca
     ) VALUES (
       ${d.slug}, ${d.titulo}, ${d.disciplina}, ${d.modalidad}, ${d.nivel},
       ${d.resumen}, ${d.descripcion}, ${d.temario}, ${d.duracion}, ${d.horario},
       ${d.precio_texto}, ${d.precio_centimos}, ${d.plazas}, ${d.profesor},
       ${d.imagen}, ${d.imagen_alt}, ${d.seo_titulo}, ${d.seo_descripcion},
+      ${d.fecha_inicio}, ${d.fecha_fin},
       ${d.orden}, ${d.publicado}, ${d.destacado}, ${JSON.stringify(d.ca ?? {})}::jsonb
     ) RETURNING id
   `) as { id: number }[]
@@ -240,7 +266,9 @@ export async function actualizarCurso(id: number, d: DatosCurso): Promise<void> 
       precio_texto = ${d.precio_texto}, precio_centimos = ${d.precio_centimos},
       plazas = ${d.plazas}, profesor = ${d.profesor}, imagen = ${d.imagen},
       imagen_alt = ${d.imagen_alt}, seo_titulo = ${d.seo_titulo},
-      seo_descripcion = ${d.seo_descripcion}, orden = ${d.orden},
+      seo_descripcion = ${d.seo_descripcion},
+      fecha_inicio = ${d.fecha_inicio}, fecha_fin = ${d.fecha_fin},
+      orden = ${d.orden},
       publicado = ${d.publicado}, destacado = ${d.destacado},
       ca = ${JSON.stringify(d.ca ?? {})}::jsonb,
       actualizado = now()
@@ -403,6 +431,75 @@ export async function borrarInscripcion(id: number): Promise<void> {
   await sql`DELETE FROM inscripciones WHERE id = ${id}`
 }
 
+/** Lo que el estudio puede corregir a mano de una inscripción: un correo mal
+ *  escrito, el teléfono, o pasar a alguien a otro grupo. */
+export type EdicionInscripcion = {
+  nombre: string
+  email: string
+  telefono: string | null
+  es_menor: boolean
+  alumno_nombre: string | null
+  alumno_edad: string | null
+  curso_id: number | null
+  convocatoria_id: number | null
+  curso_titulo: string
+  convocatoria_texto: string | null
+  mensaje: string | null
+}
+
+export async function editarInscripcion(id: number, d: EdicionInscripcion): Promise<void> {
+  const sql = conexion()
+  await sql`
+    UPDATE inscripciones SET
+      nombre = ${d.nombre}, email = ${d.email}, telefono = ${d.telefono},
+      es_menor = ${d.es_menor}, alumno_nombre = ${d.alumno_nombre},
+      alumno_edad = ${d.alumno_edad}, curso_id = ${d.curso_id},
+      convocatoria_id = ${d.convocatoria_id}, curso_titulo = ${d.curso_titulo},
+      convocatoria_texto = ${d.convocatoria_texto}, mensaje = ${d.mensaje}
+    WHERE id = ${id}
+  `
+}
+
+export async function inscripcionPorId(id: number): Promise<Inscripcion | null> {
+  const sql = conexion()
+  const filas = (await sql`SELECT * FROM inscripciones WHERE id = ${id} LIMIT 1`) as Inscripcion[]
+  return filas[0] ?? null
+}
+
+/* ─────────────────────── Reseñas ─────────────────────── */
+
+/** Una matrícula con el día en que termina su curso: el de su grupo si lo
+ *  tiene, y si no el del curso. */
+export type MatriculaConFin = Inscripcion & { termina: string | null }
+
+/**
+ * Matriculados, con la fecha en que acaba lo suyo.
+ *
+ * El fin del GRUPO manda sobre el del curso: el crochet es trimestral y el
+ * resto va de octubre a junio, y un curso puede tener un grupo intensivo que
+ * acabe antes. `hoy` llega de fuera, en hora de Madrid (ver lib/resenas.ts).
+ */
+export async function matriculasConFin(): Promise<MatriculaConFin[]> {
+  const sql = conexion()
+  return (await sql`
+    SELECT i.*, to_char(COALESCE(v.fin, c.fecha_fin), 'YYYY-MM-DD') AS termina
+    FROM inscripciones i
+    LEFT JOIN convocatorias v ON v.id = i.convocatoria_id
+    LEFT JOIN cursos c ON c.id = i.curso_id
+    WHERE i.estado = 'matriculada'
+    ORDER BY COALESCE(v.fin, c.fecha_fin) DESC NULLS LAST, i.nombre ASC
+  `) as MatriculaConFin[]
+}
+
+export async function marcarResena(id: number, ok: boolean, error?: string): Promise<void> {
+  const sql = conexion()
+  if (ok) {
+    await sql`UPDATE inscripciones SET resena_enviada = now(), resena_error = NULL WHERE id = ${id}`
+  } else {
+    await sql`UPDATE inscripciones SET resena_error = ${error ?? 'Error desconocido'} WHERE id = ${id}`
+  }
+}
+
 /* ─────────────────────── Contactos ─────────────────────── */
 
 export type NuevoContacto = {
@@ -443,6 +540,18 @@ export async function notasContacto(id: number, notas: string): Promise<void> {
 export async function borrarContacto(id: number): Promise<void> {
   const sql = conexion()
   await sql`DELETE FROM contactos WHERE id = ${id}`
+}
+
+export async function editarContacto(
+  id: number,
+  d: { nombre: string; email: string; telefono: string | null; mensaje: string },
+): Promise<void> {
+  const sql = conexion()
+  await sql`
+    UPDATE contactos SET
+      nombre = ${d.nombre}, email = ${d.email}, telefono = ${d.telefono}, mensaje = ${d.mensaje}
+    WHERE id = ${id}
+  `
 }
 
 /* ────────────────────── Aviso enviado ────────────────────── */
@@ -589,7 +698,8 @@ export async function ultimaActualizacion(): Promise<Date | null> {
   const [f] = (await sql`
     SELECT GREATEST(
       COALESCE((SELECT MAX(actualizado) FROM cursos), 'epoch'::timestamptz),
-      COALESCE((SELECT MAX(actualizado) FROM contenidos), 'epoch'::timestamptz)
+      -- Los ajustes del correo de reseñas no son contenido de la web.
+      COALESCE((SELECT MAX(actualizado) FROM contenidos WHERE clave <> 'resenas'), 'epoch'::timestamptz)
     ) AS fecha
   `) as { fecha: string | null }[]
   if (!f?.fecha) return null

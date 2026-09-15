@@ -64,6 +64,11 @@ function precioACentimos(valor: string): number | null {
   return Number.isFinite(n) ? Math.round(n * 100) : null
 }
 
+/** Lo que manda un `<input type="date">`: `2026-10-01`, o nada. */
+function diaValido(valor: string): string | null {
+  return /^\d{4}-\d{2}-\d{2}$/.test(valor) ? valor : null
+}
+
 export async function guardarCurso(
   _previo: EstadoCurso | null,
   datos: FormData,
@@ -140,9 +145,15 @@ export async function guardarCurso(
     imagen_alt: opcional(datos, 'imagen_alt'),
     seo_titulo: opcional(datos, 'seo_titulo'),
     seo_descripcion: opcional(datos, 'seo_descripcion'),
+    fecha_inicio: diaValido(texto(datos, 'fecha_inicio')),
+    fecha_fin: diaValido(texto(datos, 'fecha_fin')),
     orden: entero(datos, 'orden') ?? 0,
     publicado: datos.get('publicado') === 'on',
     destacado: datos.get('destacado') === 'on',
+  }
+
+  if (curso.fecha_inicio && curso.fecha_fin && curso.fecha_fin < curso.fecha_inicio) {
+    return { ok: false, mensaje: 'La fecha de fin es anterior a la de inicio.', campo: 'fecha_fin', valores }
   }
 
   if (curso.publicado && !curso.resumen) {
@@ -198,6 +209,7 @@ export async function accionBorrarCurso(datos: FormData) {
 
   revalidatePath('/admin/cursos')
   revalidatePath('/')
+  revalidatePath(`/cursos/${curso.slug}`)
   redirect('/admin/cursos')
 }
 

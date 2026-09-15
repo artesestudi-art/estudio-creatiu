@@ -15,30 +15,18 @@
  * que Silvia cambie desde el panel se pierde si se relanza, así que en cuanto
  * ella empiece a editar, este script deja de usarse.
  *
- * ⚠️ LO QUE HAY QUE PREGUNTARLE ANTES DE PUBLICAR
+ * ✅ RESUELTO POR IVÁN EL 15/09/2026 (lo que antes había que preguntar)
  *
- * 1. ART-JUNIOR: LOS DÍAS NO CUADRAN ENTRE SUS DOS HOJAS.
- *    La hoja de textos dice «De lunes a miércoles … // jueves». La hoja
- *    HORARIOS —el cuadro de salas— pone Art-Junior en MARTES, MIÉRCOLES y
- *    JUEVES, y el lunes de 19:00 a 20:30 en la Sala A lo ocupa Art-ístico de
- *    adultos, que es exactamente la hora de la Secundaria de Art-Junior. Las
- *    dos cosas no caben en la misma sala. Aquí manda el cuadro de salas, que
- *    es el que reparte el espacio, pero esto lo tiene que confirmar ella.
- *
- * 2. ¿Los 48/50/55/65 € son AL MES? Sigue sin decirlo. El taller de crochet
- *    lo insinúa —trimestral y «un solo pago: 150 €», que son tres meses menos
- *    descuento—, pero insinuar no es decir. `precio_centimos` se queda en NULL
- *    a propósito en los ocho: sin esa respuesta el schema.org no declara
- *    precio y la web enseña la frase literal de Silvia, que es verdad, en vez
- *    de un «/mes» inventado.
- *
- * 3. Qué edades son «Primaria» y «Secundaria». De Costura Junior y de
- *    Pequeños creadores sí lo sabemos: el cuadro de salas dice «a partir de
- *    10 anys», y así va puesto.
- *
- * 4. El día exacto de octubre en que empieza cada grupo: las convocatorias
- *    van sin `inicio` ni `fin`. El Excel solo dice «convocatoria abierta a
- *    partir de septiembre», que ya está en la entradilla de la portada.
+ * 1. Art-Junior es los MARTES Y JUEVES. Se ha escrito así, literal; queda por
+ *    confirmar si se viene los dos días o se elige uno, porque el precio dice
+ *    «un día a la semana».
+ * 2. Los precios son MENSUALES: «48 €/mes · un día a la semana».
+ *    `precio_centimos` sigue en NULL: un Offer de schema.org sin unidad le
+ *    diría a Google que el curso entero cuesta 48 €.
+ * 3. Primaria es de 6 a 8 años y Secundaria de 8 a 12, «aprox.»: va en la
+ *    etiqueta del grupo, que es lo que elige quien se apunta.
+ * 4. Todos empiezan el jueves 1 de octubre (`INICIO`). La fecha de FIN no la
+ *    ha dado nadie, y sin ella no sale el correo de reseñas.
  *
  * Correcciones hechas sobre el original, ninguna cambia un dato:
  *   - los horarios se componen igual en los ocho cursos (mismo dato, misma
@@ -85,6 +73,10 @@ const TEJIDOS_CA =
 const TODO_ES = 'Todo el material está incluido.'
 const TODO_CA = 'Tot el material està inclòs.'
 
+/** Todos empiezan el jueves 1 de octubre de 2026 (Iván, 15/09/2026). La fecha
+ *  de FIN no la ha dado nadie: «de octubre a junio» no dice qué día. */
+const INICIO = '2026-10-01'
+
 /** El catálogo, tal como lo escribió Silvia. */
 const CURSOS = [
   /* ─────────────────── Niños y adolescentes ─────────────────── */
@@ -100,8 +92,8 @@ const CURSOS = [
       TODO_ES,
     ].join('\n\n'),
     duracion: 'De octubre a junio',
-    horario: 'De martes a jueves · Primaria 17:15–18:45 h · Secundaria (martes y miércoles) 19:00–20:30 h',
-    precio_texto: '48 € un día a la semana',
+    horario: 'Martes y jueves · Primaria (6–8 años) 17:15–18:45 h · Secundaria (8–12 años) 19:00–20:30 h',
+    precio_texto: '48 €/mes · un día a la semana',
     plazas: 10,
     profesor: 'Silvia Cano · @art_esespaicreatiu',
     orden: 1,
@@ -117,22 +109,22 @@ const CURSOS = [
         TODO_CA,
       ].join('\n\n'),
       duracion: "D'octubre a juny",
-      horario: 'De dimarts a dijous · Primària 17:15–18:45 h · Secundària (dimarts i dimecres) 19:00–20:30 h',
-      precio_texto: '48 € un dia a la setmana',
+      horario: 'Dimarts i dijous · Primària (6–8 anys) 17:15–18:45 h · Secundària (8–12 anys) 19:00–20:30 h',
+      precio_texto: '48 €/mes · un dia a la setmana',
       profesor: 'Silvia Cano · @art_esespaicreatiu',
     },
     convocatorias: [
       {
-        etiqueta: 'Primaria',
-        horario: 'Martes, miércoles o jueves, 17:15–18:45 h',
+        etiqueta: 'Primaria (6–8 años)',
+        horario: 'Martes y jueves, 17:15–18:45 h',
         plazas: 10,
-        ca: { etiqueta: 'Primària', horario: 'Dimarts, dimecres o dijous, 17:15–18:45 h' },
+        ca: { etiqueta: 'Primària (6–8 anys)', horario: 'Dimarts i dijous, 17:15–18:45 h' },
       },
       {
-        etiqueta: 'Secundaria',
-        horario: 'Martes o miércoles, 19:00–20:30 h',
+        etiqueta: 'Secundaria (8–12 años)',
+        horario: 'Martes y jueves, 19:00–20:30 h',
         plazas: 10,
-        ca: { etiqueta: 'Secundària', horario: 'Dimarts o dimecres, 19:00–20:30 h' },
+        ca: { etiqueta: 'Secundària (8–12 anys)', horario: 'Dimarts i dijous, 19:00–20:30 h' },
       },
     ],
   },
@@ -150,8 +142,8 @@ const CURSOS = [
       'El precio incluye el material y las hornadas.',
     ].join('\n\n'),
     duracion: 'De octubre a junio',
-    horario: 'Viernes · Primaria 17:15–18:45 h · Secundaria 19:00–20:30 h',
-    precio_texto: '65 € un día a la semana',
+    horario: 'Viernes · Primaria (6–8 años) 17:15–18:45 h · Secundaria (8–12 años) 19:00–20:30 h',
+    precio_texto: '65 €/mes · un día a la semana',
     plazas: 10,
     profesor: 'Alicia · @lispradell',
     orden: 2,
@@ -168,22 +160,22 @@ const CURSOS = [
         'El preu inclou el material i les fornades.',
       ].join('\n\n'),
       duracion: "D'octubre a juny",
-      horario: 'Divendres · Primària 17:15–18:45 h · Secundària 19:00–20:30 h',
-      precio_texto: '65 € un dia a la setmana',
+      horario: 'Divendres · Primària (6–8 anys) 17:15–18:45 h · Secundària (8–12 anys) 19:00–20:30 h',
+      precio_texto: '65 €/mes · un dia a la setmana',
       profesor: 'Alicia · @lispradell',
     },
     convocatorias: [
       {
-        etiqueta: 'Primaria',
+        etiqueta: 'Primaria (6–8 años)',
         horario: 'Viernes, 17:15–18:45 h',
         plazas: 10,
-        ca: { etiqueta: 'Primària', horario: 'Divendres, 17:15–18:45 h' },
+        ca: { etiqueta: 'Primària (6–8 anys)', horario: 'Divendres, 17:15–18:45 h' },
       },
       {
-        etiqueta: 'Secundaria',
+        etiqueta: 'Secundaria (8–12 años)',
         horario: 'Viernes, 19:00–20:30 h',
         plazas: 10,
-        ca: { etiqueta: 'Secundària', horario: 'Divendres, 19:00–20:30 h' },
+        ca: { etiqueta: 'Secundària (8–12 anys)', horario: 'Divendres, 19:00–20:30 h' },
       },
     ],
   },
@@ -204,7 +196,7 @@ const CURSOS = [
     ].join('\n\n'),
     duracion: 'De octubre a junio',
     horario: 'Jueves 18:30–19:30 h',
-    precio_texto: '50 € un día a la semana',
+    precio_texto: '50 €/mes · un día a la semana',
     plazas: 6,
     profesor: 'Maria · @eltallerdemaresca',
     orden: 3,
@@ -222,7 +214,7 @@ const CURSOS = [
       ].join('\n\n'),
       duracion: "D'octubre a juny",
       horario: 'Dijous 18:30–19:30 h',
-      precio_texto: '50 € un dia a la setmana',
+      precio_texto: '50 €/mes · un dia a la setmana',
       profesor: 'Maria · @eltallerdemaresca',
     },
     convocatorias: [
@@ -256,7 +248,7 @@ const CURSOS = [
     ].join('\n\n'),
     duracion: 'De octubre a junio',
     horario: 'Viernes 17:30–19:00 h',
-    precio_texto: '50 € un día a la semana',
+    precio_texto: '50 €/mes · un día a la semana',
     plazas: 6,
     profesor: 'Alba Selva · @albaselva',
     orden: 4,
@@ -281,7 +273,7 @@ const CURSOS = [
       ].join('\n\n'),
       duracion: "D'octubre a juny",
       horario: 'Divendres 17:30–19:00 h',
-      precio_texto: '50 € un dia a la setmana',
+      precio_texto: '50 €/mes · un dia a la setmana',
       profesor: 'Alba Selva · @byalbaselva',
     },
     convocatorias: [
@@ -309,7 +301,7 @@ const CURSOS = [
     ].join('\n\n'),
     duracion: 'De octubre a junio',
     horario: 'Lunes 19:00–20:30 h · Martes 11:00–12:30 h · Jueves 11:00–12:30 h',
-    precio_texto: '55 € un día a la semana',
+    precio_texto: '55 €/mes · un día a la semana',
     plazas: 10,
     profesor: 'Silvia Cano · @art_esespaicreatiu',
     orden: 5,
@@ -328,7 +320,7 @@ const CURSOS = [
       ].join('\n\n'),
       duracion: "D'octubre a juny",
       horario: 'Dilluns 19:00–20:30 h · Dimarts 11:00–12:30 h · Dijous 11:00–12:30 h',
-      precio_texto: '55 € un dia a la setmana',
+      precio_texto: '55 €/mes · un dia a la setmana',
       profesor: 'Silvia Cano · @art_esespaicreatiu',
     },
     convocatorias: [
@@ -367,7 +359,7 @@ const CURSOS = [
     ].join('\n\n'),
     duracion: 'De octubre a junio',
     horario: 'Martes 10:00–11:30 h · Miércoles 17:00–18:30 h',
-    precio_texto: '55 € un día a la semana',
+    precio_texto: '55 €/mes · un día a la semana',
     plazas: 6,
     profesor: 'Jordina · @bunic_handmade',
     orden: 6,
@@ -385,7 +377,7 @@ const CURSOS = [
       ].join('\n\n'),
       duracion: "D'octubre a juny",
       horario: 'Dimarts 10:00–11:30 h · Dimecres 17:00–18:30 h',
-      precio_texto: '55 € un dia a la setmana',
+      precio_texto: '55 €/mes · un dia a la setmana',
       profesor: 'Jordina · @bunic_handmade',
     },
     convocatorias: [
@@ -423,7 +415,7 @@ const CURSOS = [
     ].join('\n\n'),
     duracion: 'De octubre a junio',
     horario: 'Martes 18:30–20:30 h',
-    precio_texto: '55 € un día a la semana',
+    precio_texto: '55 €/mes · un día a la semana',
     plazas: 6,
     profesor: 'Alba Selva · @albaselva',
     orden: 7,
@@ -446,7 +438,7 @@ const CURSOS = [
       ].join('\n\n'),
       duracion: "D'octubre a juny",
       horario: 'Dimarts 18:30–20:30 h',
-      precio_texto: '55 € un dia a la setmana',
+      precio_texto: '55 €/mes · un dia a la setmana',
       profesor: 'Alba Selva · @byalbaselva',
     },
     convocatorias: [
@@ -481,7 +473,7 @@ const CURSOS = [
     ].join('\n\n'),
     duracion: 'Trimestral, de octubre a diciembre',
     horario: 'Jueves 19:00–21:00 h',
-    precio_texto: '55 € un día a la semana',
+    precio_texto: '55 €/mes · un día a la semana',
     plazas: 10,
     profesor: 'Alba Selva · @albaselva',
     orden: 8,
@@ -504,7 +496,7 @@ const CURSOS = [
       ].join('\n\n'),
       duracion: "Trimestral, d'octubre a desembre",
       horario: 'Dijous 19:00–21:00 h',
-      precio_texto: '55 € un dia a la setmana',
+      precio_texto: '55 €/mes · un dia a la setmana',
       profesor: 'Alba Selva · @byalbaselva',
     },
     convocatorias: [
@@ -535,12 +527,12 @@ for (const c of CURSOS) {
     INSERT INTO cursos (
       slug, titulo, disciplina, modalidad, nivel, resumen, descripcion,
       duracion, horario, precio_texto, precio_centimos, plazas, profesor,
-      seo_titulo, orden, publicado, ca
+      seo_titulo, fecha_inicio, orden, publicado, ca
     ) VALUES (
       ${c.slug}, ${c.titulo}, ${c.disciplina}, 'presencial', ${c.nivel},
       ${c.resumen}, ${c.descripcion}, ${c.duracion}, ${c.horario},
       ${c.precio_texto}, NULL, ${c.plazas}, ${c.profesor},
-      ${c.seo_titulo ?? null}, ${c.orden}, true, ${JSON.stringify(c.ca)}
+      ${c.seo_titulo ?? null}, ${INICIO}, ${c.orden}, true, ${JSON.stringify(c.ca)}
     )
     ON CONFLICT (slug) DO UPDATE SET
       titulo = EXCLUDED.titulo,
@@ -554,6 +546,7 @@ for (const c of CURSOS) {
       plazas = EXCLUDED.plazas,
       profesor = EXCLUDED.profesor,
       seo_titulo = EXCLUDED.seo_titulo,
+      fecha_inicio = EXCLUDED.fecha_inicio,
       orden = EXCLUDED.orden,
       publicado = EXCLUDED.publicado,
       ca = EXCLUDED.ca,

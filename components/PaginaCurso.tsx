@@ -127,8 +127,9 @@ export default async function PaginaCurso({ slug, idioma }: { slug: string; idio
           hasCourseInstance: abiertas.map((v) => ({
             '@type': 'CourseInstance',
             courseMode: MODALIDAD_SCHEMA[v.modalidad ?? curso.modalidad] ?? 'Onsite',
-            ...(v.inicio ? { startDate: v.inicio } : {}),
-            ...(v.fin ? { endDate: v.fin } : {}),
+            // Las fechas del grupo mandan; si no tiene, las del curso.
+            ...((v.inicio ?? curso.fecha_inicio) ? { startDate: v.inicio ?? curso.fecha_inicio } : {}),
+            ...((v.fin ?? curso.fecha_fin) ? { endDate: v.fin ?? curso.fecha_fin } : {}),
             ...(curso.precio_centimos !== null
               ? {
                   offers: {
@@ -207,6 +208,9 @@ export default async function PaginaCurso({ slug, idioma }: { slug: string; idio
             {/* Los datos duros en fila, como una ficha técnica. */}
             <dl className="revela mt-14 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-white/12 pt-10 md:grid-cols-4">
               {precio && <Ficha etiqueta={t.precio} valor={precio} destacado />}
+              {curso.fecha_inicio && (
+                <Ficha etiqueta={t.empieza} valor={diaLargo(curso.fecha_inicio, idioma)} />
+              )}
               {curso.duracion && <Ficha etiqueta={t.duracion} valor={curso.duracion} />}
               {curso.horario && <Ficha etiqueta={t.horario} valor={curso.horario} />}
               {curso.plazas !== null && (
@@ -286,9 +290,11 @@ export default async function PaginaCurso({ slug, idioma }: { slug: string; idio
                             className="text-[0.95rem] text-[var(--color-tinta-60)]"
                           >
                             {t.desdeEl}{' '}
-                            {new Date(v.inicio).toLocaleDateString(idioma === 'ca' ? 'ca-ES' : 'es-ES', {
+                            {new Date(`${v.inicio}T00:00:00Z`).toLocaleDateString(idioma === 'ca' ? 'ca-ES' : 'es-ES', {
                               day: 'numeric',
                               month: 'long',
+                              // Un día sin hora: en UTC no se corre al anterior.
+                              timeZone: 'UTC',
                             })}
                           </time>
                         )}
@@ -375,6 +381,17 @@ export default async function PaginaCurso({ slug, idioma }: { slug: string; idio
       )}
     </div>
   )
+}
+
+/** «jueves, 1 de octubre». En UTC: es un día del calendario, sin hora. */
+function diaLargo(dia: string, idioma: 'es' | 'ca'): string {
+  const texto = new Date(`${dia}T00:00:00Z`).toLocaleDateString(idioma === 'ca' ? 'ca-ES' : 'es-ES', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  })
+  return texto.charAt(0).toUpperCase() + texto.slice(1)
 }
 
 function Ficha({

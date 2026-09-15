@@ -71,9 +71,7 @@ export default function FormularioInscripcion({
       <div className="border-t border-current/25 pt-8">
         <p className="t-media mb-4">{t.solicitudRecibida}</p>
         <p className="t-cuerpo">{estado.mensaje}</p>
-        <p className="mt-5 text-[0.9rem] opacity-55">
-          {t.miraEnSpam}
-        </p>
+        {estado.acuse && <p className="mt-5 text-[0.9rem] opacity-55">{t.miraEnSpam}</p>}
       </div>
     )
   }
@@ -192,6 +190,7 @@ export default function FormularioInscripcion({
           etiqueta={t.telefono}
           idioma={idioma}
           tipo="tel"
+          requerido
           autoComplete="tel"
           modo="tel"
           siguiente="next"

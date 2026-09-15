@@ -148,3 +148,14 @@ CREATE TABLE IF NOT EXISTS usuarios (
 ALTER TABLE inscripciones ADD COLUMN IF NOT EXISTS antispam TEXT;
 ALTER TABLE contactos ADD COLUMN IF NOT EXISTS antispam TEXT;
 ALTER TABLE suscriptores ADD COLUMN IF NOT EXISTS antispam TEXT;
+
+-- ─────────────────── Fechas del curso y correo de reseñas ───────────────────
+-- Inicio y fin del curso: valen para todos sus grupos, salvo que el grupo
+-- (convocatoria) tenga las suyas. Con la fecha de fin, a quien esté
+-- MATRICULADO le llega un correo pidiendo una reseña (ver lib/resenas.ts).
+-- `resena_enviada` se rellena solo si el correo SALIÓ: si Resend falla, se
+-- reintenta al día siguiente en vez de darlo por hecho.
+ALTER TABLE cursos ADD COLUMN IF NOT EXISTS fecha_inicio DATE;
+ALTER TABLE cursos ADD COLUMN IF NOT EXISTS fecha_fin DATE;
+ALTER TABLE inscripciones ADD COLUMN IF NOT EXISTS resena_enviada TIMESTAMPTZ;
+ALTER TABLE inscripciones ADD COLUMN IF NOT EXISTS resena_error TEXT;

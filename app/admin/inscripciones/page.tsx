@@ -1,7 +1,13 @@
 import Link from 'next/link'
-import { ESTADOS_INSCRIPCION, inscripciones, type EstadoInscripcion } from '@/lib/bd'
+import {
+  ESTADOS_INSCRIPCION,
+  convocatoriasDeVarios,
+  inscripciones,
+  todosLosCursos,
+  type EstadoInscripcion,
+} from '@/lib/bd'
 import { Titulo, Vacio, claseBotonSuave } from '../ui'
-import Ficha from './Ficha'
+import Ficha, { type CursoParaFicha } from './Ficha'
 import { panelBloqueado } from '@/lib/sesion'
 
 export const dynamic = 'force-dynamic'
@@ -16,7 +22,17 @@ export default async function Inscripciones({
 
   const { estado } = await searchParams
   const filtro = ESTADOS_INSCRIPCION.find((e) => e.id === estado)?.id as EstadoInscripcion | undefined
-  const lista = await inscripciones(filtro)
+  const [lista, todos] = await Promise.all([inscripciones(filtro), todosLosCursos()])
+  const grupos = await convocatoriasDeVarios(todos.map((c) => c.id))
+  // Para «Editar datos»: pasar a alguien a otro curso o grupo.
+  const cursos: CursoParaFicha[] = todos.map((c) => ({
+    id: c.id,
+    titulo: c.titulo,
+    grupos: (grupos[c.id] ?? []).map((g) => ({
+      id: g.id,
+      texto: [g.etiqueta, g.horario].filter(Boolean).join(' · ') || `Grupo ${g.id}`,
+    })),
+  }))
 
   return (
     <>
@@ -54,7 +70,7 @@ export default async function Inscripciones({
       ) : (
         <div className="space-y-2.5">
           {lista.map((i) => (
-            <Ficha key={i.id} i={i} />
+            <Ficha key={i.id} i={i} cursos={cursos} />
           ))}
         </div>
       )}

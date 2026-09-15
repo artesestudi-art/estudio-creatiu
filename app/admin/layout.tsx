@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ID_ARRANQUE, sinUsuarios, usuarioActual } from '@/lib/sesion'
 import { ESTUDIO } from '@/data/estudio'
+import Logo from '@/components/Logo'
 import Login from './Login'
 import { salir } from './acciones'
 
@@ -16,6 +17,7 @@ const SECCIONES = [
   { href: '/admin/inscripciones', texto: 'Inscripciones' },
   { href: '/admin/contactos', texto: 'Mensajes' },
   { href: '/admin/cursos', texto: 'Cursos' },
+  { href: '/admin/resenas', texto: 'Reseñas' },
   { href: '/admin/portada', texto: 'Contenidos' },
   { href: '/admin/suscriptores', texto: 'Newsletter' },
   { href: '/admin/equipo', texto: 'Equipo' },
@@ -30,35 +32,44 @@ export default async function LayoutPanel({ children }: { children: React.ReactN
   const usuario = await usuarioActual()
   if (!usuario) {
     return (
-      <div className="min-h-screen bg-neutral-50 text-neutral-900">
-        <Login titulo={titulo} arranque={await sinUsuarios()} />
-      </div>
+      <Login titulo={titulo} arranque={await sinUsuarios()} />
     )
   }
 
   return (
     <div className="min-h-screen bg-neutral-50 text-neutral-900">
-      <header className="border-b border-neutral-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-5 gap-y-2 px-5 py-3">
-          <span className="text-[15px] font-semibold tracking-tight">
-            {nombre ?? 'El estudio'}
-          </span>
+      <header className="border-b border-[var(--color-linea)] bg-[var(--color-marca-crema)] text-[var(--color-marca-marino)]">
+        {/* Las cuatro manchas de la lámina, como en la puerta del panel. */}
+        <div aria-hidden className="flex h-1">
+          <span className="flex-1 bg-[var(--color-marca-mostaza)]" />
+          <span className="flex-1 bg-[var(--color-marca-salmon)]" />
+          <span className="flex-1 bg-[var(--color-marca-malva)]" />
+          <span className="flex-1 bg-[var(--color-marca-azul)]" />
+        </div>
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-5 py-3">
+          <Link href="/admin" className="flex items-center gap-2.5">
+            <Logo className="h-9 w-auto" />
+            <span className="sr-only">{nombre ?? 'El estudio'}</span>
+            <span className="border-l border-[var(--color-linea-fuerte)] pl-2.5 font-[family-name:var(--font-display)] text-[11px] uppercase tracking-[0.24em] text-[var(--color-tinta-60)]">
+              Panel
+            </span>
+          </Link>
           <nav className="flex flex-wrap gap-x-4 gap-y-1 text-[14px]">
             {SECCIONES.map((s) => (
               <Link
                 key={s.href}
                 href={s.href}
-                className="text-neutral-600 transition hover:text-neutral-900"
+                className="text-[var(--color-tinta-80)] transition hover:text-[var(--color-marca-marino)] hover:underline hover:underline-offset-4"
               >
                 {s.texto}
               </Link>
             ))}
           </nav>
-          <span className="ml-auto text-[13px] text-neutral-500">
+          <span className="ml-auto text-[13px] text-[var(--color-tinta-60)]">
             {usuario.nombre || usuario.email}
           </span>
           <form action={salir}>
-            <button type="submit" className="text-[14px] text-neutral-500 hover:text-neutral-900">
+            <button type="submit" className="text-[14px] text-[var(--color-tinta-60)] hover:text-[var(--color-marca-marino)]">
               Salir
             </button>
           </form>

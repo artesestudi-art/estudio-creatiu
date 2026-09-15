@@ -92,12 +92,13 @@ export default function FormularioContacto({
 
       <div>
         <label htmlFor="c-telefono" className="etiqueta">
-          {t.telefono} <span className="font-normal opacity-55">{t.opcional}</span>
+          {t.telefono}
         </label>
         <input
           id="c-telefono"
           name="telefono"
           type="tel"
+          required
           autoComplete="tel"
           inputMode="tel"
           enterKeyHint="next"

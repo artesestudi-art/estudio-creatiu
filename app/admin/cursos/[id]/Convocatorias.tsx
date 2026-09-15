@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { MODALIDADES, type Convocatoria } from '@/lib/bd'
-import { Tarjeta, claseBotonSuave, claseInput } from '../../ui'
+import { Tarjeta, claseBotonSuave, claseInput, dia } from '../../ui'
 import { accionBorrarConvocatoria, accionGuardarConvocatoria } from '../acciones'
 
 const ESTADOS = [
@@ -34,7 +34,8 @@ export default function Convocatorias({
       <p className="text-[13.5px] text-neutral-500">
         Cada convocatoria es un grupo con sus fechas y su aforo. El alumno elige una al inscribirse.
         Las plazas ocupadas cuentan solo inscripciones <strong>aceptadas o matriculadas</strong>: una
-        solicitud nueva todavía no reserva sitio.
+        solicitud nueva todavía no reserva sitio. Si un grupo tiene fecha de fin propia, manda sobre la del
+        curso para el correo de reseñas.
       </p>
 
       {anadiendo && <Formulario cursoId={cursoId} onHecho={() => setAnadiendo(false)} />}
@@ -66,11 +67,10 @@ function Fila({ c, ocupadas }: { c: Convocatoria; ocupadas: number }) {
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-neutral-200 px-3.5 py-2.5 text-[14px]">
       <span className="font-semibold">{c.etiqueta || 'Sin nombre'}</span>
-      {c.inicio && (
+      {(c.inicio || c.fin) && (
         <span className="text-neutral-600">
-          {new Date(c.inicio).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}
-          {c.fin &&
-            ` – ${new Date(c.fin).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })}`}
+          {c.inicio ? dia(c.inicio) : '…'}
+          {c.fin && ` – ${dia(c.fin)}`}
         </span>
       )}
       {c.horario && <span className="text-neutral-500">{c.horario}</span>}

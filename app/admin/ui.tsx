@@ -83,10 +83,33 @@ export const claseInput =
   'w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-[14.5px] outline-none focus:border-neutral-900'
 
 export const claseBoton =
-  'rounded-lg bg-neutral-900 px-4 py-2 text-[14px] font-semibold text-white transition hover:bg-neutral-700 disabled:opacity-60'
+  'rounded-lg bg-[var(--color-marca-marino)] px-4 py-2 text-[14px] font-semibold text-white transition hover:bg-[#0f3a70] disabled:opacity-60'
 
 export const claseBotonSuave =
   'rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-[14px] font-medium text-neutral-700 transition hover:border-neutral-900 hover:text-neutral-900'
+
+/** Un día del calendario (`2026-10-01`) como «01 oct 2026». En UTC a
+ *  propósito: la fecha no tiene hora, y leída en la zona del navegador el 1 de
+ *  octubre sale «30 sept» en cualquier país al oeste de Greenwich. */
+export function dia(valor: string): string {
+  return new Date(`${valor.slice(0, 10)}T00:00:00Z`).toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  })
+}
+
+/** Número de WhatsApp a partir de lo que escribió la persona: «620 29 74 25»
+ *  → `34620297425`. Sin prefijo se asume España. `null` si no es un número. */
+export function numeroWhatsApp(telefono: string | null): string | null {
+  if (!telefono) return null
+  let n = telefono.replace(/[^\d+]/g, '')
+  if (n.startsWith('+')) n = n.slice(1)
+  else if (n.startsWith('00')) n = n.slice(2)
+  else if (/^[6-9]\d{8}$/.test(n)) n = `34${n}`
+  return /^\d{10,15}$/.test(n) ? n : null
+}
 
 /** Fecha corta y legible. Se calcula en el servidor para que no baile con la
  *  zona horaria del navegador del cliente. */

@@ -64,11 +64,11 @@ const SECTORES = [
   { desde: 169, hasta: 243, color: 'var(--color-marca-azul)' },
 ]
 
-export default function Formas() {
+export default function Formas({ className = 'formas-grupo' }: { className?: string }) {
   return (
     <svg
       aria-hidden
-      className="formas-grupo"
+      className={className}
       viewBox="0 0 100 80"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

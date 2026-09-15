@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import { todosLosCursos, convocatoriasDeVarios, ocupacionPorConvocatoria } from '@/lib/bd'
 import { euros } from '@/lib/texto'
-import { Titulo, Vacio, claseBoton, claseBotonSuave } from '../ui'
+import { Titulo, Vacio, claseBoton, claseBotonSuave, dia } from '../ui'
 import { accionPublicar } from './acciones'
+import BorrarCurso from './BorrarCurso'
 import { panelBloqueado } from '@/lib/sesion'
 
 export const dynamic = 'force-dynamic'
@@ -68,6 +69,11 @@ export default async function Cursos() {
                       ` · ${suyas.length} convocatoria${suyas.length > 1 ? 's' : ''}`}
                     {plazasLibres > 0 && ` · ${plazasLibres} plazas libres`}
                   </p>
+                  <p className={`mt-0.5 text-[13px] ${c.fecha_fin ? 'text-neutral-500' : 'text-amber-700'}`}>
+                    {c.fecha_inicio || c.fecha_fin
+                      ? `${c.fecha_inicio ? dia(c.fecha_inicio) : '…'} – ${c.fecha_fin ? dia(c.fecha_fin) : 'sin fecha de fin'}`
+                      : 'Sin fechas: no saldrá el correo de reseñas'}
+                  </p>
                 </div>
 
                 {c.destacado && (
@@ -75,6 +81,10 @@ export default async function Cursos() {
                     destacado
                   </span>
                 )}
+
+                <Link href={`/admin/cursos/${c.id}`} className={claseBotonSuave}>
+                  Editar
+                </Link>
 
                 <form action={accionPublicar}>
                   <input type="hidden" name="id" value={c.id} />
@@ -93,6 +103,8 @@ export default async function Cursos() {
                     Ver
                   </a>
                 )}
+
+                <BorrarCurso id={c.id} titulo={c.titulo} />
               </div>
             )
           })}
