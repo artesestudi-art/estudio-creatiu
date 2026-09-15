@@ -17,10 +17,9 @@
  *
  * ✅ RESUELTO POR IVÁN EL 15/09/2026 (lo que antes había que preguntar)
  *
- * 1. Art-Junior es los MARTES Y JUEVES. Se ha escrito así, literal; queda por
- *    confirmar si se viene los dos días o se elige uno, porque el precio dice
- *    «un día a la semana».
- * 2. Los precios son MENSUALES: «48 €/mes · un día a la semana».
+ * 1. Art-Junior es los MARTES Y JUEVES, y se viene LOS DOS días: por eso su
+ *    precio no dice «un día a la semana» como los demás.
+ * 2. Los precios son MENSUALES: «55 €/mes · un día a la semana».
  *    `precio_centimos` sigue en NULL: un Offer de schema.org sin unidad le
  *    diría a Google que el curso entero cuesta 48 €.
  * 3. Primaria es de 6 a 8 años y Secundaria de 8 a 12, «aprox.»: va en la
@@ -93,7 +92,7 @@ const CURSOS = [
     ].join('\n\n'),
     duracion: 'De octubre a junio',
     horario: 'Martes y jueves · Primaria (6–8 años) 17:15–18:45 h · Secundaria (8–12 años) 19:00–20:30 h',
-    precio_texto: '48 €/mes · un día a la semana',
+    precio_texto: '48 €/mes · martes y jueves',
     plazas: 10,
     profesor: 'Silvia Cano · @art_esespaicreatiu',
     orden: 1,
@@ -110,7 +109,7 @@ const CURSOS = [
       ].join('\n\n'),
       duracion: "D'octubre a juny",
       horario: 'Dimarts i dijous · Primària (6–8 anys) 17:15–18:45 h · Secundària (8–12 anys) 19:00–20:30 h',
-      precio_texto: '48 €/mes · un dia a la setmana',
+      precio_texto: '48 €/mes · dimarts i dijous',
       profesor: 'Silvia Cano · @art_esespaicreatiu',
     },
     convocatorias: [

@@ -127,7 +127,7 @@ const ES = {
       {
         pregunta: '¿Cuántos días a la semana hay que venir?',
         respuesta:
-          'Uno. Cada curso es de un día a la semana, y el precio que aparece en su página es al mes. Van de octubre a junio, salvo el taller de crochet, que es trimestral: de octubre a diciembre.',
+          'Uno, salvo Art-Junior, que es martes y jueves. El precio que aparece en la página de cada curso es al mes. Van de octubre a junio, salvo el taller de crochet, que es trimestral: de octubre a diciembre.',
       },
       {
         pregunta: '¿Puedo probar antes de apuntarme?',
@@ -240,7 +240,7 @@ const CA = {
       {
         pregunta: 'Quants dies a la setmana cal venir?',
         respuesta:
-          "Un. Cada curs és d'un dia a la setmana, i el preu que surt a la seva pàgina és mensual. Van d'octubre a juny, llevat del taller de crochet, que és trimestral: d'octubre a desembre.",
+          "Un, llevat d'Art-Junior, que és dimarts i dijous. El preu que surt a la pàgina de cada curs és mensual. Van d'octubre a juny, llevat del taller de crochet, que és trimestral: d'octubre a desembre.",
       },
       {
         pregunta: 'Puc provar abans d’apuntar-m’hi?',
