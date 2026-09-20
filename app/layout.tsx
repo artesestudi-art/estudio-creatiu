@@ -56,9 +56,37 @@ export const metadata: Metadata = {
   robots: ESTUDIO.dominio === 'PENDIENTE' ? { index: false, follow: false } : undefined,
 }
 
+/**
+ * Modo de consentimiento de Google (Consent Mode v2), en el `<head>` y ANTES
+ * que cualquier otra cosa.
+ *
+ * Es la diferencia entre no cargar Google hasta que alguien acepte —que era lo
+ * que hacíamos— y cargarlo siempre con el permiso NEGADO por defecto. Con el
+ * permiso negado, Google no escribe ni lee ninguna cookie y no identifica a
+ * nadie: solo manda un aviso anónimo de que alguien ha pasado por la página.
+ * Al aceptar, el permiso se actualiza a `granted` y entonces sí mide como
+ * siempre. Y la etiqueta existe desde el primer momento, que es lo que Google
+ * busca cuando dice «no se ha detectado su etiqueta».
+ *
+ * Tiene que ir en un `<script>` normal del layout —no en `next/script`— porque
+ * debe ejecutarse antes que `gtag.js`, y el layout se pinta en el servidor:
+ * así llega en el HTML y el navegador lo ejecuta primero.
+ *
+ * `wait_for_update: 500` le dice a Google que espere medio segundo por si la
+ * respuesta llega enseguida, para no mandar el aviso anónimo y luego otro.
+ */
+const CONSENTIMIENTO_POR_DEFECTO = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});
+gtag('set','url_passthrough',true);gtag('set','ads_data_redaction',true);`
+
 export default function LayoutRaiz({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${display.variable} ${texto.variable}`}>
+      <head>
+        {ESTUDIO.analitica.ga4.trim() ? (
+          <script dangerouslySetInnerHTML={{ __html: CONSENTIMIENTO_POR_DEFECTO }} />
+        ) : null}
+      </head>
       {/* `grano` pinta la textura fija sobre toda la web. */}
       <body className="grano">
         {/* Salto al contenido: sin esto, quien navega con teclado tiene que

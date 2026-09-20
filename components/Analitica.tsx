@@ -9,11 +9,19 @@ import { textos, type Idioma } from '@/lib/idioma'
 /**
  * Medición de visitas con consentimiento, y el cartel que lo pide.
  *
- * Las dos cosas viven en el mismo fichero porque son la misma decisión: aquí
- * NO se carga Google hasta que alguien dice que sí, y por eso el cartel no
- * puede ser un adorno que se cierra con la X. Cargar la analítica antes de
- * preguntar —o darla por aceptada al seguir navegando— es justo lo que
- * sanciona la Agencia Española de Protección de Datos.
+ * Las dos cosas viven en el mismo fichero porque son la misma decisión, y el
+ * cartel no puede ser un adorno que se cierra con la X: dar la analítica por
+ * aceptada al seguir navegando es justo lo que sanciona la Agencia Española de
+ * Protección de Datos.
+ *
+ * **Cómo funciona desde el 20/09/2026 (modo de consentimiento de Google):** la
+ * etiqueta se carga en todas las páginas, pero con el permiso NEGADO por
+ * defecto —eso lo pone el `<head>` del layout—. Con el permiso negado Google no
+ * escribe ni lee cookies y no identifica a nadie; solo cuenta que alguien ha
+ * pasado. Al pulsar «De acuerdo», el permiso se actualiza a `granted` y
+ * entonces sí mide con cookies. Antes no se cargaba nada hasta aceptar, y era
+ * más estricto, pero Google decía «no se ha detectado su etiqueta» y no había
+ * forma de comprobar la instalación.
  *
  * Si `ESTUDIO.analitica.ga4` está vacío no se pinta nada y no hay cartel: una
  * web sin analítica no necesita pedir permiso para nada, y enseñar un cartel
@@ -111,6 +119,22 @@ export default function Analitica() {
     }
   }, [medida, eleccion])
 
+  /**
+   * Al aceptar, se le dice a Google que ya puede usar cookies. Es un `update`
+   * del permiso, no una carga: la etiqueta ya estaba ahí desde el principio.
+   *
+   * Solo se concede `analytics_storage`: no hay publicidad en esta web, así que
+   * los permisos de anuncios se quedan negados para siempre.
+   */
+  useEffect(() => {
+    if (!medida || eleccion !== 'si') return
+    /* ⛔ Se llama al `gtag` de verdad —el que define el `<head>`— y NO se hace
+       `dataLayer.push(['consent','update',…])`: gtag espera el `arguments` de
+       la llamada, y un array se empuja igual, no da error y no hace nada. */
+    const w = window as unknown as { gtag?: (...args: unknown[]) => void }
+    w.gtag?.('consent', 'update', { analytics_storage: 'granted' })
+  }, [medida, eleccion])
+
   if (!medida) return null
 
   function decidir(valor: Exclude<Eleccion, null>) {
@@ -129,18 +153,15 @@ export default function Analitica() {
 
   return (
     <>
-      {eleccion === 'si' && (
-        <>
-          <Script
-            src={`https://www.googletagmanager.com/gtag/js?id=${medida}`}
-            strategy="afterInteractive"
-          />
-          <Script id="ga4" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
+      {/* La etiqueta, siempre. El permiso por defecto lo niega el `<head>`. */}
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${medida}`}
+        strategy="afterInteractive"
+      />
+      <Script id="ga4" strategy="afterInteractive">
+        {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
 gtag('js',new Date());gtag('config','${medida}',{anonymize_ip:true});`}
-          </Script>
-        </>
-      )}
+      </Script>
 
       {eleccion === null && (
         <div
