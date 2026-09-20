@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
-import { ESTUDIO } from '@/data/estudio'
+import { ESTUDIO, real } from '@/data/estudio'
+import { aTexto, boton, escapar, maquetar, parrafo, tablaDatos } from '@/lib/plantilla-correo'
 
 /**
  * Avisos por correo, con la cuenta de Resend DEL CLIENTE.
@@ -12,6 +13,9 @@ import { ESTUDIO } from '@/data/estudio'
  * Nada de lo que hay aquí puede tumbar un formulario: si el envío falla, quien
  * llama es quien ya ha guardado la petición en la base de datos, y lo único
  * que pasa es que el panel la marca como «no avisada».
+ *
+ * La maqueta de los cuatro correos está en `lib/plantilla-correo.ts`, con el
+ * porqué de cada rareza del medio (tablas, PNG en vez de SVG, anticipo…).
  */
 
 export type ResultadoEnvio = { ok: true } | { ok: false; motivo: string }
@@ -32,33 +36,12 @@ function destinoAvisos(): string {
   return process.env.CORREO_AVISOS || ESTUDIO.contacto.emailAvisos
 }
 
-function escapar(texto: string): string {
-  return texto
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-}
-
-function tabla(filas: [string, string | null][]): string {
-  return filas
-    .filter(([, valor]) => valor && valor.trim())
-    .map(
-      ([etiqueta, valor]) =>
-        `<tr><td style="padding:6px 14px 6px 0;color:#666;vertical-align:top;white-space:nowrap">${escapar(
-          etiqueta,
-        )}</td><td style="padding:6px 0"><strong>${escapar(valor!).replace(
-          /\n/g,
-          '<br>',
-        )}</strong></td></tr>`,
-    )
-    .join('')
-}
-
 async function enviar(opciones: {
   para: string
   asunto: string
   html: string
+  /** Versión en texto plano. Va siempre: un correo solo-HTML huele a spam. */
+  texto: string
   responderA?: string
 }): Promise<ResultadoEnvio> {
   const resend = cliente()
@@ -70,6 +53,7 @@ async function enviar(opciones: {
       to: opciones.para,
       subject: opciones.asunto,
       html: opciones.html,
+      text: opciones.texto,
       replyTo: opciones.responderA,
     })
     if (error) return { ok: false, motivo: error.message || 'Resend devolvió un error' }
@@ -81,7 +65,7 @@ async function enviar(opciones: {
 
 /* ─────────────── Aviso al estudio: nueva inscripción ─────────────── */
 
-export async function avisarInscripcion(datos: {
+export type DatosInscripcion = {
   id: number
   nombre: string
   email: string
@@ -98,35 +82,57 @@ export async function avisarInscripcion(datos: {
   /** Lo que opinó reCAPTCHA, si hubo algo raro. */
   antispam: string | null
   prefijoAsunto: string
-}): Promise<ResultadoEnvio> {
-  const html = `
-    <div style="font-family:system-ui,-apple-system,'Segoe UI',sans-serif;max-width:560px;color:#111">
-      <p style="margin:0 0 4px;font-size:13px;color:#666">Inscripción #${datos.id}</p>
-      <h2 style="margin:0 0 18px;font-size:20px">${escapar(datos.curso)}</h2>
-      <table style="border-collapse:collapse;font-size:15px">
-        ${tabla([
-          ['Alumno', datos.alumno],
-          ['Edad o curso', datos.alumnoEdad],
-          [datos.alumno ? 'Tutor' : 'Nombre', datos.nombre],
-          ['Correo', datos.email],
-          ['Teléfono', datos.telefono],
-          ['Convocatoria', datos.convocatoria],
-          ['Modalidad', datos.modalidad],
-          ['Experiencia', datos.experiencia],
-          ['Mensaje', datos.mensaje],
-          ['Página', datos.origen],
-          ['Antispam', datos.antispam],
-        ])}
-      </table>
-      <p style="margin:22px 0 0;font-size:13px;color:#666">
-        Gestiónala en el panel: ${escapar(ESTUDIO.url)}/admin
-      </p>
-    </div>`
+}
 
+/** El HTML del aviso, aparte del envío: así se puede ver sin mandar nada. */
+export function htmlInscripcion(datos: DatosInscripcion): { html: string; texto: string } {
+  const campos: [string, string | null][] = [
+    ['Alumno', datos.alumno],
+    ['Edad o curso', datos.alumnoEdad],
+    [datos.alumno ? 'Tutor' : 'Nombre', datos.nombre],
+    ['Correo', datos.email],
+    ['Teléfono', datos.telefono],
+    ['Convocatoria', datos.convocatoria],
+    ['Modalidad', datos.modalidad],
+    ['Experiencia', datos.experiencia],
+    ['Mensaje', datos.mensaje],
+    ['Página', datos.origen],
+    ['Antispam', datos.antispam],
+  ]
+
+  const html = maquetar({
+    anticipo: `${datos.nombre} pide plaza en ${datos.curso}`,
+    titulo: datos.curso,
+    interno: true,
+    cuerpo: `
+      ${parrafo(`Inscripción <strong>#${datos.id}</strong> · plaza pedida desde la web.`, {
+        suave: true,
+      })}
+      ${tablaDatos(campos)}
+      ${parrafo(
+        'Si respondes a este correo, le llega directamente a quien se ha apuntado.',
+        { suave: true },
+      )}`,
+  })
+
+  const texto = aTexto([
+    `Nueva inscripción #${datos.id} · ${datos.curso}`,
+    '',
+    ...campos.filter(([, v]) => v && v.trim()).map(([e, v]) => `${e}: ${v}`),
+    '',
+    `Panel: ${ESTUDIO.url}/admin`,
+  ])
+
+  return { html, texto }
+}
+
+export async function avisarInscripcion(datos: DatosInscripcion): Promise<ResultadoEnvio> {
+  const { html, texto } = htmlInscripcion(datos)
   return enviar({
     para: destinoAvisos(),
     asunto: `${datos.prefijoAsunto}Nueva inscripción · ${datos.curso} · ${datos.nombre}`,
     html,
+    texto,
     // Responder al correo lleva directo al alumno, sin copiar y pegar.
     responderA: datos.email,
   })
@@ -134,38 +140,62 @@ export async function avisarInscripcion(datos: {
 
 /* ─────────────── Acuse de recibo al alumno ─────────────── */
 
-export async function acusarInscripcion(datos: {
+export type DatosAcuse = {
   nombre: string
   email: string
   curso: string
   convocatoria: string | null
-}): Promise<ResultadoEnvio> {
-  const html = `
-    <div style="font-family:system-ui,-apple-system,'Segoe UI',sans-serif;max-width:560px;color:#111">
-      <p style="font-size:16px;margin:0 0 14px">Hola ${escapar(datos.nombre)},</p>
-      <p style="font-size:16px;line-height:1.6;margin:0 0 14px">
-        Hemos recibido tu solicitud de plaza en <strong>${escapar(datos.curso)}</strong>${
-          datos.convocatoria ? ` (${escapar(datos.convocatoria)})` : ''
-        }.
-      </p>
-      <p style="font-size:16px;line-height:1.6;margin:0 0 14px">
-        Todavía no es una matrícula: revisamos las plazas y te escribimos para
-        confirmarte si hay sitio y cómo formalizarla.
-      </p>
-      <p style="font-size:16px;line-height:1.6;margin:0 0 24px">
-        Si necesitas contarnos algo antes, responde a este correo${
-          ESTUDIO.contacto.telefono !== 'PENDIENTE'
-            ? ` o llámanos al ${escapar(ESTUDIO.contacto.telefono)}`
-            : ''
-        }.
-      </p>
-      <p style="font-size:15px;color:#444;margin:0">${escapar(ESTUDIO.nombre)}</p>
-    </div>`
+}
 
+export function htmlAcuse(datos: DatosAcuse): { html: string; texto: string } {
+  const telefono = real(ESTUDIO.contacto.telefono)
+  const grupo = datos.convocatoria ? ` (${escapar(datos.convocatoria)})` : ''
+
+  const html = maquetar({
+    anticipo: `Tenemos tu solicitud de plaza en ${datos.curso}. Te escribimos para confirmarla.`,
+    titulo: 'Hemos recibido tu solicitud',
+    cuerpo: `
+      ${parrafo(`Hola ${escapar(datos.nombre)},`)}
+      ${parrafo(
+        `Hemos recibido tu solicitud de plaza en <strong>${escapar(datos.curso)}</strong>${grupo}.`,
+      )}
+      ${parrafo(
+        'Todavía no es una matrícula: revisamos las plazas y te escribimos para confirmarte si hay sitio y cómo formalizarla.',
+      )}
+      ${parrafo(
+        `Si necesitas contarnos algo antes, responde a este correo${
+          telefono ? ` o llámanos al ${escapar(telefono)}` : ''
+        }.`,
+      )}`,
+  })
+
+  const texto = aTexto([
+      `Hola ${datos.nombre},`,
+      '',
+      `Hemos recibido tu solicitud de plaza en ${datos.curso}${
+        datos.convocatoria ? ` (${datos.convocatoria})` : ''
+      }.`,
+      '',
+      'Todavía no es una matrícula: revisamos las plazas y te escribimos para confirmarte si hay sitio y cómo formalizarla.',
+      '',
+      `Si necesitas contarnos algo antes, responde a este correo${
+        telefono ? ` o llámanos al ${telefono}` : ''
+      }.`,
+      '',
+    ESTUDIO.nombre,
+    ESTUDIO.url,
+  ])
+
+  return { html, texto }
+}
+
+export async function acusarInscripcion(datos: DatosAcuse): Promise<ResultadoEnvio> {
+  const { html, texto } = htmlAcuse(datos)
   return enviar({
     para: datos.email,
     asunto: `Hemos recibido tu solicitud · ${datos.curso}`,
     html,
+    texto,
     responderA: destinoAvisos(),
   })
 }
@@ -175,6 +205,8 @@ export async function acusarInscripcion(datos: {
 const TEXTOS_RESENA = {
   es: {
     asunto: (curso: string) => `¿Qué tal ${curso}? Nos ayudas con una reseña`,
+    anticipo: 'Un minuto y nos ayudas mucho: cuenta cómo ha ido el curso.',
+    titulo: 'Gracias por este curso',
     hola: 'Hola',
     terminado: (curso: string, alumno: string | null) =>
       alumno
@@ -187,6 +219,8 @@ const TEXTOS_RESENA = {
   },
   ca: {
     asunto: (curso: string) => `Què tal ${curso}? Ens ajudes amb una ressenya`,
+    anticipo: 'Un minut i ens ajudes molt: explica com ha anat el curs.',
+    titulo: 'Gràcies per aquest curs',
     hola: 'Hola',
     terminado: (curso: string, alumno: string | null) =>
       alumno
@@ -199,7 +233,7 @@ const TEXTOS_RESENA = {
   },
 }
 
-export async function pedirResena(datos: {
+export type DatosResena = {
   nombre: string
   email: string
   /** Si la plaza era de un menor, `nombre` es el tutor y este es el alumno. */
@@ -207,37 +241,58 @@ export async function pedirResena(datos: {
   curso: string
   url: string
   idioma: 'es' | 'ca'
-}): Promise<ResultadoEnvio> {
+}
+
+export function htmlResena(datos: DatosResena): { html: string; texto: string } {
   const t = TEXTOS_RESENA[datos.idioma]
   const curso = escapar(datos.curso)
-  const html = `
-    <div style="font-family:system-ui,-apple-system,'Segoe UI',sans-serif;max-width:560px;color:#111">
-      <p style="font-size:16px;margin:0 0 14px">${t.hola} ${escapar(datos.nombre)},</p>
-      <p style="font-size:16px;line-height:1.6;margin:0 0 14px">
-        ${t.terminado(curso, datos.alumno ? escapar(datos.alumno) : null)}
-      </p>
-      <p style="font-size:16px;line-height:1.6;margin:0 0 22px">${t.pedir}</p>
-      <p style="margin:0 0 26px">
-        <a href="${escapar(datos.url)}"
-           style="display:inline-block;background:#14488b;color:#fff;text-decoration:none;font-weight:600;font-size:16px;padding:13px 22px;border-radius:999px">
-          ${t.boton}
-        </a>
-      </p>
-      <p style="font-size:15px;line-height:1.6;color:#444;margin:0 0 20px">${t.cierre}</p>
-      <p style="font-size:15px;color:#444;margin:0">${escapar(ESTUDIO.nombre)}</p>
-    </div>`
 
+  const html = maquetar({
+    anticipo: t.anticipo,
+    titulo: t.titulo,
+    idioma: datos.idioma,
+    cuerpo: `
+      ${parrafo(`${t.hola} ${escapar(datos.nombre)},`)}
+      ${parrafo(t.terminado(curso, datos.alumno ? escapar(datos.alumno) : null))}
+      ${parrafo(t.pedir)}
+      ${boton(datos.url, t.boton)}
+      ${parrafo(t.cierre, { suave: true })}`,
+  })
+
+  const texto = aTexto([
+      `${t.hola} ${datos.nombre},`,
+      '',
+      t
+        .terminado(datos.curso, datos.alumno)
+        .replace(/<[^>]+>/g, ''),
+      '',
+      t.pedir,
+      '',
+      datos.url,
+      '',
+    t.cierre,
+    '',
+    ESTUDIO.nombre,
+  ])
+
+  return { html, texto }
+}
+
+export async function pedirResena(datos: DatosResena): Promise<ResultadoEnvio> {
+  const t = TEXTOS_RESENA[datos.idioma]
+  const { html, texto } = htmlResena(datos)
   return enviar({
     para: datos.email,
     asunto: t.asunto(datos.curso),
     html,
+    texto,
     responderA: destinoAvisos(),
   })
 }
 
 /* ─────────────── Aviso al estudio: contacto ─────────────── */
 
-export async function avisarContacto(datos: {
+export type DatosContacto = {
   id: number
   nombre: string
   email: string
@@ -247,27 +302,50 @@ export async function avisarContacto(datos: {
   origen: string
   antispam: string | null
   prefijoAsunto: string
-}): Promise<ResultadoEnvio> {
-  const html = `
-    <div style="font-family:system-ui,-apple-system,'Segoe UI',sans-serif;max-width:560px;color:#111">
-      <p style="margin:0 0 4px;font-size:13px;color:#666">Mensaje #${datos.id}</p>
-      <h2 style="margin:0 0 18px;font-size:20px">${escapar(datos.asunto || 'Contacto desde la web')}</h2>
-      <table style="border-collapse:collapse;font-size:15px">
-        ${tabla([
-          ['Nombre', datos.nombre],
-          ['Correo', datos.email],
-          ['Teléfono', datos.telefono],
-          ['Mensaje', datos.mensaje],
-          ['Página', datos.origen],
-          ['Antispam', datos.antispam],
-        ])}
-      </table>
-    </div>`
+}
 
+export function htmlContacto(datos: DatosContacto): { html: string; texto: string } {
+  const campos: [string, string | null][] = [
+    ['Nombre', datos.nombre],
+    ['Correo', datos.email],
+    ['Teléfono', datos.telefono],
+    ['Mensaje', datos.mensaje],
+    ['Página', datos.origen],
+    ['Antispam', datos.antispam],
+  ]
+
+  const html = maquetar({
+    anticipo: `${datos.nombre}: ${datos.mensaje.slice(0, 90)}`,
+    titulo: datos.asunto || 'Contacto desde la web',
+    interno: true,
+    cuerpo: `
+      ${parrafo(`Mensaje <strong>#${datos.id}</strong> del formulario de contacto.`, {
+        suave: true,
+      })}
+      ${tablaDatos(campos)}
+      ${parrafo('Si respondes a este correo, le llega directamente a quien escribe.', {
+        suave: true,
+      })}`,
+  })
+
+  const texto = aTexto([
+      `Contacto web #${datos.id} · ${datos.asunto || 'sin asunto'}`,
+      '',
+      ...campos.filter(([, v]) => v && v.trim()).map(([e, v]) => `${e}: ${v}`),
+      '',
+    `Panel: ${ESTUDIO.url}/admin`,
+  ])
+
+  return { html, texto }
+}
+
+export async function avisarContacto(datos: DatosContacto): Promise<ResultadoEnvio> {
+  const { html, texto } = htmlContacto(datos)
   return enviar({
     para: destinoAvisos(),
     asunto: `${datos.prefijoAsunto}Contacto web · ${datos.nombre}`,
     html,
+    texto,
     responderA: datos.email,
   })
 }
