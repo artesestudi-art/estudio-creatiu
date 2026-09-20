@@ -122,6 +122,19 @@ export default function Pie({
           <p className="text-[0.8125rem] opacity-45">
             © {anio} {real(ESTUDIO.legal.razonSocial) ?? nombre}
           </p>
+          {/* El crédito va con enlace de verdad, no de adorno: `rel="noreferrer"`
+              y nada de `nofollow`, que es un enlace editorial legítimo. */}
+          <p className="text-[0.8125rem] opacity-45">
+            {t.webDesarrolladaPor}{' '}
+            <a
+              href="https://creaar.es"
+              target="_blank"
+              rel="noreferrer"
+              className="enlace-linea hover:opacity-100"
+            >
+              creaar.es
+            </a>
+          </p>
           <SelectorIdioma idioma={idioma} equivalente={equivalente} />
         </div>
       </div>

@@ -49,6 +49,7 @@ type Textos = {
   laWeb: string
   legal: string
   avisoLegal: string
+  webDesarrolladaPor: string
   privacidad: string
   cambiarIdioma: string
 
@@ -191,6 +192,7 @@ const es: Textos = {
   laWeb: 'La web',
   legal: 'Legal',
   avisoLegal: 'Aviso legal',
+  webDesarrolladaPor: 'Web desarrollada por',
   privacidad: 'Privacidad',
   cambiarIdioma: 'Canviar a català',
 
@@ -336,6 +338,7 @@ const ca: Textos = {
   laWeb: 'El web',
   legal: 'Legal',
   avisoLegal: 'Avís legal',
+  webDesarrolladaPor: 'Web desenvolupada per',
   privacidad: 'Privacitat',
   cambiarIdioma: 'Cambiar a castellano',
 
