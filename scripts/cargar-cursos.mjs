@@ -17,8 +17,10 @@
  *
  * ✅ RESUELTO POR IVÁN EL 15/09/2026 (lo que antes había que preguntar)
  *
- * 1. Art-Junior es MARTES O JUEVES: se elige uno de los dos días. Van cuatro
- *    grupos (Primaria y Secundaria, cada una en martes y en jueves).
+ * 1. Art-Junior: se elige UN día. Desde el 16/09/2026 (WhatsApp de Silvia)
+ *    son CINCO grupos: martes y miércoles con los dos turnos (Primaria y
+ *    Secundaria) y los jueves solo el de 17:15–18:45, que es el de Primaria.
+ *    Antes eran cuatro: Primaria y Secundaria en martes y en jueves.
  * 2. Los precios son MENSUALES: «48 €/mes · un día a la semana».
  *    `precio_centimos` sigue en NULL: un Offer de schema.org sin unidad le
  *    diría a Google que el curso entero cuesta 48 €.
@@ -91,7 +93,7 @@ const CURSOS = [
       TODO_ES,
     ].join('\n\n'),
     duracion: 'De octubre a junio',
-    horario: 'Martes o jueves · Primaria (6–8 años) 17:15–18:45 h · Secundaria (8–12 años) 19:00–20:30 h',
+    horario: 'Primaria (6–8 años) martes, miércoles o jueves 17:15–18:45 h · Secundaria (8–12 años) martes o miércoles 19:00–20:30 h',
     precio_texto: '48 €/mes · un día a la semana',
     plazas: 10,
     profesor: 'Silvia Cano · @art_esespaicreatiu',
@@ -108,18 +110,24 @@ const CURSOS = [
         TODO_CA,
       ].join('\n\n'),
       duracion: "D'octubre a juny",
-      horario: 'Dimarts o dijous · Primària (6–8 anys) 17:15–18:45 h · Secundària (8–12 anys) 19:00–20:30 h',
+      horario: 'Primària (6–8 anys) dimarts, dimecres o dijous 17:15–18:45 h · Secundària (8–12 anys) dimarts o dimecres 19:00–20:30 h',
       precio_texto: '48 €/mes · un dia a la setmana',
       profesor: 'Silvia Cano · @art_esespaicreatiu',
     },
     convocatorias: [
       /* Se elige UN día: un grupo por día para que el formulario lo pregunte
-         y cada día lleve su aforo. */
+         y cada día lleve su aforo. Los jueves solo hay turno de Primaria. */
       {
         etiqueta: 'Primaria (6–8 años)',
         horario: 'Martes, 17:15–18:45 h',
         plazas: 10,
         ca: { etiqueta: 'Primària (6–8 anys)', horario: 'Dimarts, 17:15–18:45 h' },
+      },
+      {
+        etiqueta: 'Primaria (6–8 años)',
+        horario: 'Miércoles, 17:15–18:45 h',
+        plazas: 10,
+        ca: { etiqueta: 'Primària (6–8 anys)', horario: 'Dimecres, 17:15–18:45 h' },
       },
       {
         etiqueta: 'Primaria (6–8 años)',
@@ -135,9 +143,9 @@ const CURSOS = [
       },
       {
         etiqueta: 'Secundaria (8–12 años)',
-        horario: 'Jueves, 19:00–20:30 h',
+        horario: 'Miércoles, 19:00–20:30 h',
         plazas: 10,
-        ca: { etiqueta: 'Secundària (8–12 anys)', horario: 'Dijous, 19:00–20:30 h' },
+        ca: { etiqueta: 'Secundària (8–12 anys)', horario: 'Dimecres, 19:00–20:30 h' },
       },
     ],
   },
@@ -427,7 +435,7 @@ const CURSOS = [
       TEJIDOS_ES,
     ].join('\n\n'),
     duracion: 'De octubre a junio',
-    horario: 'Martes 18:30–20:30 h',
+    horario: 'Martes 19:00–20:30 h',
     precio_texto: '55 €/mes · un día a la semana',
     plazas: 6,
     profesor: 'Alba Selva · @albaselva',
@@ -450,16 +458,16 @@ const CURSOS = [
         TEJIDOS_CA,
       ].join('\n\n'),
       duracion: "D'octubre a juny",
-      horario: 'Dimarts 18:30–20:30 h',
+      horario: 'Dimarts 19:00–20:30 h',
       precio_texto: '55 €/mes · un dia a la setmana',
       profesor: 'Alba Selva · @byalbaselva',
     },
     convocatorias: [
       {
         etiqueta: 'Martes tarde',
-        horario: '18:30–20:30 h',
+        horario: '19:00–20:30 h',
         plazas: 6,
-        ca: { etiqueta: 'Dimarts tarda', horario: '18:30–20:30 h' },
+        ca: { etiqueta: 'Dimarts tarda', horario: '19:00–20:30 h' },
       },
     ],
   },
