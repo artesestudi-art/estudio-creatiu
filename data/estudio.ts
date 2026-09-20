@@ -59,7 +59,9 @@ type Estudio = {
  * ⛔ EL DOMINIO SE CAMBIA AQUÍ Y SOLO AQUÍ.
  *
  * El estudio tiene dos: `artesespaicreatiu.es` (comprado para la web, en su
- * Hostinger) y `artesespaicreatiu.com` (donde vive su correo, MX de Google).
+ * Hostinger) y `artesespaicreatiu.com`, que es de Squarespace y NO tenemos.
+ * El correo del estudio vive desde el 20/09/2026 en el `.es`, con buzón en
+ * Hostinger (MX `mx1`/`mx2.hostinger.com`): del `.com` ya no depende nada.
  * A 14/09/2026 no está decidido en cuál va la web. El día que se decida se
  * intercambian estas dos constantes y ya: de aquí salen la canónica, el
  * sitemap, el robots, el schema, el remitente de los correos y las
@@ -99,9 +101,9 @@ export const ESTUDIO: Estudio = {
     /** Mismo número en formato internacional, sin espacios: +34600000000 */
     telefonoE164: '+34620297425',
     whatsapp: '+34 620 297 425',
-    email: 'info@artesespaicreatiu.com',
+    email: 'info@artesespaicreatiu.es',
     /** Buzón que recibe los avisos de inscripción. Puede ser otro. */
-    emailAvisos: 'info@artesespaicreatiu.com',
+    emailAvisos: 'info@artesespaicreatiu.es',
   },
 
   direccion: {
