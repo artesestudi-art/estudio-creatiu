@@ -64,47 +64,6 @@ const SECTORES = [
   { desde: 169, hasta: 243, color: 'var(--color-marca-azul)' },
 ]
 
-/**
- * Una mano, de geometría exacta como el resto de la composición: palma y dedos
- * son rectángulos redondeados, no una silueta dibujada. Va en su propio
- * sistema de coordenadas —muñeca en (0,0), dedos hacia arriba— para poder
- * colocarla y escalarla desde fuera.
- *
- * Las puntas van pintadas con los cuatro colores del kit: es la misma idea que
- * la foto de «El estudio», manos manchadas de pintura.
- */
-const DEDOS = [
-  { x: -3.4, y: -13.4, alto: 6.6, color: 'var(--color-marca-mostaza)' },
-  { x: -1.55, y: -14.4, alto: 7.6, color: 'var(--color-marca-malva)' },
-  { x: 0.3, y: -13.8, alto: 7.0, color: 'var(--color-marca-azul)' },
-  { x: 2.15, y: -12.4, alto: 5.6, color: 'var(--color-marca-salmon)' },
-]
-const ANCHO_DEDO = 1.55
-
-function Mano() {
-  return (
-    <g fill="var(--color-marca-marino)">
-      {/* El pulgar, por debajo de la palma para que no se le monte. */}
-      <rect
-        x={-5.5}
-        y={-8.4}
-        width={1.9}
-        height={4.8}
-        rx={0.95}
-        transform="rotate(-32 -3.6 -4.2)"
-      />
-      {DEDOS.map((d) => (
-        <g key={d.color}>
-          <rect x={d.x} y={d.y} width={ANCHO_DEDO} height={d.alto} rx={ANCHO_DEDO / 2} />
-          {/* La mancha de pintura de la punta. */}
-          <circle cx={d.x + ANCHO_DEDO / 2} cy={d.y + 0.85} r={0.85} fill={d.color} />
-        </g>
-      ))}
-      <rect x={-3.7} y={-7.4} width={7.6} height={7.4} rx={2.2} />
-    </g>
-  )
-}
-
 export default function Formas({ className = 'formas-grupo' }: { className?: string }) {
   return (
     <svg
@@ -140,38 +99,6 @@ export default function Formas({ className = 'formas-grupo' }: { className?: str
         stroke="var(--color-marca-marino)"
         strokeWidth="1.1"
       />
-
-      {/**
-       * Dos manos que asoman por dentro del aro y se vuelven a esconder.
-       *
-       * Van recortadas por el propio aro (`clipPath`), así que se ven salir de
-       * él en vez de flotar encima: por debajo del borde no existen. El radio
-       * del recorte es 12,4 y no 13 para que la mano no se coma la línea del
-       * aro, que tiene 1,1 de grosor.
-       *
-       * El vaivén es una animación de CSS, como el giro de la rueda: la
-       * composición entera sigue sin JavaScript. La colocación va en el
-       * atributo `transform` del grupo de fuera y el movimiento en el de
-       * dentro, porque una `transform` de CSS PISA la del atributo.
-       *
-       * La segunda va espejada (`scale(-0.92 0.92)`): son una izquierda y una
-       * derecha, no la misma mano dos veces.
-       */}
-      <clipPath id="dentro-del-aro">
-        <circle cx={CENTRO.x} cy={CENTRO.y} r="12.4" />
-      </clipPath>
-      <g clipPath="url(#dentro-del-aro)">
-        <g transform="translate(57 54.5) rotate(-9) scale(1.05)">
-          <g className="mano-asoma">
-            <Mano />
-          </g>
-        </g>
-        <g transform="translate(67.5 55.5) rotate(14) scale(-0.92 0.92)">
-          <g className="mano-asoma mano-asoma-2">
-            <Mano />
-          </g>
-        </g>
-      </g>
 
       {/* La estrella de la marca, apoyada arriba a la izquierda. 37,84 de ancho
           en su lienzo original; la escala la deja en 22. */}

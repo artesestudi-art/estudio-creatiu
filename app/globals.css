@@ -348,43 +348,6 @@
     }
   }
 
-  /**
-   * Las manos del aro: asoman y se esconden. Cada una con su compás y su
-   * desfase, que dos manos subiendo a la vez parecen un mecanismo.
-   *
-   * `translateY` en unidades del `viewBox` (`transform-box: view-box`), y en
-   * reposo se quedan por debajo del recorte: 16 las deja fuera del aro.
-   */
-  .mano-asoma {
-    transform-box: view-box;
-    animation: mano-asoma 6.5s ease-in-out infinite;
-  }
-
-  .mano-asoma-2 {
-    animation-duration: 8.2s;
-    animation-delay: -3.4s;
-  }
-
-  @keyframes mano-asoma {
-    0%,
-    100% {
-      transform: translateY(16px);
-    }
-    42%,
-    58% {
-      transform: translateY(-3px);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .mano-asoma {
-      /* Quietas, pero asomando: si se quedan en el reposo de la animación no
-         se ve ni una mano y el aro queda vacío. */
-      animation: none;
-      transform: translateY(-2px);
-    }
-  }
-
   .formas-grupo {
     position: absolute;
     pointer-events: none;
