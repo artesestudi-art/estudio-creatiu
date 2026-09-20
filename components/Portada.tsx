@@ -143,7 +143,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
         enlaces={enlaces}
         telefono={real(ESTUDIO.contacto.telefono)}
         idioma={idioma}
-        invertida={conFoto}
+        invertida={false}
       />
 
       <main id="contenido">
@@ -161,33 +161,15 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
          * cliente: el estudio no tiene fotos, así que la imagen sale de su
          * propia marca en vez de una foto de banco que no es su taller.
          *
-         * Si algún día sube una foto de portada desde el panel, manda ella y
-         * la sección vuelve a vestirse de tinta: es la única forma de que una
-         * foto de taller se lea encima.
+         * Si algún día sube una foto de portada desde el panel, NO tapa esto:
+         * entra como banda ancha al final de la sección (ver más abajo).
          */}
-        <section
-          className={`portada relative flex min-h-[100dvh] flex-col justify-center overflow-hidden pb-14 pt-32 md:pb-20 ${
-            conFoto ? 'en-tinta' : 'bg-[var(--color-papel)]'
-          }`}
-        >
-          {conFoto ? (
-            <>
-              <Image
-                src={contenido.hero.imagen}
-                alt={contenido.hero.imagenAlt || ''}
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover opacity-55"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-tinta)] via-[var(--color-tinta)]/45 to-transparent" />
-            </>
-          ) : (
-            /* Solo la composición: las estrellas sueltas de `Estrellas` se
-               montaban encima de los sectores de la rueda, y la estrella de la
-               marca ya está dentro de la composición, a tamaño de verdad. */
-            <Formas />
-          )}
+        <section className="portada relative flex min-h-[100dvh] flex-col justify-center overflow-hidden bg-[var(--color-papel)] pb-14 pt-32 md:pb-20">
+          {/* La rueda de color y la estrella se quedan SIEMPRE, con foto o sin
+              ella: son lo único de la portada que es del cliente. Las
+              estrellas sueltas de `Estrellas` no van aquí, que se montaban
+              encima de los sectores de la rueda. */}
+          <Formas />
 
           <div className="contenedor relative z-10">
             <h1
@@ -237,6 +219,35 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               </div>
             </div>
           </div>
+
+          {/**
+           * Si el cliente sube foto de portada, entra como BANDA ANCHA al
+           * final de la sección, no como fondo.
+           *
+           * Antes se pintaba a sangre al 55 % bajo un velo de tinta y la
+           * sección se vestía de oscuro. Con la foto que subió —una lámina
+           * clara con el motivo a un lado— aquello no se leía: a pantalla
+           * completa `cover` se comía el motivo, y a media pantalla el corte
+           * partía la portada en dos. Así la portada sigue siendo la suya
+           * —crema, rueda y estrella— y la foto remata.
+           *
+           * `object-right-bottom`: en una banda de 5:1 no cabe un motivo
+           * vertical, así que se encuadra la esquina con color. La banda se
+           * mide por ALTO en escritorio (30vh) para que titular y foto quepan
+           * en una pantalla; en móvil, 16/9.
+           */}
+          {conFoto && (
+            <div className="relative mt-14 aspect-16/9 w-full md:mt-16 md:aspect-auto md:h-[30vh]">
+              <Image
+                src={contenido.hero.imagen}
+                alt={contenido.hero.imagenAlt || ''}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover object-right-bottom"
+              />
+            </div>
+          )}
         </section>
 
         {/* ════════════ Disciplinas ════════════ */}

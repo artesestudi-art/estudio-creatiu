@@ -222,7 +222,7 @@ export default async function PaginaCurso({ slug, idioma }: { slug: string; idio
         </header>
 
         {curso.imagen && (
-          <div className="relative aspect-16/9 w-full md:aspect-[21/9]">
+          <div className="relative aspect-16/9 w-full">
             <Image
               src={curso.imagen}
               alt={curso.imagen_alt || ''}
