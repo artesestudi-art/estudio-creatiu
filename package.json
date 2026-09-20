@@ -11,7 +11,8 @@
     "vaciar": "node --env-file=.env.local scripts/vaciar.mjs",
     "cursos": "node --env-file=.env.local scripts/cargar-cursos.mjs",
     "usuario": "node --env-file=.env.local scripts/usuario.mjs",
-    "portada": "node --env-file=.env.local scripts/cargar-portada.mjs"
+    "portada": "node --env-file=.env.local scripts/cargar-portada.mjs",
+    "indexnow": "node scripts/indexnow.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
