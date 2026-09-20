@@ -156,7 +156,7 @@ export const ESTUDIO: Estudio = {
    * visitante dice que sí. Ese orden no es un adorno: cargar analítica antes
    * de preguntar es lo que multa la Agencia de Protección de Datos.
    */
-  analitica: { ga4: '' },
+  analitica: { ga4: 'G-0JNXLLYG0S' },
 
   legal: {
     /** Titular real que firma el aviso legal. */
