@@ -33,6 +33,8 @@ type Estudio = {
   url: string
   titular: string
   descripcion: string
+  /** Lo mismo en catalán, para los metadatos de `/ca`. */
+  catalan: { titular: string; descripcion: string }
   contacto: {
     telefono: string
     telefonoE164: string
@@ -95,6 +97,17 @@ export const ESTUDIO: Estudio = {
      entero a quien viene a por el trimestre es una promesa falsa. */
   descripcion:
     'Taller de artes en Artés: cerámica, pintura, dibujo, costura y crochet, un día a la semana. Grupos para niños y para adultos, con clase de prueba gratuita.',
+
+  /* El titular y la descripción en catalán. Sin esto, `/ca` se le ofrecía a
+     Google con el `<title>` y la meta description en CASTELLANO —que es justo
+     lo que Google enseña en los resultados catalanes—, con el `hreflang`
+     diciendo `ca-ES`. Es traducción de lo de arriba, sin prometer nada nuevo,
+     y con el vocabulario que ya usa la web en catalán («infants», «adults»). */
+  catalan: {
+    titular: 'Cursos de ceràmica, pintura, dibuix i costura a Artés',
+    descripcion:
+      "Taller d'arts a Artés: ceràmica, pintura, dibuix, costura i crochet, un dia a la setmana. Grups per a infants i per a adults, amb classe de prova gratuïta.",
+  },
 
   contacto: {
     telefono: '620 297 425',

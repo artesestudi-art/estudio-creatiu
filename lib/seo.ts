@@ -40,6 +40,8 @@ export function schemaEstudio(idioma: Idioma): Record<string, unknown> {
   const calle = real(ESTUDIO.direccion.calle)
   const lat = real(ESTUDIO.direccion.latitud)
   const lon = real(ESTUDIO.direccion.longitud)
+  const descripcion =
+    idioma === 'ca' ? real(ESTUDIO.catalan.descripcion) : real(ESTUDIO.descripcion)
 
   return {
     '@context': 'https://schema.org',
@@ -47,7 +49,9 @@ export function schemaEstudio(idioma: Idioma): Record<string, unknown> {
     name: real(ESTUDIO.nombre) ?? undefined,
     url: url ? `${url}${prefijo(idioma)}` : undefined,
     inLanguage: CODIGO[idioma],
-    ...(real(ESTUDIO.descripcion) ? { description: ESTUDIO.descripcion } : {}),
+    /* En catalán, la descripción catalana: el JSON-LD decía `inLanguage: ca`
+       y a continuación el texto en castellano. */
+    ...(descripcion ? { description: descripcion } : {}),
     ...(real(ESTUDIO.contacto.telefonoE164)
       ? { telephone: ESTUDIO.contacto.telefonoE164 }
       : {}),

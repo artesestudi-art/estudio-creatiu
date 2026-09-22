@@ -3,6 +3,7 @@ import Portada from '@/components/Portada'
 import JsonLd from '@/components/JsonLd'
 import { alternosDe, schemaEstudio } from '@/lib/seo'
 import { hayTraduccion } from '@/lib/contenido'
+import { ESTUDIO } from '@/data/estudio'
 
 /** Portada en catalán. Mismo componente que la castellana: dos copias del
  *  mismo archivo acabarían divergiendo en cuanto se tocara una. */
@@ -17,7 +18,14 @@ export const revalidate = 300
  */
 export async function generateMetadata(): Promise<Metadata> {
   const hayCatalan = await hayTraduccion('ca')
+  const marca = ESTUDIO.nombre === 'PENDIENTE' ? 'Estudio' : ESTUDIO.nombre
   return {
+    /* En `absolute` para que no herede el título castellano del layout raíz:
+       era lo que Google enseñaba de `/ca` mientras el `hreflang` decía
+       `ca-ES`. Lo mismo con la descripción y el `locale` de Open Graph. */
+    title: { absolute: `${marca} · ${ESTUDIO.catalan.titular}` },
+    description: ESTUDIO.catalan.descripcion,
+    openGraph: { locale: 'ca_ES' },
     alternates: alternosDe('ca', hayCatalan ? { es: '/', ca: '/ca' } : { es: '/' }),
     robots: hayCatalan ? undefined : { index: false, follow: true },
   }

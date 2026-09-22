@@ -383,10 +383,16 @@ export default async function PaginaCurso({ slug, idioma }: { slug: string; idio
   )
 }
 
-/** «jueves, 1 de octubre». En UTC: es un día del calendario, sin hora. */
+/**
+ * «1 de octubre». En UTC: es un día del calendario, sin hora.
+ *
+ * ⛔ SIN el día de la semana, a propósito. El 1/10/2026 es jueves y es cuando
+ * arranca el curso, pero cada grupo tiene el suyo: art-ístico es de lunes y
+ * costura de martes. Poner «Jueves, 1 de octubre» al lado de «Horario: Lunes»
+ * dejaba a quien lee la ficha sin saber qué día se presenta.
+ */
 function diaLargo(dia: string, idioma: 'es' | 'ca'): string {
   const texto = new Date(`${dia}T00:00:00Z`).toLocaleDateString(idioma === 'ca' ? 'ca-ES' : 'es-ES', {
-    weekday: 'long',
     day: 'numeric',
     month: 'long',
     timeZone: 'UTC',
