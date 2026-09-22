@@ -21,6 +21,13 @@ const alternativos = [
 ]
 
 const config: NextConfig = {
+  experimental: {
+    /* Enciende `app/global-not-found.tsx`. Con dos layouts raíz (uno por
+       lengua) no hay un layout único del que colgar el 404 de las direcciones
+       que no casan con ninguna ruta, y Next servía el suyo de fábrica en
+       inglés. Está marcado como experimental en esta versión. */
+    globalNotFound: true,
+  },
   async redirects() {
     return alternativos.map((host) => ({
       source: '/:ruta*',

@@ -20,12 +20,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const hayCatalan = await hayTraduccion('ca')
   const marca = ESTUDIO.nombre === 'PENDIENTE' ? 'Estudio' : ESTUDIO.nombre
   return {
-    /* En `absolute` para que no herede el título castellano del layout raíz:
-       era lo que Google enseñaba de `/ca` mientras el `hreflang` decía
-       `ca-ES`. Lo mismo con la descripción y el `locale` de Open Graph. */
+    /* El título y la descripción catalanes los pone ya el layout de `app/(ca)`;
+       aquí sólo el `absolute`, para que la portada no salga con la plantilla
+       «%s · marca». ⛔ NADA de `openGraph` suelto: el objeto se sustituye
+       ENTERO, no se mezcla, y un `{ locale }` a secas dejó `/ca` sin `og:type`,
+       `og:url`, `og:site_name` ni `og:image`. Comprobado en el HTML. */
     title: { absolute: `${marca} · ${ESTUDIO.catalan.titular}` },
-    description: ESTUDIO.catalan.descripcion,
-    openGraph: { locale: 'ca_ES' },
     alternates: alternosDe('ca', hayCatalan ? { es: '/', ca: '/ca' } : { es: '/' }),
     robots: hayCatalan ? undefined : { index: false, follow: true },
   }
