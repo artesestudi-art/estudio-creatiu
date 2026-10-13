@@ -53,6 +53,23 @@ export default function BotonWhatsApp({
     return () => window.removeEventListener('scroll', alRodar)
   }, [])
 
+  /* ── 2. Teclado abierto: un campo enfocado ──
+     Estaba documentado arriba pero no hecho: `setEscribiendo` no se llamaba. */
+  useEffect(() => {
+    const CAMPOS = 'input, select, textarea'
+    const entra = (e: FocusEvent) => {
+      const el = e.target as Element | null
+      if (el?.matches?.(CAMPOS)) setEscribiendo(true)
+    }
+    const sale = () => setEscribiendo(false)
+    document.addEventListener('focusin', entra)
+    document.addEventListener('focusout', sale)
+    return () => {
+      document.removeEventListener('focusin', entra)
+      document.removeEventListener('focusout', sale)
+    }
+  }, [])
+
   /**
    * ── 1. Esconderse cuando debajo del botón hay algo que se pulsa ──
    *
@@ -76,9 +93,20 @@ export default function BotonWhatsApp({
       const caja = flotante.current
       if (!caja) return
 
-      // Si ya está escondido, no se mide: si no, seguiría diciendo «tapa» para
-      // siempre y parecería que el arreglo no funciona.
-      if (getComputedStyle(caja).opacity === '0') return
+      /*
+        Aquí NO se salta la medición cuando el botón está escondido. Antes sí
+        («si ya está a opacity 0, no se mide»), y eso convertía `tapando` en
+        un pestillo de una sola dirección: el botón se escondía sobre un
+        campo, dejaba de medirse por estar escondido y no volvía a aparecer en
+        toda la visita. Medido en serenohome el 10/09/2026: cero apariciones
+        en toda la página de contacto.
+
+        Medir escondido es seguro: entonces tiene `pointer-events: none` y ni
+        sale en `elementsFromPoint`; visible sí sale, pero se filtra abajo con
+        `contains`. La regla de «no medir si está escondido» vale para la
+        SONDA de fuera que comprueba el arreglo, no para el componente.
+      */
+      const todo = panel.current ?? caja
 
       const c = caja.getBoundingClientRect()
       const puntos: [number, number][] = [
@@ -92,7 +120,7 @@ export default function BotonWhatsApp({
       const estorba = puntos.some(([x, y]) =>
         document
           .elementsFromPoint(x, y)
-          .filter((el) => !caja.contains(el))
+          .filter((el) => !todo.contains(el))
           .some((el) => el.matches?.(ESTORBAN) || el.closest?.(ESTORBAN)),
       )
       setTapando(estorba)
@@ -134,8 +162,6 @@ export default function BotonWhatsApp({
     }
   }, [abierto])
 
-  // El orden importa: primero se decide si se enseña, y solo entonces se mide
-  // lo que hay debajo. Medir un botón ya invisible da siempre «tapa».
   const enseñar = visible && !tapando && !escribiendo
 
   useEffect(() => {
@@ -153,10 +179,7 @@ export default function BotonWhatsApp({
 
   return (
     <div
-      ref={(nodo) => {
-        panel.current = nodo
-        flotante.current = nodo
-      }}
+      ref={panel}
       // `inert` además de quitar los eventos: sin él, el tabulador se para en
       // un botón que no se ve y quien navega con teclado se queda encallado.
       inert={!enseñar}
@@ -165,10 +188,8 @@ export default function BotonWhatsApp({
         bottom: 'calc(1.25rem + env(safe-area-inset-bottom))',
       }}
       data-flotante="whatsapp"
-      className={`fixed z-[45] flex flex-col items-end gap-3 transition-all duration-300 ${
-        enseñar
-          ? 'pointer-events-auto translate-y-0 opacity-100'
-          : 'pointer-events-none translate-y-4 opacity-0'
+      className={`fixed z-[45] flex flex-col items-end gap-3 ${
+        enseñar ? 'pointer-events-auto' : 'pointer-events-none'
       }`}
     >
       {abierto && !directo && (
@@ -209,27 +230,38 @@ export default function BotonWhatsApp({
         </div>
       )}
 
-      {directo ? (
-        <a
-          href={directo}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={t.escribirPorWhatsApp}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_-8px_rgba(20,72,139,0.5)] transition-transform duration-200 hover:scale-105 active:scale-95"
-        >
-          <Icono />
-        </a>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setAbierto((v) => !v)}
-          aria-expanded={abierto}
-          aria-label={abierto ? t.cerrar : t.escribirPorWhatsApp}
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_-8px_rgba(20,72,139,0.5)] transition-transform duration-200 hover:scale-105 active:scale-95"
-        >
-          {abierto ? <Aspa /> : <Icono />}
-        </button>
-      )}
+      {/*
+        La caja que mide la sonda (56×56) NO se mueve nunca; lo que entra y sale
+        es lo de dentro. Antes el `translate-y-4` de la entrada vivía en la caja
+        de fuera, así que el botón escondido estaba 16 px más abajo que el
+        visible: se medía un sitio y se pintaba otro, y el botón acababa
+        enseñándose encima de un campo (medido en serenohome el 10/09/2026).
+      */}
+      <div ref={flotante} className="h-14 w-14">
+        {directo ? (
+          <a
+            href={directo}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={t.escribirPorWhatsApp}
+            tabIndex={enseñar ? undefined : -1}
+            className={`flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_-8px_rgba(20,72,139,0.5)] transition-all duration-300 hover:scale-105 active:scale-95 ${enseñar ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
+          >
+            <Icono />
+          </a>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setAbierto((v) => !v)}
+            aria-expanded={abierto}
+            aria-label={abierto ? t.cerrar : t.escribirPorWhatsApp}
+            tabIndex={enseñar ? undefined : -1}
+            className={`flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_-8px_rgba(20,72,139,0.5)] transition-all duration-300 hover:scale-105 active:scale-95 ${enseñar ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
+          >
+            {abierto ? <Aspa /> : <Icono />}
+          </button>
+        )}
+      </div>
     </div>
   )
 }
