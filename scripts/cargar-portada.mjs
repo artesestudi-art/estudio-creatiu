@@ -14,10 +14,11 @@
  * que hay en la base o contra lo que dijo Silvia en la reunión del 31/08/2026.
  *
  * ⚠️ Lo que sigue VACÍO, y vacío no se pinta:
- *   - `profesorado`: hay cinco nombres (Silvia Cano, Alicia, Maria, Jordina y
- *     Alba Selva) y de tres no se sabe ni el apellido, ni la trayectoria, ni
- *     si quieren salir. Una ficha de profesora inventada es lo peor que puede
- *     llevar esta web. El Excel del 08/09/2026 sí trae el Instagram de las
+ *   - `profesorado`: SOLO las que han mandado su texto. El 15/10/2026,
+ *     Alícia Pradell (su portfolio en PDF; la foto es suya, recortada de él) y
+ *     Jordina (texto suyo en catalán, traducido). Faltan Silvia y Alba Selva;
+ *     Maria se queda fuera porque Costura Junior se canceló. Una ficha de
+ *     profesora inventada es lo peor que puede llevar esta web. El Excel del 08/09/2026 sí trae el Instagram de las
  *     cinco, y eso ya está en la ficha de cada curso; Alba Selva tiene DOS
  *     cuentas, una por idioma: @albaselva en castellano y @byalbaselva en
  *     catalán.
@@ -141,7 +142,7 @@ const ES = {
       {
         pregunta: '¿Los cursos son para niños o para adultos?',
         respuesta:
-          'Para los dos. Art-Junior, Cerámica Junior, Costura Junior y Pequeños creadores son para niños y adolescentes; Art-ístico, Costura Básica, Costura creativa y el taller de crochet, para adultos.',
+          'Para los dos. Art-Junior, Cerámica Junior y Pequeños creadores son para niños y adolescentes; Art-ístico, Costura Básica, Costura creativa y el taller de crochet, para adultos.',
       },
     ],
   },
@@ -155,6 +156,24 @@ const ES = {
     entradilla: 'Un correo cuando se abren grupos nuevos. Ni uno más.',
   },
   ...VACIO,
+  profesorado: {
+    titulo: '',
+    entradilla: '',
+    personas: [
+      {
+        "nombre": "Alícia Pradell Noguera",
+        "rol": "Ceramista · Cerámica Junior",
+        "foto": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/profesora-alicia-pradell.jpg",
+        "bio": "Ceramista y maestra de educación infantil, vivo en Artés. Estudié en la EART de Vic, donde obtuve los títulos de Grado Medio de Alfarería y de Grado Superior de Cerámica Artística, y después hice magisterio de educación infantil. Hace seis años volví al taller con más fuerza que nunca. Trabajo sobre todo el gres para piezas utilitarias, pero me gusta experimentar con distintas técnicas y mezclar barros: las texturas nacen del contacto con la tierra, las plantas y las huellas de los dedos. Formo parte de una entidad de artistas y artesanas de Artés que quiere acercar el arte a la gente."
+      },
+      {
+        "nombre": "Jordina",
+        "rol": "Bünic Handmade · Costura básica",
+        "foto": "",
+        "bio": "Soy Jordina, creadora de Bünic Handmade, un proyecto que nace de mi pasión por la costura y por crear con las manos. En mi taller diseño y confecciono accesorios textiles de manera artesanal, desde la idea inicial hasta el último detalle. Me gusta entender la costura como una manera de crear, experimentar y dar forma a nuestras propias ideas. En el curso de costura básica quiero compartir todo lo que he ido aprendiendo y demostrar que, empezando desde cero y perdiendo el miedo a la máquina de coser, podemos llegar a hacer muchas más cosas de las que imaginamos."
+      }
+    ],
+  },
 }
 
 const CA = {
@@ -254,7 +273,7 @@ const CA = {
       {
         pregunta: "Els cursos són per a infants o per a adults?",
         respuesta:
-          'Per als dos. Art-Junior, Ceràmica Junior, Costura Junior i Petits creadors són per a infants i adolescents; Art-ístic, Costura Bàsica, Costura creativa i el taller de crochet, per a adults.',
+          'Per als dos. Art-Junior, Ceràmica Junior i Petits creadors són per a infants i adolescents; Art-ístic, Costura Bàsica, Costura creativa i el taller de crochet, per a adults.',
       },
     ],
   },
@@ -268,6 +287,24 @@ const CA = {
     entradilla: "Un correu quan s'obren grups nous. Ni un més.",
   },
   ...VACIO,
+  profesorado: {
+    titulo: '',
+    entradilla: '',
+    personas: [
+      {
+        "nombre": "Alícia Pradell Noguera",
+        "rol": "Ceramista · Ceràmica Junior",
+        "foto": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/profesora-alicia-pradell.jpg",
+        "bio": "Ceramista i mestra d'educació infantil, visc a Artés. Vaig estudiar a l'EART de Vic, on vaig obtenir els títols de Grau Mitjà de Terrisseria i de Grau Superior de Ceràmica Artística, i després vaig fer magisteri d'educació infantil. Fa sis anys vaig tornar al taller amb més força que mai. Treballo sobretot el gres per a peces utilitàries, però m'agrada experimentar amb diferents tècniques i barrejar fangs: les textures neixen del contacte amb la terra, les plantes i les empremtes dels dits. Formo part d'una entitat d'artistes i artesanes d'Artés que vol apropar l'art a la gent."
+      },
+      {
+        "nombre": "Jordina",
+        "rol": "Bünic Handmade · Costura bàsica",
+        "foto": "",
+        "bio": "Soc la Jordina, creadora de Bünic Handmade, un projecte que neix de la meva passió per la costura i per crear amb les mans. Al meu taller dissenyo i confecciono accessoris tèxtils de manera artesanal, des de la idea inicial fins a l'últim detall. M'agrada entendre la costura com una manera de crear, experimentar i donar forma a les nostres pròpies idees. Al curs de costura bàsica vull compartir tot el que he anat aprenent i demostrar que, començant des de zero i perdent la por a la màquina de cosir, podem arribar a fer moltes més coses de les que ens imaginem."
+      }
+    ],
+  },
 }
 
 const sql = neon(url)

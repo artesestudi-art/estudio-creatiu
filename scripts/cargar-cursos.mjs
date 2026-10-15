@@ -166,7 +166,7 @@ const CURSOS = [
     horario: 'Viernes · Primaria (6–8 años) 17:15–18:45 h · Secundaria (8–12 años) 19:00–20:30 h',
     precio_texto: '65 €/mes · un día a la semana',
     plazas: 10,
-    profesor: 'Alicia · @lispradell',
+    profesor: 'Alícia Pradell · @lispradell',
     orden: 2,
     ca: {
       slug: 'ceramica-junior',
@@ -183,7 +183,7 @@ const CURSOS = [
       duracion: "D'octubre a juny",
       horario: 'Divendres · Primària (6–8 anys) 17:15–18:45 h · Secundària (8–12 anys) 19:00–20:30 h',
       precio_texto: '65 €/mes · un dia a la setmana',
-      profesor: 'Alicia · @lispradell',
+      profesor: 'Alícia Pradell · @lispradell',
     },
     convocatorias: [
       {
@@ -204,6 +204,8 @@ const CURSOS = [
   {
     slug: 'costura-junior',
     titulo: 'Costura Junior',
+    // Cancelado por el estudio el 14/10/2026: se queda en borrador, no se borra.
+    publicado: false,
     disciplina: 'Costura',
     /* La edad no está en la hoja de textos: sale del cuadro de salas, que
        para este curso pone «A partir de 10 anys». */
@@ -553,7 +555,7 @@ for (const c of CURSOS) {
       ${c.slug}, ${c.titulo}, ${c.disciplina}, 'presencial', ${c.nivel},
       ${c.resumen}, ${c.descripcion}, ${c.duracion}, ${c.horario},
       ${c.precio_texto}, NULL, ${c.plazas}, ${c.profesor},
-      ${c.seo_titulo ?? null}, ${INICIO}, ${c.orden}, true, ${JSON.stringify(c.ca)}
+      ${c.seo_titulo ?? null}, ${INICIO}, ${c.orden}, ${c.publicado ?? true}, ${JSON.stringify(c.ca)}
     )
     ON CONFLICT (slug) DO UPDATE SET
       titulo = EXCLUDED.titulo,
