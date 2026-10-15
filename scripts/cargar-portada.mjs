@@ -15,7 +15,8 @@
  *
  * ⚠️ Lo que sigue VACÍO, y vacío no se pinta:
  *   - `profesorado`: SOLO las que han mandado su texto. El 15/10/2026,
- *     Alícia Pradell (su portfolio en PDF; la foto es suya, recortada de él) y
+ *     Alícia Pradell (su portfolio en PDF: la foto y las 8 piezas de `obras`
+ *     salen recortadas de él, con los títulos que ella les pone) y
  *     Jordina (texto suyo en catalán, traducido). Faltan Silvia y Alba Selva;
  *     Maria se queda fuera porque Costura Junior se canceló. Una ficha de
  *     profesora inventada es lo peor que puede llevar esta web. El Excel del 08/09/2026 sí trae el Instagram de las
@@ -163,12 +164,72 @@ const ES = {
       {
         "nombre": "Alícia Pradell Noguera",
         "rol": "Ceramista · Cerámica Junior",
+      "enlace": "https://www.instagram.com/lispradell/",
+      "obras": [
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-arrels.jpg",
+          "alt": "Arrels: panel de pequeños cuencos de cerámica alrededor de un texto",
+          "pie": "«Arrels», 2024",
+          "ancho": 1047,
+          "alto": 1400
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-textures-oliveres.jpg",
+          "alt": "Placas de refractario con textura de corteza de olivo",
+          "pie": "Texturas de olivos · refractario, 2024",
+          "ancho": 1400,
+          "alto": 603
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-plat-plantes.jpg",
+          "alt": "Plato blanco con la huella de unas espigas",
+          "pie": "Plato",
+          "ancho": 1400,
+          "alto": 1372
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-tasses-punts.jpg",
+          "alt": "Tazas y platillos de gres con lunares azules",
+          "pie": "Tazas",
+          "ancho": 1400,
+          "alto": 695
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-bol-flors.jpg",
+          "alt": "Pieza de barro oscuro con cuerda trenzada y flores secas",
+          "pie": "Bol",
+          "ancho": 945,
+          "alto": 1400
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-textura-peus.jpg",
+          "alt": "Placas de refractario esmaltadas con textura de huellas de pies",
+          "pie": "Textura de pies · refractario, 2024",
+          "ancho": 1400,
+          "alto": 563
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-plats.jpg",
+          "alt": "Tres fuentes de gres esmaltadas",
+          "pie": "Fuentes",
+          "ancho": 1400,
+          "alto": 457
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-tasses-ratlles.jpg",
+          "alt": "Tazas con rayas de colores y ramas pintadas",
+          "pie": "Tazas",
+          "ancho": 1400,
+          "alto": 1351
+        }
+      ],
         "foto": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/profesora-alicia-pradell.jpg",
         "bio": "Ceramista y maestra de educación infantil, vivo en Artés. Estudié en la EART de Vic, donde obtuve los títulos de Grado Medio de Alfarería y de Grado Superior de Cerámica Artística, y después hice magisterio de educación infantil. Hace seis años volví al taller con más fuerza que nunca. Trabajo sobre todo el gres para piezas utilitarias, pero me gusta experimentar con distintas técnicas y mezclar barros: las texturas nacen del contacto con la tierra, las plantas y las huellas de los dedos. Formo parte de una entidad de artistas y artesanas de Artés que quiere acercar el arte a la gente."
       },
       {
         "nombre": "Jordina",
         "rol": "Bünic Handmade · Costura básica",
+      "enlace": "https://www.instagram.com/bunic_handmade/",
         "foto": "",
         "bio": "Soy Jordina, creadora de Bünic Handmade, un proyecto que nace de mi pasión por la costura y por crear con las manos. En mi taller diseño y confecciono accesorios textiles de manera artesanal, desde la idea inicial hasta el último detalle. Me gusta entender la costura como una manera de crear, experimentar y dar forma a nuestras propias ideas. En el curso de costura básica quiero compartir todo lo que he ido aprendiendo y demostrar que, empezando desde cero y perdiendo el miedo a la máquina de coser, podemos llegar a hacer muchas más cosas de las que imaginamos."
       }
@@ -294,12 +355,72 @@ const CA = {
       {
         "nombre": "Alícia Pradell Noguera",
         "rol": "Ceramista · Ceràmica Junior",
+      "enlace": "https://www.instagram.com/lispradell/",
+      "obras": [
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-arrels.jpg",
+          "alt": "Arrels: plafó de petits bols de ceràmica al voltant d'un text",
+          "pie": "«Arrels», 2024",
+          "ancho": 1047,
+          "alto": 1400
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-textures-oliveres.jpg",
+          "alt": "Plaques de refractari amb textura d'escorça d'olivera",
+          "pie": "Textures d'oliveres · refractari, 2024",
+          "ancho": 1400,
+          "alto": 603
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-plat-plantes.jpg",
+          "alt": "Plat blanc amb l'empremta d'espigues",
+          "pie": "Plat",
+          "ancho": 1400,
+          "alto": 1372
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-tasses-punts.jpg",
+          "alt": "Tasses i platets de gres amb pics blaus",
+          "pie": "Tasses",
+          "ancho": 1400,
+          "alto": 695
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-bol-flors.jpg",
+          "alt": "Peça de fang fosc amb corda trenada i flors seques",
+          "pie": "Bol",
+          "ancho": 945,
+          "alto": 1400
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-textura-peus.jpg",
+          "alt": "Plaques de refractari esmaltades amb textura de petjades",
+          "pie": "Textura de peus · refractari, 2024",
+          "ancho": 1400,
+          "alto": 563
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-plats.jpg",
+          "alt": "Tres plats fondos de gres esmaltats",
+          "pie": "Plats",
+          "ancho": 1400,
+          "alto": 457
+        },
+        {
+          "url": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/alicia-tasses-ratlles.jpg",
+          "alt": "Tasses amb ratlles de colors i branques pintades",
+          "pie": "Tasses",
+          "ancho": 1400,
+          "alto": 1351
+        }
+      ],
         "foto": "https://jgkfdqocjinx1mqn.public.blob.vercel-storage.com/portada/profesora-alicia-pradell.jpg",
         "bio": "Ceramista i mestra d'educació infantil, visc a Artés. Vaig estudiar a l'EART de Vic, on vaig obtenir els títols de Grau Mitjà de Terrisseria i de Grau Superior de Ceràmica Artística, i després vaig fer magisteri d'educació infantil. Fa sis anys vaig tornar al taller amb més força que mai. Treballo sobretot el gres per a peces utilitàries, però m'agrada experimentar amb diferents tècniques i barrejar fangs: les textures neixen del contacte amb la terra, les plantes i les empremtes dels dits. Formo part d'una entitat d'artistes i artesanes d'Artés que vol apropar l'art a la gent."
       },
       {
         "nombre": "Jordina",
         "rol": "Bünic Handmade · Costura bàsica",
+      "enlace": "https://www.instagram.com/bunic_handmade/",
         "foto": "",
         "bio": "Soc la Jordina, creadora de Bünic Handmade, un projecte que neix de la meva passió per la costura i per crear amb les mans. Al meu taller dissenyo i confecciono accessoris tèxtils de manera artesanal, des de la idea inicial fins a l'últim detall. M'agrada entendre la costura com una manera de crear, experimentar i donar forma a les nostres pròpies idees. Al curs de costura bàsica vull compartir tot el que he anat aprenent i demostrar que, començant des de zero i perdent la por a la màquina de cosir, podem arribar a fer moltes més coses de les que ens imaginem."
       }
@@ -321,4 +442,4 @@ for (const [clave, valor] of [
   console.log(`  ✓ ${clave}`)
 }
 
-console.log('\nProfesorado, galería, testimonios y talleres a medida siguen vacíos a propósito.')
+console.log('\nGalería, testimonios y talleres a medida siguen vacíos a propósito.')

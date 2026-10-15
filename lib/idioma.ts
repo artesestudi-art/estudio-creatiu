@@ -157,6 +157,7 @@ type Textos = {
 
   /* Títulos de respaldo, cuando el estudio no ha escrito el suyo */
   quienDaLasClases: string
+  obraDe: string
   elTallerPorDentro: string
   loQueCuentan: string
   preguntasFrecuentes: string
@@ -296,6 +297,7 @@ const es: Textos = {
   apuntado: 'Apuntado. Gracias.',
 
   quienDaLasClases: 'Quién da las clases',
+  obraDe: 'Obra de',
   elTallerPorDentro: 'El taller por dentro',
   loQueCuentan: 'Lo que cuentan los alumnos',
   preguntasFrecuentes: 'Preguntas frecuentes',
@@ -442,6 +444,7 @@ const ca: Textos = {
   apuntado: 'Apuntat. Gràcies.',
 
   quienDaLasClases: 'Qui fa les classes',
+  obraDe: 'Obra de',
   elTallerPorDentro: 'El taller per dins',
   loQueCuentan: "El que expliquen els alumnes",
   preguntasFrecuentes: 'Preguntes freqüents',

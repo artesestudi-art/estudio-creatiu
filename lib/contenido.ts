@@ -17,7 +17,18 @@ import { PRINCIPAL, type Idioma } from './idioma'
 
 export type Punto = { titulo: string; texto: string }
 export type Paso = { titulo: string; texto: string }
-export type Profesor = { nombre: string; rol: string; bio: string; foto: string }
+/** Una pieza del portfolio de una profesora; `ancho`/`alto` dan la proporción. */
+export type Obra = { url: string; alt: string; pie?: string; ancho?: number; alto?: number }
+export type Profesor = {
+  nombre: string
+  rol: string
+  bio: string
+  foto: string
+  /** Su Instagram o su web, opcional. */
+  enlace?: string
+  /** Fotos de su obra. El panel no las edita, pero las conserva al guardar. */
+  obras?: Obra[]
+}
 export type Testimonio = { texto: string; autor: string; curso: string }
 export type Pregunta = { pregunta: string; respuesta: string }
 /** Lo que no es un curso con matrícula: cumpleaños, empresas, un día suelto. */

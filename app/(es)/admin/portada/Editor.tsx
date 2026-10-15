@@ -265,6 +265,7 @@ export default function Editor({
             { clave: 'nombre', etiqueta: 'Nombre' },
             { clave: 'rol', etiqueta: 'Qué imparte' },
             { clave: 'bio', etiqueta: 'Breve biografía', largo: true },
+            { clave: 'enlace', etiqueta: 'Instagram o web (opcional)' },
             { clave: 'foto', etiqueta: 'Foto (URL)', imagen: true },
           ]}
           hayAlmacen={hayAlmacen}
@@ -410,7 +411,7 @@ function Bloque({ titulo, children }: { titulo: string; children: React.ReactNod
 
 type CampoLista = { clave: string; etiqueta: string; largo?: boolean; imagen?: boolean }
 
-function Lista<T extends Record<string, string>>({
+function Lista<T extends Record<string, unknown>>({
   titulo,
   ayuda,
   elementos,
@@ -468,7 +469,7 @@ function Lista<T extends Record<string, string>>({
                   <ImagenCampo
                     key={campo.clave}
                     etiqueta={campo.etiqueta}
-                    url={elemento[campo.clave] ?? ''}
+                    url={String(elemento[campo.clave] ?? '')}
                     hayAlmacen={hayAlmacen}
                     onCambio={(url) => editar(i, campo.clave, url)}
                   />
@@ -477,13 +478,13 @@ function Lista<T extends Record<string, string>>({
                     {campo.largo ? (
                       <textarea
                         rows={3}
-                        value={elemento[campo.clave] ?? ''}
+                        value={String(elemento[campo.clave] ?? '')}
                         onChange={(e) => editar(i, campo.clave, e.target.value)}
                         className={claseInput}
                       />
                     ) : (
                       <input
-                        value={elemento[campo.clave] ?? ''}
+                        value={String(elemento[campo.clave] ?? '')}
                         onChange={(e) => editar(i, campo.clave, e.target.value)}
                         className={claseInput}
                       />

@@ -360,13 +360,15 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                   <article
                     key={c.id}
                     data-panel
-                    className="group relative shrink-0 snap-start will-change-transform w-[84vw] sm:w-[62vw] lg:h-[76vh] lg:w-[46vw] lg:max-w-[42rem]"
+                    className="group relative shrink-0 snap-start will-change-transform w-[84vw] sm:w-[62vw] lg:w-[46vw] lg:max-w-[42rem]"
                   >
                     <Link href={`${p}/cursos/${c.slug}`} className="flex h-full flex-col">
                       {/* La foto sangra y se recorta: el marco es la ventana,
-                          la imagen se mueve por detrás. */}
+                          la imagen se mueve por detrás. En pantalla grande la
+                          foto tiene altura FIJA: antes ocupaba lo que dejaba
+                          libre el resumen, y cada curso salía de un tamaño. */}
                       <div
-                        className="relative aspect-3/4 overflow-hidden lg:aspect-auto lg:min-h-0 lg:flex-1"
+                        className="relative aspect-3/4 overflow-hidden lg:aspect-auto lg:h-[52vh]"
                         style={{ background: MANCHAS[i % MANCHAS.length] }}
                       >
                         {c.imagen ? (
@@ -401,7 +403,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
 
                       <div className="shrink-0 pt-6">
                         {c.resumen && (
-                          <p className="mb-5 max-w-[38em] text-[0.95rem] leading-relaxed opacity-65">
+                          <p className="mb-5 line-clamp-3 max-w-[38em] text-[0.95rem] leading-relaxed opacity-65">
                             {c.resumen}
                           </p>
                         )}
@@ -584,55 +586,90 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                 )}
               </div>
 
-              <div className="grid gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
-                {contenido.profesorado.personas.map((p, i) => (
-                  <article
-                    key={i}
-                    className="revela"
-                    // Escalonado en diagonal: las de la fila de abajo bajan un
-                    // poco más, para que la rejilla no se lea como una tabla.
-                    style={
-                      {
-                        '--retraso': `${i * 90}ms`,
-                        marginTop: i % 3 === 1 ? '2.5rem' : undefined,
-                      } as React.CSSProperties
-                    }
-                  >
-                    {p.foto ? (
-                      <div className="relative mb-6 aspect-4/5 overflow-hidden">
-                        <Image
-                          src={p.foto}
-                          alt={p.nombre}
-                          fill
-                          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      // Sin foto, la ficha conserva el hueco con su inicial: si
-                      // no, su nombre queda a la altura de la foto de la vecina
-                      // y parece que la foto es suya.
-                      contenido.profesorado.personas.some((otra) => otra.foto) && (
+              {/* Una franja por persona, y no una rejilla de tres: con dos
+                  profesoras la rejilla dejaba una columna vacía, y una ficha
+                  sin foto quedaba al lado de la foto de la otra, como si fuera
+                  suya. La foto cambia de lado en cada franja; quien no tiene
+                  foto se alinea con la columna de texto de las demás. */}
+              <div className="space-y-24 lg:space-y-32">
+                {contenido.profesorado.personas.map((p, i) => {
+                  const derecha = i % 2 === 1
+                  const obras = (p.obras ?? []).filter((o) => o.url)
+                  return (
+                    <article key={i} className="revela">
+                      <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+                        {p.foto && (
+                          <div
+                            className={`relative aspect-4/5 overflow-hidden lg:col-span-5 ${derecha ? 'lg:order-2 lg:col-start-8' : ''}`}
+                          >
+                            <Image
+                              src={p.foto}
+                              alt={p.nombre}
+                              fill
+                              sizes="(min-width: 1024px) 40vw, 100vw"
+                              className="object-cover"
+                            />
+                          </div>
+                        )}
                         <div
-                          aria-hidden
-                          className="mb-6 flex aspect-4/5 items-center justify-center"
-                          style={{ background: COLORES_MARCA[i % COLORES_MARCA.length] }}
+                          className={
+                            p.foto
+                              ? `lg:col-span-6 ${derecha ? 'lg:order-1 lg:col-start-1' : 'lg:col-start-7'}`
+                              : 'lg:col-span-7 lg:col-start-4'
+                          }
                         >
-                          <span className="font-[family-name:var(--font-display)] text-[clamp(5rem,12vw,9rem)] leading-none text-[var(--color-marca-marino)]">
-                            {p.nombre.trim().charAt(0)}
-                          </span>
+                          {p.rol && <p className="t-etiqueta mb-4">{p.rol}</p>}
+                          <h3 className="font-[family-name:var(--font-display)] text-[clamp(2rem,4vw,3.25rem)] leading-[1.02] tracking-[-0.02em]">
+                            {p.nombre}
+                          </h3>
+                          {p.bio && (
+                            <p className="t-cuerpo mt-6 max-w-[60ch] text-[var(--color-tinta-80)]">{p.bio}</p>
+                          )}
+                          {p.enlace && (
+                            <a
+                              href={p.enlace}
+                              target="_blank"
+                              rel="noopener"
+                              className="mt-6 inline-block border-b border-current pb-0.5 text-[0.95rem] text-[var(--color-tinta)] hover:text-[var(--color-acento)]"
+                            >
+                              {p.enlace.replace(/^https?:\/\/(www\.)?instagram\.com\//, '@').replace(/\/$/, '')}
+                            </a>
+                          )}
                         </div>
-                      )
-                    )}
-                    <h3 className="t-media">{p.nombre}</h3>
-                    {p.rol && <p className="t-etiqueta mt-2">{p.rol}</p>}
-                    {p.bio && (
-                      <p className="mt-4 text-[0.95rem] leading-relaxed text-[var(--color-tinta-60)]">
-                        {p.bio}
-                      </p>
-                    )}
-                  </article>
-                ))}
+                      </div>
+
+                      {obras.length > 0 && (
+                        <div className="mt-12">
+                          <p className="t-etiqueta mb-5">
+                            {t.obraDe} {p.nombre.split(' ')[0]}
+                          </p>
+                          {/* Cada pieza con su proporción: un mural apaisado y un
+                              jarrón no caben en el mismo cuadrado sin cortarles
+                              media obra. En el móvil, tira que se desliza; en
+                              pantalla grande, mosaico a cuatro columnas, porque
+                              con ratón nadie descubre que una tira se desliza. */}
+                          <ul className="-mx-5 flex snap-x scroll-px-5 gap-4 overflow-x-auto px-5 pb-4 md:-mx-10 md:scroll-px-10 md:px-10 lg:mx-0 lg:block lg:columns-4 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0">
+                            {obras.map((o, j) => (
+                              <li key={j} className="shrink-0 snap-start lg:mb-5 lg:break-inside-avoid">
+                                <Image
+                                  src={o.url}
+                                  alt={o.alt}
+                                  width={o.ancho ?? 1200}
+                                  height={o.alto ?? 1200}
+                                  sizes="(min-width: 1024px) 22vw, 80vw"
+                                  className="h-56 w-auto max-w-none lg:h-auto lg:w-full lg:max-w-full"
+                                />
+                                {o.pie && (
+                                  <p className="mt-2 text-[0.85rem] text-[var(--color-tinta-60)]">{o.pie}</p>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </article>
+                  )
+                })}
               </div>
             </div>
           </section>

@@ -160,10 +160,10 @@ export default function ScrollHorizontal({
           foto.style.transform = `translate3d(${desvio * 14}%, 0, 0) scale(1.18)`
         }
 
-        // Al pasar por el centro el panel se levanta; a los lados se apaga.
+        // A los lados el panel se apaga, pero NO encoge: con la escala las
+        // fotos de los cursos parecían de tamaños distintos (15/10/2026).
         const cerca = Math.max(0, 1 - distancia * 1.7)
         panel.style.opacity = String(0.42 + cerca * 0.58)
-        panel.style.transform = `scale(${0.94 + cerca * 0.06})`
       })
 
       setAvance(suave)
@@ -210,7 +210,7 @@ export default function ScrollHorizontal({
   return (
     <div ref={marco} style={{ height: altura ? `${altura}px` : '100vh' }} className="relative">
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <div ref={pista} className="flex items-center gap-[6vw] pl-[8vw] will-change-transform">
+        <div ref={pista} className="flex items-start gap-[6vw] pl-[8vw] will-change-transform">
           {children}
         </div>
 
