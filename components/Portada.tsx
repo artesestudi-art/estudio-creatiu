@@ -598,7 +598,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                       } as React.CSSProperties
                     }
                   >
-                    {p.foto && (
+                    {p.foto ? (
                       <div className="relative mb-6 aspect-4/5 overflow-hidden">
                         <Image
                           src={p.foto}
@@ -608,6 +608,21 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                           className="object-cover"
                         />
                       </div>
+                    ) : (
+                      // Sin foto, la ficha conserva el hueco con su inicial: si
+                      // no, su nombre queda a la altura de la foto de la vecina
+                      // y parece que la foto es suya.
+                      contenido.profesorado.personas.some((otra) => otra.foto) && (
+                        <div
+                          aria-hidden
+                          className="mb-6 flex aspect-4/5 items-center justify-center"
+                          style={{ background: COLORES_MARCA[i % COLORES_MARCA.length] }}
+                        >
+                          <span className="font-[family-name:var(--font-display)] text-[clamp(5rem,12vw,9rem)] leading-none text-[var(--color-marca-marino)]">
+                            {p.nombre.trim().charAt(0)}
+                          </span>
+                        </div>
+                      )
                     )}
                     <h3 className="t-media">{p.nombre}</h3>
                     {p.rol && <p className="t-etiqueta mt-2">{p.rol}</p>}
