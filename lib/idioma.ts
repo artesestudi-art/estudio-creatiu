@@ -73,6 +73,8 @@ type Textos = {
   modalidad: string
   precio: string
   empieza: string
+  /** Cuando la fecha de inicio ya ha pasado: el curso está en marcha. */
+  enMarcha: string
   hastaPersonas: (n: number) => string
   desdeEl: string
 
@@ -216,6 +218,7 @@ const es: Textos = {
   modalidad: 'Modalidad',
   precio: 'Precio',
   empieza: 'Empieza',
+  enMarcha: 'En marcha desde el',
   hastaPersonas: (n) => `Hasta ${n} personas`,
   desdeEl: 'desde el',
 
@@ -363,6 +366,7 @@ const ca: Textos = {
   modalidad: 'Modalitat',
   precio: 'Preu',
   empieza: 'Comença',
+  enMarcha: 'En marxa des del',
   hastaPersonas: (n) => `Fins a ${n} persones`,
   desdeEl: 'des del',
 

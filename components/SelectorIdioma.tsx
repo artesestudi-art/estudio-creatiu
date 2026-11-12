@@ -26,7 +26,9 @@ export default function SelectorIdioma({
   equivalente?: Partial<Record<Idioma, string>>
   className?: string
 }) {
-  const ruta = usePathname() ?? '/'
+  // Al prerenderizar la portada, Next da «/index» en vez de «/», y el enlace
+  // salía como «/ca/index» (404) en el HTML que ven Google y el primer clic.
+  const ruta = (usePathname() ?? '/').replace(/\/index$/, '') || '/'
 
   function destino(otro: Idioma): string {
     if (equivalente?.[otro]) return equivalente[otro]!

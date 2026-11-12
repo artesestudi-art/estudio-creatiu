@@ -209,7 +209,15 @@ export default async function PaginaCurso({ slug, idioma }: { slug: string; idio
             <dl className="revela mt-14 grid grid-cols-2 gap-x-8 gap-y-8 border-t border-white/12 pt-10 md:grid-cols-4">
               {precio && <Ficha etiqueta={t.precio} valor={precio} destacado />}
               {curso.fecha_inicio && (
-                <Ficha etiqueta={t.empieza} valor={diaLargo(curso.fecha_inicio, idioma)} />
+                <Ficha
+                  etiqueta={
+                    // Pasada la fecha, «Empieza 1 de octubre» parece un curso cerrado.
+                    String(curso.fecha_inicio).slice(0, 10) < new Date().toISOString().slice(0, 10)
+                      ? t.enMarcha
+                      : t.empieza
+                  }
+                  valor={diaLargo(curso.fecha_inicio, idioma)}
+                />
               )}
               {curso.duracion && <Ficha etiqueta={t.duracion} valor={curso.duracion} />}
               {curso.horario && <Ficha etiqueta={t.horario} valor={curso.horario} />}
