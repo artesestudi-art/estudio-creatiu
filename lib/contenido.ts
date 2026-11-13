@@ -1,5 +1,12 @@
 import { leerContenido, guardarContenido } from './bd'
 import { PRINCIPAL, type Idioma } from './idioma'
+import { esSilvia, fichaSilvia } from '@/data/silvia'
+
+/** Sílvia la primera, si la base no la tiene ya (ver data/silvia.ts). */
+function conFundadora(profesorado: Contenido['profesorado'], idioma: Idioma): Contenido['profesorado'] {
+  if (profesorado.personas.some(esSilvia)) return profesorado
+  return { ...profesorado, personas: [fichaSilvia(idioma), ...profesorado.personas] }
+}
 
 /**
  * Contenido editable de la portada.
@@ -132,7 +139,7 @@ export async function cargarContenido(idioma: Idioma = PRINCIPAL): Promise<Conte
     cursos: { ...CONTENIDO_VACIO.cursos, ...guardado.cursos },
     talleres: { ...CONTENIDO_VACIO.talleres, ...guardado.talleres },
     metodo: { ...CONTENIDO_VACIO.metodo, ...guardado.metodo },
-    profesorado: { ...CONTENIDO_VACIO.profesorado, ...guardado.profesorado },
+    profesorado: conFundadora({ ...CONTENIDO_VACIO.profesorado, ...guardado.profesorado }, idioma),
     galeria: { ...CONTENIDO_VACIO.galeria, ...guardado.galeria },
     testimonios: { ...CONTENIDO_VACIO.testimonios, ...guardado.testimonios },
     faq: { ...CONTENIDO_VACIO.faq, ...guardado.faq },
