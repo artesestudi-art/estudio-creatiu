@@ -18,6 +18,7 @@ import Disciplinas from '@/components/Disciplinas'
 import Estrellas from '@/components/Estrellas'
 import Formas from '@/components/Formas'
 import LogoGoogle from '@/components/LogoGoogle'
+import BioIdiomas from '@/components/BioIdiomas'
 
 /**
  * Las cuatro manchas del kit de marca, en rotación por ficha de curso.
@@ -69,7 +70,17 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
     mixto: t.mixto,
   }
 
-  const [contenido, todos] = await Promise.all([cargarContenido(idioma), cursosPublicados()])
+  const otroIdioma: Idioma = idioma === 'es' ? 'ca' : 'es'
+  const [contenido, contenidoOtro, todos] = await Promise.all([
+    cargarContenido(idioma),
+    cargarContenido(otroIdioma),
+    cursosPublicados(),
+  ])
+  /* La bio de cada profesora en la otra lengua, por su nombre (las fichas
+     pueden estar en distinto orden en cada idioma), para el botón de idioma. */
+  const bioEnOtro = new Map(
+    contenidoOtro.profesorado.personas.map((p) => [p.nombre.trim().toLowerCase(), p.bio] as const),
+  )
   const cursos = todos.map((c) => cursoEn(c, idioma))
   const [convocatoriasBase, ocupacion] = await Promise.all([
     convocatoriasDeVarios(cursos.map((c) => c.id)),
@@ -624,7 +635,14 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                             {p.nombre}
                           </h3>
                           {p.bio && (
-                            <p className="t-cuerpo mt-6 max-w-[60ch] text-[var(--color-tinta-80)]">{p.bio}</p>
+                            <BioIdiomas
+                              className="mt-6"
+                              idioma={idioma}
+                              bios={{
+                                [idioma]: p.bio,
+                                [otroIdioma]: bioEnOtro.get(p.nombre.trim().toLowerCase()) ?? '',
+                              }}
+                            />
                           )}
                           {p.enlace && (
                             <a
