@@ -19,6 +19,7 @@ import Estrellas from '@/components/Estrellas'
 import Formas from '@/components/Formas'
 import LogoGoogle from '@/components/LogoGoogle'
 import BioIdiomas from '@/components/BioIdiomas'
+import GaleriaObras from '@/components/GaleriaObras'
 
 /**
  * Las cuatro manchas del kit de marca, en rotación por ficha de curso.
@@ -667,23 +668,7 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                               media obra. En el móvil, tira que se desliza; en
                               pantalla grande, mosaico a cuatro columnas, porque
                               con ratón nadie descubre que una tira se desliza. */}
-                          <ul className="-mx-5 flex snap-x scroll-px-5 gap-4 overflow-x-auto px-5 pb-4 md:-mx-10 md:scroll-px-10 md:px-10 lg:mx-0 lg:block lg:columns-4 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0">
-                            {obras.map((o, j) => (
-                              <li key={j} className="shrink-0 snap-start lg:mb-5 lg:break-inside-avoid">
-                                <Image
-                                  src={o.url}
-                                  alt={o.alt}
-                                  width={o.ancho ?? 1200}
-                                  height={o.alto ?? 1200}
-                                  sizes="(min-width: 1024px) 22vw, 80vw"
-                                  className="h-56 w-auto max-w-none lg:h-auto lg:w-full lg:max-w-full"
-                                />
-                                {o.pie && (
-                                  <p className="mt-2 text-[0.85rem] text-[var(--color-tinta-60)]">{o.pie}</p>
-                                )}
-                              </li>
-                            ))}
-                          </ul>
+                          <GaleriaObras obras={obras} nombre={p.nombre} idioma={idioma} />
                         </div>
                       )}
                     </article>

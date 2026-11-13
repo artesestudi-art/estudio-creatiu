@@ -1,6 +1,7 @@
 /**
  * Añade la presentación de Sílvia Cano al profesorado, en castellano y en
- * catalán (13/11/2026, texto suyo). Va la primera: es la fundadora.
+ * catalán (13/11/2026, texto suyo), con 4 ilustraciones suyas como obra. Va la
+ * primera: es la fundadora.
  *
  * Toca solo `profesorado.personas` de las filas `portada` y `portada-ca`. Si
  * ya hay una ficha con su nombre, la sustituye; no duplica. Se lanza una vez:
@@ -67,6 +68,23 @@ Gràcies per acompanyar-me en aquest somni. Benvinguts i benvingudes a la meva c
   },
 }
 
+/* Sus ilustraciones (13/11/2026, mandadas por WhatsApp), recortadas y
+   optimizadas en public/obra/. `ancho`/`alto` = tamaño real del fichero. */
+const OBRAS = {
+  portada: [
+    { url: '/obra/silvia-mapa-artes.jpg', ancho: 1600, alto: 1418, alt: 'Mapa ilustrado de Artés con el logotipo de art-és Espai Creatiu', pie: 'Mapa ilustrado de Artés' },
+    { url: '/obra/silvia-un-raco-a-artes.jpg', ancho: 1141, alto: 1600, alt: 'Cartel de art-és con personajes haciendo cerámica, costura, crochet y dibujo', pie: '«Un racó a Artés per aturar el temps i crear»' },
+    { url: '/obra/silvia-cor.jpg', ancho: 1045, alto: 1343, alt: 'Ilustración de una chica que abraza un gran corazón rojo', pie: 'Ilustración' },
+    { url: '/obra/silvia-bones-festes.jpg', ancho: 1164, alto: 1469, alt: 'Felicitación navideña: una niña abraza un caballito rojo de Dalarna bajo una estrella fugaz', pie: 'Felicitación «Bones Festes»' },
+  ],
+  'portada-ca': [
+    { url: '/obra/silvia-mapa-artes.jpg', ancho: 1600, alto: 1418, alt: "Mapa il·lustrat d'Artés amb el logotip d'art-és Espai Creatiu", pie: "Mapa il·lustrat d'Artés" },
+    { url: '/obra/silvia-un-raco-a-artes.jpg', ancho: 1141, alto: 1600, alt: "Cartell d'art-és amb personatges fent ceràmica, costura, ganxet i dibuix", pie: '«Un racó a Artés per aturar el temps i crear»' },
+    { url: '/obra/silvia-cor.jpg', ancho: 1045, alto: 1343, alt: "Il·lustració d'una noia que abraça un gran cor vermell", pie: 'Il·lustració' },
+    { url: '/obra/silvia-bones-festes.jpg', ancho: 1164, alto: 1469, alt: 'Felicitació nadalenca: una nena abraça un cavallet vermell de Dalarna sota un estel fugaç', pie: 'Felicitació «Bones Festes»' },
+  ],
+}
+
 const esElla = (p) => /^s[ií]lvia cano/i.test((p?.nombre ?? '').trim())
 
 for (const [clave, ficha] of Object.entries(FICHAS)) {
@@ -79,7 +97,7 @@ for (const [clave, ficha] of Object.entries(FICHAS)) {
   const personas = valor.profesorado?.personas ?? []
   const previa = personas.find(esElla)
   /* Conserva lo que ya tuviera su ficha (foto, Instagram, obras). */
-  const nueva = { ...(previa ?? {}), ...ficha, foto: previa?.foto || ficha.foto }
+  const nueva = { ...(previa ?? {}), ...ficha, foto: previa?.foto || ficha.foto, obras: OBRAS[clave] }
   valor.profesorado = { ...(valor.profesorado ?? {}), personas: [nueva, ...personas.filter((p) => !esElla(p))] }
   await sql`UPDATE contenidos SET valor = ${JSON.stringify(valor)}::jsonb, actualizado = now() WHERE clave = ${clave}`
   console.log(`${clave}: ${previa ? 'sustituida' : 'añadida'} · personas ahora: ${valor.profesorado.personas.map((p) => p.nombre).join(', ')}`)
