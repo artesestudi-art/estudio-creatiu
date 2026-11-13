@@ -53,6 +53,7 @@ type Estudio = {
   }
   horario: { es: string; ca: string; schema: string }
   redes: { instagram: string; facebook: string; youtube: string; tiktok: string }
+  google: { placeId: string; maps: string; resenas: string }
   legal: { razonSocial: string; nif: string; encargados: string }
   analitica: { ga4: string }
 }
@@ -151,6 +152,17 @@ export const ESTUDIO: Estudio = {
     ca: 'De dilluns a divendres, de 9:00 a 13:00 i de 15:00 a 20:30',
     /** Formato schema.org, el que lee Google. */
     schema: 'Mo-Fr 09:00-13:00,Mo-Fr 15:00-20:30',
+  },
+
+  /**
+   * La ficha de Google Business (ya verificada, 13/11/2026). El `placeId` sale
+   * del enlace de «Pedir reseñas» que da Google; con él, el enlace a Maps abre
+   * la FICHA del taller y no un punto suelto en el mapa.
+   */
+  google: {
+    placeId: 'ChIJq8WKVmagaSYRMgypeETDBnw',
+    maps: 'https://www.google.com/maps/search/?api=1&query=art-%C3%A9s%20Espai%20Creatiu%2C%20Passeig%20Diagonal%2071%2C%20Art%C3%A9s&query_place_id=ChIJq8WKVmagaSYRMgypeETDBnw',
+    resenas: 'https://search.google.com/local/writereview?placeid=ChIJq8WKVmagaSYRMgypeETDBnw',
   },
 
   redes: {

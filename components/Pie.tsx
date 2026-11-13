@@ -3,6 +3,7 @@ import { ESTUDIO, horarioEn, real } from '@/data/estudio'
 import { prefijo, textos, type Idioma } from '@/lib/idioma'
 import SelectorIdioma from './SelectorIdioma'
 import Logo from '@/components/Logo'
+import LogoGoogle from '@/components/LogoGoogle'
 import PreferenciasCookies from '@/components/PreferenciasCookies'
 
 export default function Pie({
@@ -70,12 +71,28 @@ export default function Pie({
               </a>
             )}
             {(calle || localidad) && (
-              <address className="not-italic leading-relaxed opacity-75">
-                {calle}
-                {calle && <br />}
-                {[cp, localidad].filter(Boolean).join(' ')}
-              </address>
+              <a
+                href={ESTUDIO.google.maps}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-1 flex items-center gap-3 text-left"
+              >
+                <LogoGoogle className="h-8 w-8" />
+                <address className="enlace-linea not-italic leading-relaxed opacity-75 hover:opacity-100">
+                  {calle}
+                  {calle && <br />}
+                  {[cp, localidad].filter(Boolean).join(' ')}
+                </address>
+              </a>
             )}
+            <a
+              href={ESTUDIO.google.resenas}
+              target="_blank"
+              rel="noreferrer"
+              className="enlace-linea flex min-h-11 items-center opacity-75 hover:opacity-100"
+            >
+              {t.dejaTuResena}
+            </a>
             {real(horarioEn(idioma)) && <p className="opacity-55">{horarioEn(idioma)}</p>}
           </div>
 

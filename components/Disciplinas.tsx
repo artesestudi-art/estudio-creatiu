@@ -89,6 +89,18 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
         const suyo = item.scrollWidth
         if (suyo > 0) cuerpo = Math.min(cuerpo, (BASE * (ancho * 0.985 - margen)) / suyo)
       }
+      /* Y el ALTO. Solo se miraba el ancho: en un portátil (1440×800) cinco
+         renglones a 190 px sumaban 875 px y la pila se salía de la pantalla,
+         con «Multidisciplinar» cortada por arriba y «Crochet» por abajo. La
+         pila va centrada y la cabecera es fija, así que se descuenta la
+         cabecera arriba y lo mismo abajo, para que quede centrada en lo que
+         se ve. */
+      const pantalla = caja.parentElement?.clientHeight || window.innerHeight
+      const cabecera = document.querySelector('header')?.offsetHeight || 0
+      const alto = pantalla - cabecera * 2
+      const altoBase = items.reduce((suma, item) => suma + item.offsetHeight, 0)
+      if (alto > 0 && altoBase > 0) cuerpo = Math.min(cuerpo, (BASE * alto * 0.94) / altoBase)
+
       cuerpo = Math.max(MIN, cuerpo)
 
       const ahora = `${cuerpo}px`
@@ -173,7 +185,10 @@ export default function Disciplinas({ palabras }: { palabras: string[] }) {
      de 0,38 y tres disciplinas cabía de milagro; el día que el catálogo pasó a
      cinco, «Manualidades» empezó a salirse por la derecha. */
   const holgura = Math.max(...palabras.map((d, i) => (d.length * 0.5) / (1 - i * 0.06)))
-  const cuerpo = `min(clamp(3.2rem, 16vw, 12rem), calc(88vw / ${holgura.toFixed(2)}))`
+  /* Y que la pila quepa de alto: renglones de 0,92 cuerpos, sin la cabecera
+     fija (6rem) arriba ni lo mismo abajo. */
+  const porAlto = `calc((100svh - 12rem) * 0.94 / ${(palabras.length * 0.92).toFixed(2)})`
+  const cuerpo = `min(clamp(3.2rem, 16vw, 12rem), calc(88vw / ${holgura.toFixed(2)}), ${porAlto})`
 
   return (
     <section

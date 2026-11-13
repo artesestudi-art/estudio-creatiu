@@ -138,6 +138,8 @@ type Textos = {
   puedesDarteDeBaja: string
   hablamos: string
   elTaller: string
+  verEnGoogleMaps: string
+  dejaTuResena: string
   prefieresHablarlo: string
   rellenaYConfirmamos: string
 
@@ -279,6 +281,8 @@ const es: Textos = {
   puedesDarteDeBaja: 'Puedes darte de baja en cualquier correo.',
   hablamos: 'Hablamos',
   elTaller: 'El taller',
+  verEnGoogleMaps: 'Ver en Google Maps',
+  dejaTuResena: 'Déjanos tu reseña en Google',
   prefieresHablarlo: '¿Prefieres hablarlo?',
   rellenaYConfirmamos:
     'Rellena el formulario y te confirmamos por correo si queda sitio en el grupo que quieres. Sin pagar nada ahora.',
@@ -428,6 +432,8 @@ const ca: Textos = {
   puedesDarteDeBaja: "Pots donar-te de baixa a qualsevol correu.",
   hablamos: 'En parlem',
   elTaller: 'El taller',
+  verEnGoogleMaps: 'Veure a Google Maps',
+  dejaTuResena: 'Deixa’ns la teva ressenya a Google',
   prefieresHablarlo: 'Prefereixes parlar-ne?',
   rellenaYConfirmamos:
     'Omple el formulari i et confirmem per correu si queda lloc al grup que vols. Sense pagar res ara.',

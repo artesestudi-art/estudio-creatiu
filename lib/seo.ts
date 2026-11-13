@@ -73,6 +73,7 @@ export function schemaEstudio(idioma: Idioma): Record<string, unknown> {
     ...(lat && lon
       ? { geo: { '@type': 'GeoCoordinates', latitude: lat, longitude: lon } }
       : {}),
+    ...(real(ESTUDIO.google.maps) ? { hasMap: ESTUDIO.google.maps } : {}),
     ...(real(ESTUDIO.horario.schema) ? { openingHours: ESTUDIO.horario.schema } : {}),
     sameAs: [real(ESTUDIO.redes.instagram), real(ESTUDIO.redes.facebook)].filter(Boolean),
   }

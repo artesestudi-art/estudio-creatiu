@@ -17,6 +17,7 @@ import BotonWhatsApp from '@/components/BotonWhatsApp'
 import Disciplinas from '@/components/Disciplinas'
 import Estrellas from '@/components/Estrellas'
 import Formas from '@/components/Formas'
+import LogoGoogle from '@/components/LogoGoogle'
 
 /**
  * Las cuatro manchas del kit de marca, en rotación por ficha de curso.
@@ -844,11 +845,35 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                   <div>
                     <dt className="t-etiqueta mb-1.5">{t.elTaller}</dt>
                     <dd className="text-[1.15rem] leading-relaxed">
-                      {ESTUDIO.direccion.calle}
-                      <br />
-                      {[real(ESTUDIO.direccion.codigoPostal), real(ESTUDIO.direccion.localidad)]
-                        .filter(Boolean)
-                        .join(' ')}
+                      {/* La dirección abre la ficha de Google del taller: así
+                          quien la toca llega a la puerta y ve las reseñas. */}
+                      <a
+                        href={ESTUDIO.google.maps}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group flex items-start gap-4"
+                      >
+                        <LogoGoogle className="mt-0.5 h-11 w-11" />
+                        <span>
+                          <span className="enlace-linea">{ESTUDIO.direccion.calle}</span>
+                          <br />
+                          {[real(ESTUDIO.direccion.codigoPostal), real(ESTUDIO.direccion.localidad)]
+                            .filter(Boolean)
+                            .join(' ')}
+                          <span className="mt-1 block text-[0.9rem] text-[var(--color-tinta-60)] group-hover:text-[var(--color-tinta)]">
+                            {t.verEnGoogleMaps} ↗
+                          </span>
+                        </span>
+                      </a>
+                      <a
+                        href={ESTUDIO.google.resenas}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-6 inline-flex min-h-12 items-center gap-3 rounded-full border border-[var(--color-tinta)]/20 bg-white py-2 pr-6 pl-2 text-[1rem] font-medium transition-colors hover:border-[var(--color-tinta)]/50"
+                      >
+                        <LogoGoogle className="h-8 w-8 shadow-none" />
+                        {t.dejaTuResena}
+                      </a>
                     </dd>
                   </div>
                 )}
