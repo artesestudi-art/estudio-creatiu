@@ -12,18 +12,13 @@ import { neon } from '@neondatabase/serverless'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
-const env = readFileSync(fileURLToPath(new URL('../.env.local', import.meta.url)), 'utf8')
-const url = env.match(/^DATABASE_URL=(.*)$/m)?.[1].trim().replace(/^"|"$/g, '')
-if (!url) throw new Error('Falta DATABASE_URL en .env.local')
-const sql = neon(url)
-
 const NOMBRE = 'Sílvia Cano'
 
 const FICHAS = {
   portada: {
     nombre: NOMBRE,
     rol: 'Fundadora · Ilustradora y diseñadora',
-    foto: '',
+    foto: '/obra/silvia-cano.jpg',
     bio: `Soy Sílvia Cano, la persona que está detrás de Art-és Espai Creatiu.
 
 Si miro atrás, la idea de crear este espacio no ha surgido de un día para otro. Viene de lejos: del recuerdo de aquel taller al que, de pequeña, iba a aprender a dibujar, pintar y soñar. Desde entonces, el deseo de tener un espacio propio quedó grabado en mí.
@@ -46,7 +41,7 @@ Gracias por acompañarme en este sueño. ¡Bienvenidos y bienvenidas a mi casa c
   'portada-ca': {
     nombre: NOMBRE,
     rol: 'Fundadora · Il·lustradora i dissenyadora',
-    foto: '',
+    foto: '/obra/silvia-cano.jpg',
     bio: `Soc la Sílvia Cano, la persona que hi ha darrere d'Art-és Espai Creatiu.
 
 Si miro enrere, la idea de crear aquest espai no ha sorgit d'un dia per l'altre. Ve de lluny: del record d'aquell taller on, de petita, anava a aprendre a dibuixar, pintar i somiar. Des d'aleshores, el desig de tenir un espai propi va quedar gravat dins meu.
@@ -84,6 +79,23 @@ const OBRAS = {
     { url: '/obra/silvia-bones-festes.jpg', ancho: 1164, alto: 1469, alt: 'Felicitació nadalenca: una nena abraça un cavallet vermell de Dalarna sota un estel fugaç', pie: 'Felicitació «Bones Festes»' },
   ],
 }
+
+if (process.argv.includes('--sql')) {
+  /* Producción NO es la base de .env.local (esa es la de pruebas): se escribe
+     desde el Vercel de la clienta → Storage → artes-datos → Query, que solo
+     admite UNA orden. Sustituye su ficha si ya estaba y la pone la primera. */
+  const fila = (clave) => `('${clave}', $j$${JSON.stringify([{ ...FICHAS[clave], obras: OBRAS[clave] }])}$j$::jsonb)`
+  console.log(`UPDATE contenidos c SET valor = jsonb_set(c.valor, '{profesorado,personas}', n.persona || COALESCE((SELECT jsonb_agg(p) FROM jsonb_array_elements(c.valor->'profesorado'->'personas') p WHERE p->>'nombre' !~* '^s[ií]lvia cano'), '[]'::jsonb)), actualizado = now()
+FROM (VALUES ${fila('portada')}, ${fila('portada-ca')}) AS n(clave, persona)
+WHERE c.clave = n.clave AND jsonb_typeof(c.valor->'profesorado'->'personas') = 'array'
+RETURNING c.clave, (SELECT string_agg(p->>'nombre', ', ') FROM jsonb_array_elements(c.valor->'profesorado'->'personas') p) AS personas;`)
+  process.exit(0)
+}
+
+const env = readFileSync(fileURLToPath(new URL('../.env.local', import.meta.url)), 'utf8')
+const url = env.match(/^DATABASE_URL=(.*)$/m)?.[1].trim().replace(/^"|"$/g, '')
+if (!url) throw new Error('Falta DATABASE_URL en .env.local (es la base de PRUEBAS; producción: --sql)')
+const sql = neon(url)
 
 const esElla = (p) => /^s[ií]lvia cano/i.test((p?.nombre ?? '').trim())
 
