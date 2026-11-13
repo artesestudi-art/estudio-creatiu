@@ -229,7 +229,12 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                 >
                   {contenido.hero.cta || t.verLosCursos}
                 </Link>
-                <Link href={`${p}/#inscripcion`} className="boton boton-linea">
+                {/* Con la foto del taller detrás, el botón de contorno se
+                    perdía sobre la mesa verde: fondo crema casi opaco. */}
+                <Link
+                  href={`${p}/#inscripcion`}
+                  className="boton boton-linea bg-[var(--color-papel)]/90 backdrop-blur-sm"
+                >
                   {t.pedirPlaza}
                 </Link>
               </div>

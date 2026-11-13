@@ -19,8 +19,8 @@ import { useEffect, useState } from 'react'
  * Con «menos movimiento» se queda quieta en la primera foto.
  */
 const FOTOS = [
-  { src: '/obra/fondo-taller.jpg', posicion: '50% 45%' },
-  { src: '/obra/fondo-fachada.jpg', posicion: '50% 30%' },
+  { src: '/obra/fondo-taller-2.jpg', posicion: '50% 45%' },
+  { src: '/obra/fondo-fachada-2.jpg', posicion: '50% 30%' },
 ]
 
 export default function FondoPortada() {
@@ -47,7 +47,10 @@ export default function FondoPortada() {
         />
       ))}
       {/* El velo: parejo en móvil, más denso a la izquierda en escritorio. */}
-      <div className="absolute inset-0 bg-[var(--color-papel)]/72 md:bg-transparent md:bg-[linear-gradient(90deg,color-mix(in_srgb,var(--color-papel)_90%,transparent)_0%,color-mix(in_srgb,var(--color-papel)_82%,transparent)_45%,color-mix(in_srgb,var(--color-papel)_48%,transparent)_100%)]" />
+      <div className="absolute inset-0 bg-[var(--color-papel)]/58 md:bg-transparent md:bg-[linear-gradient(90deg,color-mix(in_srgb,var(--color-papel)_80%,transparent)_0%,color-mix(in_srgb,var(--color-papel)_62%,transparent)_45%,color-mix(in_srgb,var(--color-papel)_22%,transparent)_100%)]" />
+      {/* Bajo la cabecera, crema: el menú y el selector de idioma son finos
+          y sobre el granito gris de la fachada no se leían. */}
+      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[var(--color-papel)]/90 to-transparent" />
       {/* Funde el borde de abajo con la sección siguiente, que es crema liso. */}
       <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[var(--color-papel)]" />
     </div>
