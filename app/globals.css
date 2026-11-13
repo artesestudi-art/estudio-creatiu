@@ -803,3 +803,19 @@ body[data-consentimiento='pendiente'] [data-flotante='whatsapp'] {
 .grecaptcha-badge {
   visibility: hidden;
 }
+
+/* Fondo de la portada (components/FondoPortada.tsx): el relevo entre fotos es
+   un fundido de 1,8 s y el acercamiento dura lo que la foto está en pantalla.
+   Solo `opacity` y `transform`: nada de animar un `filter`. */
+.fondo-portada-foto {
+  transition:
+    opacity 1.8s ease,
+    transform 9s linear;
+  will-change: opacity, transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fondo-portada-foto {
+    transition: none;
+    transform: none !important;
+  }
+}

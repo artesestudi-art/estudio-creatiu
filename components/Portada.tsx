@@ -20,6 +20,7 @@ import Formas from '@/components/Formas'
 import LogoGoogle from '@/components/LogoGoogle'
 import BioIdiomas from '@/components/BioIdiomas'
 import GaleriaObras from '@/components/GaleriaObras'
+import FondoPortada from '@/components/FondoPortada'
 
 /**
  * Las cuatro manchas del kit de marca, en rotación por ficha de curso.
@@ -182,6 +183,8 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
               ella: son lo único de la portada que es del cliente. Las
               estrellas sueltas de `Estrellas` no van aquí, que se montaban
               encima de los sectores de la rueda. */}
+          {/* El taller de verdad, desenfocado, detrás de todo. */}
+          <FondoPortada />
           <Formas />
 
           <div className="contenedor relative z-10">
