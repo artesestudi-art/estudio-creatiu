@@ -583,7 +583,8 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
           <section id="profesorado" className="seccion relative bg-[var(--color-papel-2)]">
             <Estrellas
               estrellas={[
-                { y: '12%', x: '86%', tam: 30, color: 'var(--color-marca-salmon)', deriva: 60 },
+                /* Arriba del todo: más abajo caía encima de la bio de Sílvia. */
+                { y: '2%', x: '90%', tam: 30, color: 'var(--color-marca-salmon)', deriva: 60 },
                 { y: '70%', x: '6%', tam: 38, color: 'var(--color-marca-azul)', deriva: -60 },
               ]}
             />
@@ -608,12 +609,15 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
                 {contenido.profesorado.personas.map((p, i) => {
                   const derecha = i % 2 === 1
                   const obras = (p.obras ?? []).filter((o) => o.url)
+                  /* Con una bio larga (la de Sílvia son ocho párrafos) la foto
+                     centrada dejaba un hueco encima: arriba y fija mientras se lee. */
+                  const larga = (p.bio ?? '').length > 700
                   return (
                     <article key={i} className="revela">
-                      <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
+                      <div className={`grid gap-8 lg:grid-cols-12 lg:gap-12 ${larga ? 'items-start' : 'items-center'}`}>
                         {p.foto && (
                           <div
-                            className={`relative aspect-4/5 overflow-hidden lg:col-span-5 ${derecha ? 'lg:order-2 lg:col-start-8' : ''}`}
+                            className={`relative aspect-4/5 overflow-hidden lg:col-span-5 ${derecha ? 'lg:order-2 lg:col-start-8' : ''} ${larga ? 'lg:sticky lg:top-28' : ''}`}
                           >
                             <Image
                               src={p.foto}
