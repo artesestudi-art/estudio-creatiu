@@ -1,11 +1,14 @@
 import { leerContenido, guardarContenido } from './bd'
 import { PRINCIPAL, type Idioma } from './idioma'
 import { esSilvia, fichaSilvia } from '@/data/silvia'
+import { completarJordina, esJordina } from '@/data/jordina'
 
 /** Sílvia la primera, si la base no la tiene ya (ver data/silvia.ts). */
 function conFundadora(profesorado: Contenido['profesorado'], idioma: Idioma): Contenido['profesorado'] {
-  if (profesorado.personas.some(esSilvia)) return profesorado
-  return { ...profesorado, personas: [fichaSilvia(idioma), ...profesorado.personas] }
+  /* Jordina: foto y trabajos si la base no los tiene (ver data/jordina.ts). */
+  const personas = profesorado.personas.map((p) => (esJordina(p) ? completarJordina(p, idioma) : p))
+  if (personas.some(esSilvia)) return { ...profesorado, personas }
+  return { ...profesorado, personas: [fichaSilvia(idioma), ...personas] }
 }
 
 /**
