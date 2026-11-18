@@ -89,6 +89,32 @@ export default async function LayoutPanel({ children }: { children: React.ReactN
         </div>
       )}
       <main className="mx-auto max-w-6xl px-5 py-8">{children}</main>
+      {/* Recomendación de creaar: abre WhatsApp con el mensaje escrito y sin
+          destinatario, para que ella elija a quién se lo manda. El enlace lleva
+          utm para ver en GA4 de creaar cuántos llegan por aquí. */}
+      <footer className="border-t border-[var(--color-linea)]">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-5 py-5 text-[13.5px] text-[var(--color-tinta-60)]">
+          <span>¿Te gusta tu web? Recomiéndanos a quien la necesite.</span>
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(
+              'Te recomiendo a Creaar, son los que me hicieron la web y el panel del estudio. Mira: https://creaar.es/?utm_source=artes&utm_medium=panel&utm_campaign=recomiendanos',
+            )}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex min-h-10 items-center rounded-full border border-[var(--color-linea-fuerte)] bg-white px-4 font-medium text-[var(--color-marca-marino)] transition hover:border-[var(--color-marca-marino)]"
+          >
+            Recomiéndanos por WhatsApp
+          </a>
+          <a
+            href="https://creaar.es/?utm_source=artes&utm_medium=panel&utm_campaign=hecha-por"
+            target="_blank"
+            rel="noreferrer"
+            className="ml-auto hover:text-[var(--color-marca-marino)] hover:underline hover:underline-offset-4"
+          >
+            Web hecha por creaar.es
+          </a>
+        </div>
+      </footer>
     </div>
   )
 }
