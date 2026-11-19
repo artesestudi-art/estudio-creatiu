@@ -819,3 +819,50 @@ body[data-consentimiento='pendiente'] [data-flotante='whatsapp'] {
     transform: none !important;
   }
 }
+
+/* Galería del taller (components/GaleriaTaller.tsx): fundido de 1,2 s y un
+   acercamiento que dura algo más que la foto en pantalla. Solo opacity y
+   transform. Los botones, redondos y translúcidos sobre la foto. */
+.galeria-taller-foto {
+  transition:
+    opacity 1.2s ease,
+    transform 7s linear;
+  will-change: opacity, transform;
+}
+.galeria-taller-pie {
+  animation: galeria-taller-entra 0.7s ease both;
+}
+.galeria-taller-boton {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.14);
+  backdrop-filter: blur(6px);
+  transition: background-color 0.2s ease;
+}
+.galeria-taller-boton:hover {
+  background: rgb(255 255 255 / 0.28);
+}
+.galeria-taller-boton:focus-visible {
+  outline: 2px solid var(--color-marca-mostaza);
+  outline-offset: 2px;
+}
+@keyframes galeria-taller-barra {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes galeria-taller-entra {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .galeria-taller-foto {
+    transition: opacity 0.3s ease;
+    transform: none !important;
+  }
+  .galeria-taller-pie {
+    animation: none;
+  }
+}

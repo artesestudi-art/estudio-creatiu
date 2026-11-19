@@ -21,7 +21,7 @@ import LogoGoogle from '@/components/LogoGoogle'
 import BioIdiomas from '@/components/BioIdiomas'
 import GaleriaObras from '@/components/GaleriaObras'
 import FondoPortada from '@/components/FondoPortada'
-import VideoTaller from '@/components/VideoTaller'
+import GaleriaTaller from '@/components/GaleriaTaller'
 
 /**
  * Las cuatro manchas del kit de marca, en rotación por ficha de curso.
@@ -275,8 +275,8 @@ export default async function Portada({ idioma }: { idioma: Idioma }) {
         {/* ════════════ Disciplinas ════════════ */}
         <Disciplinas palabras={disciplinas} />
 
-        {/* ════════════ El taller en vídeo ════════════ */}
-        <VideoTaller idioma={idioma} />
+        {/* ════════════ El taller en fotos ════════════ */}
+        <GaleriaTaller idioma={idioma} />
 
         {/* ════════════ El estudio ════════════ */}
         {hay.sobre && (
