@@ -44,6 +44,8 @@ const config: NextConfig = {
     // AVIF primero: pesa bastante menos que WebP en fotos, y aquí casi todo
     // son fotos de taller a pantalla completa.
     formats: ['image/avif', 'image/webp'],
+    // 88 solo para la galería del taller: a pantalla completa, a 75 se nota.
+    qualities: [75, 88],
   },
   // Cabeceras que no cuestan nada y evitan sustos.
   async headers() {

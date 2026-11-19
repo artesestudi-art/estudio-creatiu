@@ -8,8 +8,9 @@ import type { Idioma } from '@/lib/idioma'
  * El taller en fotos (19/11/2026). Sustituye al vídeo de 33 s, que a Sílvia
  * «no le acababa de convencer»: pidió fotos que fueran pasando.
  *
- * Las fotos salen de los fotogramas más nítidos de la grabación del 13/11
- * (Osmo 360), retocadas con sharp: un punto más de luz, color y enfoque.
+ * Las fotos son las de la cámara Sony de la visita del 13/11 (originales en
+ * ~/Pictures/art-es-visita-2026-11-13/fotos), a 2400 px en webp. La primera
+ * versión usaba fotogramas del vídeo y se veían borrosas: no volver a eso.
  *
  * Relevo cada 5 s con fundido y un acercamiento lento (solo `opacity` y
  * `transform`, como el fondo de la portada). Lleva botón de pausa —todo lo
@@ -18,13 +19,13 @@ import type { Idioma } from '@/lib/idioma'
  * Solo la primera se carga con prioridad; el resto, cuando toca.
  */
 const FOTOS = [
-  { src: '/taller/taller-fachada.webp', es: 'La entrada, en el Passeig Diagonal', ca: 'L’entrada, al Passeig Diagonal', pos: '50% 40%' },
-  { src: '/taller/taller-mostrador.webp', es: 'El mostrador y las riñoneras de costura', ca: 'El taulell i les ronyoneres de costura', pos: '50% 50%' },
-  { src: '/taller/taller-sala-costura.webp', es: 'La sala grande, con las máquinas de coser', ca: 'La sala gran, amb les màquines de cosir', pos: '50% 60%' },
-  { src: '/taller/taller-pared-rinoneras.webp', es: 'La pared de las riñoneras', ca: 'La paret de les ronyoneres', pos: '50% 50%' },
-  { src: '/taller/taller-rincon-cocina.webp', es: 'El rincón del café', ca: 'El racó del cafè', pos: '50% 60%' },
-  { src: '/taller/taller-escaparate.webp', es: 'Luz de calle por el escaparate', ca: 'Llum del carrer per l’aparador', pos: '50% 50%' },
-  { src: '/taller/taller-mesa-logo.webp', es: 'Material a mano en cada estantería', ca: 'Material a mà a cada prestatgeria', pos: '50% 55%' },
+  { src: '/taller/taller-fachada.webp', es: 'La entrada, en el Passeig Diagonal de Artés', ca: 'L’entrada, al Passeig Diagonal d’Artés', pos: '50% 50%' },
+  { src: '/taller/taller-sala.webp', es: 'El taller por dentro', ca: 'El taller per dins', pos: '50% 55%' },
+  { src: '/taller/taller-silvia-mostrador.webp', es: 'Sílvia, en el mostrador', ca: 'La Sílvia, al taulell', pos: '50% 35%' },
+  { src: '/taller/taller-mostrador-logo.webp', es: 'El mostrador, con material a mano', ca: 'El taulell, amb material a mà', pos: '50% 50%' },
+  { src: '/taller/taller-rinoneras.webp', es: 'Bolsos y riñoneras de costura', ca: 'Bosses i ronyoneres de costura', pos: '50% 40%' },
+  { src: '/taller/taller-temperas.webp', es: 'Témperas y pinceles para pintura', ca: 'Tèmperes i pinzells per a pintura', pos: '50% 50%' },
+  { src: '/taller/taller-hilos.webp', es: 'Hilos para costura', ca: 'Fils per a costura', pos: '50% 50%' },
 ] as const
 
 const TEXTOS = {
@@ -91,6 +92,7 @@ export default function GaleriaTaller({ idioma }: { idioma: Idioma }) {
                 src={f.src}
                 alt={f[idioma]}
                 fill
+                quality={88}
                 priority={i === 0}
                 sizes="100vw"
                 className="object-cover"
